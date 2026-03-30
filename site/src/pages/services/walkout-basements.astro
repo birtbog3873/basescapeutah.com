@@ -1,0 +1,64 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro'
+import { fetchServices, fetchSiteSettings, resolveServiceImage } from '../../lib/payload'
+
+let service: any = null
+let settings: any = null
+
+try {
+  const [servicesRes, siteSettings] = await Promise.all([
+    fetchServices(),
+    fetchSiteSettings(),
+  ])
+  service = servicesRes.docs?.find((s: any) => s.slug === 'walkout-basements')
+  if (service) service.heroImage = resolveServiceImage(service.slug, 'hero', service.heroImage)
+  settings = siteSettings
+} catch {
+  // Fallback for build without CMS
+}
+
+// Fallback service data if CMS unavailable
+if (!service) {
+  service = {
+    title: 'Walkout Basements',
+    slug: 'walkout-basements',
+    tagline: 'Transform your basement into a light-filled walkout with direct landscape access — unlocking rental income, family space, and up to $70K+ in added property value.',
+    primaryValuePillar: 'financial',
+    heroImage: { url: '/images/services/hero-walkout-basements.webp', alt: 'Completed walkout basement conversion on a typical Utah suburban home with sliding glass doors opening to a landscaped patio, green lawn, and Wasatch mountains in the distance' },
+    supportingPillars: ['safety', 'transformation'],
+    overview: '<p>A walkout basement conversion creates a full-height, ground-level entry from your below-grade basement to your backyard. BaseScape\'s Surgical Extraction Protocol carefully removes a section of your foundation wall, installs a structural header, and creates a code-compliant doorway — transforming trapped space into a light-filled, landscape-connected living area.</p><p>This isn\'t general carpentry. Cutting into load-bearing foundation walls is structural engineering. That\'s why BaseScape exists — it\'s all we do.</p><h3>Utah ADU Compliance: The Stove Rule</h3><p>Under Utah\'s HB 398 and SB 174, adding a full kitchen (with a stove) to a walkout basement can reclassify the space as an Accessory Dwelling Unit (ADU) — which is legal in most Wasatch Front cities but triggers additional building code requirements (separate utility metering, parking, fire separation). BaseScape helps you navigate this decision: convert for maximum rental income with full ADU compliance, or keep flexibility with a kitchenette configuration that avoids reclassification. We explain the trade-offs in plain language so you can make the right choice for your property.</p>',
+    process: [
+      { stepTitle: 'Structural Assessment', stepDescription: '<p>On-site evaluation of your foundation type, soil conditions, drainage, and load-bearing requirements. We determine exactly what your home needs.</p>' },
+      { stepTitle: 'Engineering & Permits', stepDescription: '<p>Structural engineering plans, city permits, and utility coordination. We handle every piece of paperwork.</p>' },
+      { stepTitle: 'Surgical Extraction', stepDescription: '<p>Precision foundation cutting, structural header installation, door framing, and weatherproofing. Our dust containment system keeps your home clean.</p>' },
+      { stepTitle: 'Finish & Landscape', stepDescription: '<p>Exterior grading, retaining walls (if needed), concrete landing, and landscape restoration. Your new walkout integrates seamlessly with your backyard.</p>' },
+    ],
+    anxietyStack: {
+      structuralSafety: '<p>Every walkout conversion begins with a structural engineering assessment. We install steel or LVL headers rated for your home\'s specific load-bearing requirements. Your home is stronger after our work, not weaker.</p>',
+      codeCompliance: '<p>Full IRC compliance including egress requirements, structural engineering stamps, and city inspection sign-offs. We pull every permit and schedule every inspection.</p>',
+      drainageMoisture: '<p>Proper grading, French drain systems, waterproof membranes, and moisture barriers are built into every project. Water management isn\'t an afterthought — it\'s engineered from day one.</p>',
+      dustDisruption: '<p>Our dust containment system uses negative air pressure and sealed barriers to keep construction debris out of your living space. Most families stay in their homes throughout the project.</p>',
+      costAffordability: '<p>Walkout conversions typically range from $50K-$100K depending on complexity. Financing options include construction loans with interest-only periods during the build phase. Most homeowners see ROI through rental income within 2-5 years.</p>',
+      aesthetics: '<p>Your new walkout entry is designed to integrate with your home\'s architecture and landscaping. We work with your existing exterior finishes and landscape design to create a seamless transition.</p>',
+      timeline: '<p>Most walkout conversions complete in 4-8 weeks depending on scope. We provide a detailed timeline at the engineering phase and keep you updated throughout.</p>',
+    },
+    differentiator: '<p><strong>The Surgical Extraction Protocol</strong> — BaseScape\'s proprietary approach to foundation modification. Unlike general contractors who treat foundation work as one of many services, our entire operation is built around this single discipline. Every crew member is trained specifically in structural foundation work. Every tool is purpose-selected for precision cutting and header installation. The result: faster completion, cleaner execution, and engineering-grade structural integrity.</p>',
+    faqs: [
+      { question: 'How much does a walkout basement conversion cost?', answer: 'Walkout conversions typically range from $50K-$100K depending on complexity, soil conditions, and finish level. We provide free written estimates with detailed scope breakdowns.' },
+      { question: 'Does a walkout basement need a building permit?', answer: 'Yes. All structural foundation work requires city permits, structural engineering plans, and inspection sign-offs. BaseScape handles the entire permitting process.' },
+      { question: 'How long does a walkout conversion take?', answer: 'Most walkout conversions complete in 4-8 weeks. We provide a detailed timeline at the engineering phase.' },
+      { question: 'Can I use my walkout basement as a rental unit?', answer: "Yes — with proper ADU compliance. Utah's HB 398 and SB 174 make this possible in most Wasatch Front cities." },
+      { question: 'Does a walkout basement increase home value?', answer: 'Yes. A walkout basement conversion typically adds $50,000-$100,000+ to home value. The added square footage, natural light, and potential rental income make walkouts one of the highest-ROI home improvements.' },
+      { question: 'Can any basement be converted to a walkout?', answer: "Most basements can be converted, but feasibility depends on your lot's topography, soil conditions, and foundation type. Homes on sloped lots are ideal candidates. BaseScape provides a free structural assessment to determine if your home is a good candidate." },
+      { question: 'What happens to my landscaping during a walkout conversion?', answer: 'Excavation will disturb the area around the new walkout entry. We protect existing landscaping where possible and include landscape restoration in our scope.' },
+    ],
+    projects: [],
+    reviews: [],
+    seo: {
+      metaTitle: 'Walkout Basement Conversions | Utah Wasatch Front | BaseScape',
+      metaDescription: 'Transform your basement with a walkout entry. Structural engineering expertise, full code compliance, and financing options. Free estimates across Utah\'s Wasatch Front.',
+    },
+  }
+}
+---
+<ServiceLayout service={service} settings={settings} />

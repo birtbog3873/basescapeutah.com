@@ -1,0 +1,25 @@
+"use strict";
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+exports.id = "vendor-chunks/@smithy+util-body-length-browser@4.2.2";
+exports.ids = ["vendor-chunks/@smithy+util-body-length-browser@4.2.2"];
+exports.modules = {
+
+/***/ "(rsc)/../node_modules/.pnpm/@smithy+util-body-length-browser@4.2.2/node_modules/@smithy/util-body-length-browser/dist-es/calculateBodyLength.js":
+/*!*************************************************************************************************************************************************!*\
+  !*** ../node_modules/.pnpm/@smithy+util-body-length-browser@4.2.2/node_modules/@smithy/util-body-length-browser/dist-es/calculateBodyLength.js ***!
+  \*************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   calculateBodyLength: () => (/* binding */ calculateBodyLength)\n/* harmony export */ });\nconst TEXT_ENCODER = typeof TextEncoder == \"function\" ? new TextEncoder() : null;\nconst calculateBodyLength = (body) => {\n    if (typeof body === \"string\") {\n        if (TEXT_ENCODER) {\n            return TEXT_ENCODER.encode(body).byteLength;\n        }\n        let len = body.length;\n        for (let i = len - 1; i >= 0; i--) {\n            const code = body.charCodeAt(i);\n            if (code > 0x7f && code <= 0x7ff)\n                len++;\n            else if (code > 0x7ff && code <= 0xffff)\n                len += 2;\n            if (code >= 0xdc00 && code <= 0xdfff)\n                i--;\n        }\n        return len;\n    }\n    else if (typeof body.byteLength === \"number\") {\n        return body.byteLength;\n    }\n    else if (typeof body.size === \"number\") {\n        return body.size;\n    }\n    throw new Error(`Body Length computation failed for ${body}`);\n};\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHJzYykvLi4vbm9kZV9tb2R1bGVzLy5wbnBtL0BzbWl0aHkrdXRpbC1ib2R5LWxlbmd0aC1icm93c2VyQDQuMi4yL25vZGVfbW9kdWxlcy9Ac21pdGh5L3V0aWwtYm9keS1sZW5ndGgtYnJvd3Nlci9kaXN0LWVzL2NhbGN1bGF0ZUJvZHlMZW5ndGguanMiLCJtYXBwaW5ncyI6Ijs7OztBQUFBO0FBQ087QUFDUDtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0EsOEJBQThCLFFBQVE7QUFDdEM7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQSwwREFBMEQsS0FBSztBQUMvRCIsInNvdXJjZXMiOlsiL1VzZXJzL3N0ZXZlbmJ1bmtlci9jbGllbnRzL2dlbmVyYWwtY29udHJhY3Rpbmcvbm9kZV9tb2R1bGVzLy5wbnBtL0BzbWl0aHkrdXRpbC1ib2R5LWxlbmd0aC1icm93c2VyQDQuMi4yL25vZGVfbW9kdWxlcy9Ac21pdGh5L3V0aWwtYm9keS1sZW5ndGgtYnJvd3Nlci9kaXN0LWVzL2NhbGN1bGF0ZUJvZHlMZW5ndGguanMiXSwic291cmNlc0NvbnRlbnQiOlsiY29uc3QgVEVYVF9FTkNPREVSID0gdHlwZW9mIFRleHRFbmNvZGVyID09IFwiZnVuY3Rpb25cIiA/IG5ldyBUZXh0RW5jb2RlcigpIDogbnVsbDtcbmV4cG9ydCBjb25zdCBjYWxjdWxhdGVCb2R5TGVuZ3RoID0gKGJvZHkpID0+IHtcbiAgICBpZiAodHlwZW9mIGJvZHkgPT09IFwic3RyaW5nXCIpIHtcbiAgICAgICAgaWYgKFRFWFRfRU5DT0RFUikge1xuICAgICAgICAgICAgcmV0dXJuIFRFWFRfRU5DT0RFUi5lbmNvZGUoYm9keSkuYnl0ZUxlbmd0aDtcbiAgICAgICAgfVxuICAgICAgICBsZXQgbGVuID0gYm9keS5sZW5ndGg7XG4gICAgICAgIGZvciAobGV0IGkgPSBsZW4gLSAxOyBpID49IDA7IGktLSkge1xuICAgICAgICAgICAgY29uc3QgY29kZSA9IGJvZHkuY2hhckNvZGVBdChpKTtcbiAgICAgICAgICAgIGlmIChjb2RlID4gMHg3ZiAmJiBjb2RlIDw9IDB4N2ZmKVxuICAgICAgICAgICAgICAgIGxlbisrO1xuICAgICAgICAgICAgZWxzZSBpZiAoY29kZSA+IDB4N2ZmICYmIGNvZGUgPD0gMHhmZmZmKVxuICAgICAgICAgICAgICAgIGxlbiArPSAyO1xuICAgICAgICAgICAgaWYgKGNvZGUgPj0gMHhkYzAwICYmIGNvZGUgPD0gMHhkZmZmKVxuICAgICAgICAgICAgICAgIGktLTtcbiAgICAgICAgfVxuICAgICAgICByZXR1cm4gbGVuO1xuICAgIH1cbiAgICBlbHNlIGlmICh0eXBlb2YgYm9keS5ieXRlTGVuZ3RoID09PSBcIm51bWJlclwiKSB7XG4gICAgICAgIHJldHVybiBib2R5LmJ5dGVMZW5ndGg7XG4gICAgfVxuICAgIGVsc2UgaWYgKHR5cGVvZiBib2R5LnNpemUgPT09IFwibnVtYmVyXCIpIHtcbiAgICAgICAgcmV0dXJuIGJvZHkuc2l6ZTtcbiAgICB9XG4gICAgdGhyb3cgbmV3IEVycm9yKGBCb2R5IExlbmd0aCBjb21wdXRhdGlvbiBmYWlsZWQgZm9yICR7Ym9keX1gKTtcbn07XG4iXSwibmFtZXMiOltdLCJpZ25vcmVMaXN0IjpbMF0sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///(rsc)/../node_modules/.pnpm/@smithy+util-body-length-browser@4.2.2/node_modules/@smithy/util-body-length-browser/dist-es/calculateBodyLength.js\n");
+
+/***/ })
+
+};
+;

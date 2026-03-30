@@ -1,0 +1,391 @@
+---
+import '@fontsource-variable/fraunces'
+import '@fontsource-variable/space-grotesk'
+import '../styles/global.css'
+import MobileBottomBar from '../components/layout/MobileBottomBar.astro'
+import TrustBadges from '../components/trust/TrustBadges.astro'
+import JsonLd from '../components/seo/JsonLd.astro'
+import { fetchSiteSettings } from '../lib/payload'
+
+interface Props {
+  page: any
+  settings?: any
+}
+
+const { page, settings: propSettings } = Astro.props
+
+let settings = propSettings
+if (!settings) {
+  try {
+    settings = await fetchSiteSettings()
+  } catch {
+    settings = {
+      businessName: 'BaseScape',
+      phone: '(888) 414-0007',
+      licenseNumber: '14082066-5501 B100',
+      insuranceInfo: 'Fully Insured & Bonded — General Liability',
+      riskReversals: [],
+    }
+  }
+}
+
+const phone = settings?.phone || '(888) 414-0007'
+const phoneClean = phone.replace(/[^\d+]/g, '')
+const suppressNav = page.suppressNavigation !== false
+
+const trustBadgeLabels: Record<string, string> = {
+  licensed: 'Licensed',
+  insured: 'Insured',
+  bonded: 'Bonded',
+  'free-estimate': 'Free Estimates',
+  'no-hidden-charges': 'No Hidden Charges',
+  'dust-containment': 'Dust Containment',
+}
+
+const selectedBadges = (page.trustBadges || []).map((b: string) => trustBadgeLabels[b] || b)
+
+const noindex = page.seo?.noindex !== false
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={page.seo?.metaDescription || ''} />
+    <title>{page.seo?.metaTitle || page.headline} | BaseScape</title>
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:title" content={page.seo?.metaTitle || page.headline} />
+    <meta property="og:description" content={page.seo?.metaDescription || ''} />
+    <meta property="og:type" content="website" />
+    {page.heroImage?.url && <meta property="og:image" content={page.heroImage.url} />}
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <slot name="head" />
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Minimal landing page header -->
+    {!suppressNav ? (
+      <slot name="header" />
+    ) : (
+      <header class="lp-header">
+        <div class="lp-header__inner">
+          <a href="/" class="lp-header__logo" aria-label="BaseScape — Home">
+            <span class="lp-header__logo-base">Base</span><span class="lp-header__logo-scape">Scape</span>
+          </a>
+          <a href={`tel:${phoneClean}`} class="lp-header__phone">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            {phone}
+          </a>
+        </div>
+      </header>
+    )}
+
+    <main id="main-content">
+      <!-- Hero -->
+      <section class="lp-hero">
+        <div class="lp-hero__inner">
+          <div class="lp-hero__content">
+            <h1 class="lp-hero__title">{page.headline}</h1>
+            {page.subheadline && (
+              <p class="lp-hero__subtitle">{page.subheadline}</p>
+            )}
+
+            <!-- Trust Badges (inline) -->
+            {selectedBadges.length > 0 && (
+              <div class="lp-badges">
+                {selectedBadges.map((badge: string) => (
+                  <span class="lp-badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    {badge}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {page.heroImage && (
+            <div class="lp-hero__image">
+              <img src={page.heroImage.url} alt={page.heroImage.alt || page.headline} width="600" height="400" />
+            </div>
+          )}
+        </div>
+      </section>
+
+      <!-- Body Content -->
+      <section class="lp-body">
+        <div class="lp-body__inner">
+          <div class="lp-body__content" set:html={
+            typeof page.bodyContent === 'string' ? page.bodyContent : ''
+          } />
+        </div>
+      </section>
+
+      <!-- Offer Terms -->
+      {page.offer?.terms && (
+        <section class="lp-terms">
+          <div class="lp-terms__inner">
+            <p class="lp-terms__text">{page.offer.terms}</p>
+          </div>
+        </section>
+      )}
+
+      <!-- Phone CTA -->
+      <section class="lp-phone-cta">
+        <div class="lp-phone-cta__inner">
+          <p class="lp-phone-cta__text">Prefer to talk? Call us directly:</p>
+          <a href={`tel:${phoneClean}`} class="lp-phone-cta__btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            {phone}
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <MobileBottomBar />
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-navy700);
+    color: white;
+    padding: var(--size-2) var(--size-4);
+    z-index: 100;
+    font-size: 0.875rem;
+  }
+
+  .skip-link:focus {
+    top: 0;
+  }
+
+  .lp-header {
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--size-3) 0;
+  }
+
+  .lp-header__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .lp-header__logo {
+    text-decoration: none;
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .lp-header__logo-base { color: var(--color-navy700); }
+  .lp-header__logo-scape { color: var(--color-green500); }
+
+  .lp-header__phone {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--size-2);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--color-navy600);
+    text-decoration: none;
+    padding: var(--size-2) var(--size-3);
+    min-height: 48px;
+    border-radius: var(--radius-md);
+    transition: background 0.15s ease;
+  }
+
+  .lp-header__phone:hover {
+    background: var(--color-bgAlt);
+  }
+
+  .lp-hero {
+    background: linear-gradient(180deg, var(--color-bgPage) 0%, var(--color-bgAlt) 100%);
+    padding: var(--size-8) 0;
+  }
+
+  .lp-hero__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-6);
+  }
+
+  @media (min-width: 768px) {
+    .lp-hero {
+      padding: var(--size-10) 0;
+    }
+    .lp-hero__inner {
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding-inline: var(--size-6);
+    }
+  }
+
+  .lp-hero__title {
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-variation-settings: "WONK" 1, "SOFT" 50;
+    font-size: clamp(2rem, 4vw + 0.5rem, 3rem);
+    line-height: 1.1;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-3);
+  }
+
+  .lp-hero__subtitle {
+    font-family: var(--font-sans);
+    font-size: clamp(1.0625rem, 0.5vw + 0.875rem, 1.1875rem);
+    line-height: 1.6;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-5);
+  }
+
+  .lp-hero__image img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+  }
+
+  .lp-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--size-2);
+    margin-top: var(--size-4);
+  }
+
+  .lp-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--size-1);
+    padding: var(--size-1) var(--size-3);
+    background: var(--color-navy50);
+    border: 1px solid var(--color-navy200);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-navy600);
+  }
+
+  .lp-badge svg {
+    color: var(--color-green500);
+  }
+
+  .lp-body {
+    padding: var(--size-8) 0;
+  }
+
+  .lp-body__inner {
+    max-width: 800px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+  }
+
+  .lp-body__content {
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-textBody);
+  }
+
+  .lp-body__content :global(h2) {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--color-textPrimary);
+    margin-top: var(--size-7);
+    margin-bottom: var(--size-3);
+  }
+
+  .lp-body__content :global(p) {
+    margin-bottom: var(--size-4);
+  }
+
+  .lp-body__content :global(ul),
+  .lp-body__content :global(ol) {
+    margin-bottom: var(--size-4);
+    padding-left: var(--size-5);
+  }
+
+  .lp-body__content :global(li) {
+    margin-bottom: var(--size-2);
+  }
+
+  .lp-terms {
+    padding: var(--size-4) 0;
+  }
+
+  .lp-terms__inner {
+    max-width: 800px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+  }
+
+  .lp-terms__text {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: var(--color-textMuted);
+    line-height: 1.5;
+    padding: var(--size-3);
+    background: var(--color-bgAlt);
+    border-radius: var(--radius-md);
+  }
+
+  .lp-phone-cta {
+    padding: var(--size-7) 0 var(--size-9);
+  }
+
+  .lp-phone-cta__inner {
+    max-width: 600px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+    text-align: center;
+  }
+
+  .lp-phone-cta__text {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-3);
+  }
+
+  .lp-phone-cta__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--size-2);
+    padding: var(--size-3) var(--size-6);
+    background: var(--color-ctaSecondaryBg);
+    color: var(--color-ctaSecondaryText);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1.125rem;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    min-height: 48px;
+    transition: background 0.15s ease;
+  }
+
+  .lp-phone-cta__btn:hover {
+    background: var(--color-ctaSecondaryHover);
+  }
+</style>

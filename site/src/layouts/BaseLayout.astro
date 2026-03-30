@@ -1,0 +1,123 @@
+---
+import '@fontsource-variable/fraunces'
+import '@fontsource-variable/space-grotesk'
+import '../styles/global.css'
+import Header from '../components/layout/Header.astro'
+import Footer from '../components/layout/Footer.astro'
+import MobileBottomBar from '../components/layout/MobileBottomBar.astro'
+
+interface Props {
+  title: string
+  description?: string
+  ogImage?: string
+  noindex?: boolean
+  canonicalUrl?: string
+  hideEstimate?: boolean
+}
+
+const {
+  title,
+  description = 'BaseScape specializes in walkout basements, basement remodeling, pavers &amp; hardscapes, retaining walls, artificial turf, and egress windows across Utah\'s Wasatch Front.',
+  ogImage,
+  noindex = false,
+  canonicalUrl,
+  hideEstimate = false,
+} = Astro.props
+
+const siteTitle = title === 'Home' ? 'BaseScape | Walkout Entries, Daylight Windows & Egress' : `${title} | BaseScape`
+const plausibleDomain = import.meta.env.PLAUSIBLE_DOMAIN
+const ga4MeasurementId = import.meta.env.GA4_MEASUREMENT_ID
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{siteTitle}</title>
+
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={siteTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Analytics (Plausible with custom events + tagged events via CSS classes) -->
+    {plausibleDomain && (
+      <script
+        defer
+        data-domain={plausibleDomain}
+        src="https://plausible.io/js/script.tagged-events.js"
+      />
+    )}
+
+    <!-- Google Analytics 4 -->
+    {ga4MeasurementId && (
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4MeasurementId}`} />
+    )}
+    {ga4MeasurementId && (
+      <script define:vars={{ ga4MeasurementId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', ga4MeasurementId);
+      </script>
+    )}
+
+    <slot name="head" />
+
+    <!-- Pass Google Places API key to client-side React components -->
+    {import.meta.env.GOOGLE_PLACES_API_KEY && (
+      <script define:vars={{ googlePlacesApiKey: import.meta.env.GOOGLE_PLACES_API_KEY }}>
+        window.__GOOGLE_PLACES_API_KEY = googlePlacesApiKey;
+      </script>
+    )}
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <Header />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer />
+    <MobileBottomBar hideEstimate={hideEstimate} />
+
+    <!-- JS-disabled fallback: phone CTA direction -->
+    <noscript>
+      <style>
+        .noscript-cta {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background: #1B3B5E;
+          padding: 16px;
+          text-align: center;
+          z-index: 9999;
+        }
+        .noscript-cta a {
+          display: inline-block;
+          padding: 12px 32px;
+          background: #946106;
+          color: #fff;
+          font-family: sans-serif;
+          font-weight: 600;
+          font-size: 16px;
+          text-decoration: none;
+          border-radius: 6px;
+          min-height: 48px;
+          line-height: 24px;
+        }
+      </style>
+      <div class="noscript-cta">
+        <a href="tel:+18884140007">Call for a Free Estimate: (888) 414-0007</a>
+      </div>
+    </noscript>
+  </body>
+</html>

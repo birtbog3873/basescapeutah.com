@@ -1,0 +1,14 @@
+{
+  "name": "basescape",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter cms dev & pnpm --filter site dev",
+    "build": "pnpm --filter cms build && pnpm --filter site build",
+    "test": "pnpm --filter site test",
+    "test:e2e": "pnpm --filter site test:e2e",
+    "test:lighthouse": "pnpm --filter site test:lighthouse"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

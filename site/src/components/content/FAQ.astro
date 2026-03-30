@@ -1,0 +1,118 @@
+---
+interface FAQItem {
+  question: string
+  answer: string
+}
+
+interface Props {
+  faqs: FAQItem[]
+  id?: string
+}
+
+const { faqs, id = 'faq-section' } = Astro.props
+---
+<div class="faq" id={id}>
+  {faqs.map((faq, index) => (
+    <details class="faq__item">
+      <summary class="faq__question">
+        <span>{faq.question}</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq__chevron" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </summary>
+      <div class="faq__answer">
+        <div class="faq__answer-content" set:html={faq.answer} />
+      </div>
+    </details>
+  ))}
+</div>
+
+<style>
+  .faq {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .faq__item {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .faq__item:last-child {
+    border-bottom: none;
+  }
+
+  .faq__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--size-3);
+    padding: var(--size-4) var(--size-5);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-navy600);
+    cursor: pointer;
+    list-style: none;
+    transition: background 0.15s ease;
+    min-height: 48px;
+  }
+
+  .faq__question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__question:hover {
+    background: var(--color-bgAlt);
+  }
+
+  .faq__chevron {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+    color: var(--color-textMuted);
+  }
+
+  .faq__item[open] .faq__chevron {
+    transform: rotate(180deg);
+  }
+
+  .faq__answer {
+    padding: 0 var(--size-5) var(--size-5);
+  }
+
+  .faq__answer-content {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--color-textBody);
+  }
+
+  .faq__answer-content :global(p) {
+    margin-bottom: var(--size-3);
+  }
+
+  .faq__answer-content :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .faq__answer-content :global(a) {
+    color: var(--color-link);
+  }
+
+  .faq__answer-content :global(a:hover) {
+    color: var(--color-linkHover);
+  }
+
+  @media (max-width: 767px) {
+    .faq__question {
+      padding: var(--size-3) var(--size-4);
+    }
+
+    .faq__answer {
+      padding: 0 var(--size-4) var(--size-4);
+    }
+  }
+</style>

@@ -1,0 +1,527 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import CTABlock from '../components/content/CTABlock.astro'
+import ProjectCard from '../components/gallery/ProjectCard.astro'
+import BeforeAfter from '../components/gallery/BeforeAfter.astro'
+import { fetchProjects, fetchSiteSettings } from '../lib/payload'
+
+let projects: any[] = []
+let settings: any = {
+  businessName: 'BaseScape',
+  phone: '(888) 414-0007',
+  email: 'hello@basescapeutah.com',
+  address: { street: '123 Innovation Way', city: 'Draper', state: 'UT', zip: '84020' },
+  showGallery: false,
+}
+
+try {
+  const [projectsRes, siteSettings] = await Promise.all([
+    fetchProjects(),
+    fetchSiteSettings(),
+  ])
+  projects = projectsRes.docs || []
+  settings = { ...settings, ...siteSettings }
+} catch {
+  // Use fallback data for static build without CMS
+}
+
+// Hide gallery when toggled off
+const isHidden = !settings.showGallery
+
+const phone = settings.phone
+
+// Separate featured and regular projects (API already sorts by -featured,-createdAt)
+const featuredProjects = projects.filter((p: any) => p.featured)
+const allProjects = projects
+
+// Group projects by service type for filtered sections
+const serviceTypes = [
+  { label: 'Walkout Basements', slug: 'walkout-basements' },
+  { label: 'Egress Windows', slug: 'egress-windows' },
+  { label: 'Retaining Walls', slug: 'retaining-walls' },
+]
+
+const projectsByType = serviceTypes.map((type) => ({
+  ...type,
+  projects: projects.filter(
+    (p: any) => p.projectType?.slug === type.slug
+  ),
+})).filter((group) => group.projects.length > 0)
+---
+{isHidden ? (
+<BaseLayout title="Page Not Found" noindex={true}>
+  <section style="padding: var(--size-10) var(--size-4); text-align: center; max-width: 600px; margin-inline: auto;">
+    <h1 style="font-family: var(--font-serif); font-size: 2rem; margin-bottom: var(--size-4);">Page Not Found</h1>
+    <p style="color: var(--color-textBody); margin-bottom: var(--size-6);">The page you're looking for doesn't exist or has been moved.</p>
+    <a href="/" style="color: var(--color-teal500); text-decoration: underline;">Back to Home</a>
+  </section>
+</BaseLayout>
+) : (
+<BaseLayout
+  title="Gallery"
+  description="Browse BaseScape's portfolio of walkout basements, basement remodeling, retaining walls, and more across Utah's Wasatch Front. See before and after transformations."
+>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__inner">
+      <span class="hero__overline">Portfolio</span>
+      <h1 class="hero__title">Our Work</h1>
+      <p class="hero__subtitle">
+        Every project tells a story of transformation. Browse our completed walkout basements,
+        egress windows, and retaining walls across Utah's Wasatch Front.
+      </p>
+    </div>
+  </section>
+
+  <!-- Filter Navigation -->
+  <nav class="filter-nav" aria-label="Filter projects by service type">
+    <div class="filter-nav__inner">
+      <a href="#all-projects" class="filter-nav__btn filter-nav__btn--active">All</a>
+      {serviceTypes.map((type) => (
+        <a href={`#${type.slug}`} class="filter-nav__btn">{type.label}</a>
+      ))}
+    </div>
+  </nav>
+
+  <!-- Before/After Showcase (featured projects) -->
+  {featuredProjects.length > 0 && (
+    <section class="showcase-section">
+      <div class="showcase-section__inner">
+        <h2 class="section-heading">Featured Transformations</h2>
+        <p class="section-lead">
+          See the dramatic before and after results from our featured projects.
+        </p>
+        <div class="showcase-grid">
+          {featuredProjects.map((project: any) => {
+            const beforeImg = project.beforeImages?.[0]
+            const afterImg = project.afterImages?.[0]
+            if (!beforeImg || !afterImg) return null
+            return (
+              <div class="showcase-item" id={project.slug}>
+                <h3 class="showcase-item__title">{project.title}</h3>
+                <div class="showcase-item__meta">
+                  {project.projectType?.title && (
+                    <span class="showcase-item__type">{project.projectType.title}</span>
+                  )}
+                  {project.city?.cityName && (
+                    <span class="showcase-item__city">{project.city.cityName}</span>
+                  )}
+                </div>
+                <BeforeAfter
+                  beforeImage={{
+                    url: beforeImg.image?.url || beforeImg.image,
+                    alt: `${project.title} — before`,
+                    caption: beforeImg.caption,
+                  }}
+                  afterImage={{
+                    url: afterImg.image?.url || afterImg.image,
+                    alt: `${project.title} — after`,
+                    caption: afterImg.caption,
+                  }}
+                />
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- All Projects Grid -->
+  <section class="projects-section" id="all-projects">
+    <div class="projects-section__inner">
+      <h2 class="section-heading">All Projects</h2>
+      <p class="section-lead">
+        Browse our complete portfolio of basement transformations.
+      </p>
+      {allProjects.length > 0 ? (
+        <div class="projects-grid">
+          {allProjects.map((project: any) => (
+            <ProjectCard
+              title={project.title}
+              slug={project.slug}
+              projectType={project.projectType?.title}
+              city={project.city?.cityName}
+              thumbnail={project.afterImages?.[0]?.image
+                ? {
+                    url: project.afterImages[0].image.url || project.afterImages[0].image,
+                    alt: `${project.title} completed`,
+                  }
+                : undefined
+              }
+              challenge={typeof project.challenge === 'string'
+                ? project.challenge
+                : project.challenge?.root?.children?.[0]?.children?.[0]?.text
+              }
+            />
+          ))}
+        </div>
+      ) : (
+        <div class="projects-empty">
+          <div class="projects-empty__icon" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+          </div>
+          <p class="projects-empty__text">Projects coming soon. Check back for our latest work.</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Projects by Service Type -->
+  {projectsByType.map((group) => (
+    <section class="type-section" id={group.slug}>
+      <div class="type-section__inner">
+        <h2 class="section-heading">{group.label}</h2>
+        <div class="projects-grid">
+          {group.projects.map((project: any) => (
+            <ProjectCard
+              title={project.title}
+              slug={project.slug}
+              projectType={project.projectType?.title}
+              city={project.city?.cityName}
+              thumbnail={project.afterImages?.[0]?.image
+                ? {
+                    url: project.afterImages[0].image.url || project.afterImages[0].image,
+                    alt: `${project.title} completed`,
+                  }
+                : undefined
+              }
+              challenge={typeof project.challenge === 'string'
+                ? project.challenge
+                : project.challenge?.root?.children?.[0]?.children?.[0]?.text
+              }
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- Final CTA -->
+  <section class="final-cta-section">
+    <div class="final-cta-section__inner">
+      <CTABlock
+        headline="Ready to Start Your Transformation?"
+        phone={phone}
+        variant="section"
+      />
+    </div>
+  </section>
+</BaseLayout>
+)}
+
+<style>
+  /* Hero */
+  .hero {
+    background: linear-gradient(180deg, var(--color-bgPage) 0%, var(--color-bgAlt) 100%);
+    padding: var(--size-8) 0 var(--size-6);
+  }
+
+  @media (min-width: 768px) {
+    .hero {
+      padding: var(--size-10) 0 var(--size-8);
+    }
+  }
+
+  .hero__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    .hero__inner {
+      padding-inline: var(--size-6);
+    }
+  }
+
+  .hero__overline {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-teal500);
+    margin-bottom: var(--size-2);
+  }
+
+  .hero__title {
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-variation-settings: "WONK" 1, "SOFT" 50;
+    font-size: clamp(2.5rem, 5vw + 1rem, 4rem);
+    line-height: 1.1;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-4);
+  }
+
+  .hero__subtitle {
+    font-family: var(--font-sans);
+    font-size: clamp(1.0625rem, 0.5vw + 0.875rem, 1.25rem);
+    line-height: 1.6;
+    color: var(--color-textBody);
+    max-width: 640px;
+    margin-inline: auto;
+  }
+
+  /* Filter Navigation */
+  .filter-nav {
+    background: var(--color-bgAlt);
+    border-bottom: 1px solid var(--color-borderLight, rgba(0, 0, 0, 0.08));
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .filter-nav__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding: var(--size-3) var(--size-4);
+    display: flex;
+    gap: var(--size-2);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .filter-nav__inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .filter-nav__inner {
+      padding-inline: var(--size-6);
+      justify-content: center;
+      gap: var(--size-3);
+    }
+  }
+
+  .filter-nav__btn {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    padding: var(--size-2) var(--size-4);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.875rem;
+    text-decoration: none;
+    border-radius: var(--radius-full, 9999px);
+    color: var(--color-textBody);
+    background: var(--color-bgSurface);
+    border: 1px solid var(--color-borderLight, rgba(0, 0, 0, 0.08));
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .filter-nav__btn:hover {
+    background: var(--color-navy50);
+    color: var(--color-textPrimary);
+  }
+
+  .filter-nav__btn--active {
+    background: var(--color-navy700);
+    color: white;
+    border-color: var(--color-navy700);
+  }
+
+  /* Showcase Section (Before/After) */
+  .showcase-section {
+    padding: var(--size-8) 0;
+    background: var(--color-bgPage);
+  }
+
+  @media (min-width: 768px) {
+    .showcase-section {
+      padding: var(--size-10) 0;
+    }
+  }
+
+  .showcase-section__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .showcase-section__inner {
+      padding-inline: var(--size-6);
+    }
+  }
+
+  .showcase-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-8);
+  }
+
+  .showcase-item {
+    scroll-margin-top: var(--size-8);
+  }
+
+  .showcase-item__title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-variation-settings: "WONK" 0, "SOFT" 100;
+    font-size: clamp(1.25rem, 1.5vw + 0.5rem, 1.5rem);
+    line-height: 1.2;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-1);
+  }
+
+  .showcase-item__meta {
+    display: flex;
+    gap: var(--size-2);
+    font-size: 0.75rem;
+    font-family: var(--font-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: var(--size-4);
+  }
+
+  .showcase-item__type {
+    color: var(--color-green600);
+    font-weight: 500;
+  }
+
+  .showcase-item__city {
+    color: var(--color-textMuted);
+  }
+
+  /* Projects Section (All) */
+  .projects-section {
+    padding: var(--size-8) 0;
+    background: var(--color-bgAlt);
+    scroll-margin-top: var(--size-8);
+  }
+
+  @media (min-width: 768px) {
+    .projects-section {
+      padding: var(--size-10) 0;
+    }
+  }
+
+  .projects-section__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .projects-section__inner {
+      padding-inline: var(--size-6);
+    }
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-5);
+  }
+
+  @media (min-width: 640px) {
+    .projects-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .projects-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* Empty State */
+  .projects-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--size-4);
+    padding: var(--size-10) var(--size-4);
+    text-align: center;
+  }
+
+  .projects-empty__icon {
+    color: var(--color-navy300);
+    opacity: 0.5;
+  }
+
+  .projects-empty__text {
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    color: var(--color-textMuted);
+    max-width: 400px;
+  }
+
+  /* Type Sections */
+  .type-section {
+    padding: var(--size-8) 0;
+    scroll-margin-top: var(--size-8);
+  }
+
+  .type-section:nth-child(odd) {
+    background: var(--color-bgPage);
+  }
+
+  .type-section:nth-child(even) {
+    background: var(--color-bgAlt);
+  }
+
+  @media (min-width: 768px) {
+    .type-section {
+      padding: var(--size-10) 0;
+    }
+  }
+
+  .type-section__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .type-section__inner {
+      padding-inline: var(--size-6);
+    }
+  }
+
+  /* Shared Section Styles */
+  .section-heading {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-variation-settings: "WONK" 0, "SOFT" 100;
+    font-size: clamp(1.625rem, 2vw + 0.5rem, 2.25rem);
+    line-height: 1.2;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-2);
+  }
+
+  .section-lead {
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 0.5vw + 0.75rem, 1.125rem);
+    color: var(--color-textBody);
+    margin-bottom: var(--size-6);
+    max-width: 600px;
+  }
+
+  /* Final CTA */
+  .final-cta-section {
+    padding: var(--size-8) 0 var(--size-10);
+  }
+
+  .final-cta-section__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .final-cta-section__inner {
+      padding-inline: var(--size-6);
+    }
+  }
+</style>

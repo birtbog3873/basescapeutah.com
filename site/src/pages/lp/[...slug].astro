@@ -1,0 +1,29 @@
+---
+import LandingLayout from '../../layouts/LandingLayout.astro'
+import { fetchLandingPages, fetchSiteSettings } from '../../lib/payload'
+
+export async function getStaticPaths() {
+  let pages: any[] = []
+  try {
+    const res = await fetchLandingPages()
+    pages = res.docs || []
+  } catch {
+    pages = []
+  }
+
+  return pages.map((page: any) => ({
+    params: { slug: page.campaignSlug },
+    props: { page },
+  }))
+}
+
+const { page } = Astro.props
+
+let settings: any
+try {
+  settings = await fetchSiteSettings()
+} catch {
+  settings = undefined
+}
+---
+<LandingLayout page={page} settings={settings} />

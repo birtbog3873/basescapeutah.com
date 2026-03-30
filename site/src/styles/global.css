@@ -1,0 +1,223 @@
+/* Open Props imports */
+@import 'open-props/open-props.min.css';
+
+/* BaseScape Design Tokens */
+:root {
+  /* Navy (Authority) */
+  --color-navy50: #F0F4F8;
+  --color-navy100: #D9E2EC;
+  --color-navy200: #BCCCDC;
+  --color-navy300: #9FB3C8;
+  --color-navy400: #627D98;
+  --color-navy500: #3E6B89;
+  --color-navy600: #1B3B5E;
+  --color-navy700: #152E4A;
+  --color-navy800: #102437;
+  --color-navy900: #0A1A28;
+  --color-navy950: #060F18;
+
+  /* Green (Transformation) */
+  --color-green50: #F2F9EE;
+  --color-green100: #E1F0D5;
+  --color-green200: #C3E1AB;
+  --color-green300: #9ECD79;
+  --color-green400: #7DB94E;
+  --color-green500: #5EA03C;
+  --color-green600: #4A8030;
+  --color-green700: #3A6426;
+  --color-green800: #2E4F1F;
+  --color-green900: #243D18;
+
+  /* Amber (Conversion) */
+  --color-amber50: #FFF8EB;
+  --color-amber100: #FEECC0;
+  --color-amber200: #FDD889;
+  --color-amber300: #FCBF49;
+  --color-amber400: #F5A623;
+  --color-amber500: #E8920A;
+  --color-amber600: #C27708;
+  --color-amber700: #9A5D06;
+
+  /* Teal (Bridge) */
+  --color-teal50: #EEF8F7;
+  --color-teal100: #D0EDEA;
+  --color-teal200: #9DD5D0;
+  --color-teal300: #5FB8B2;
+  --color-teal400: #3A9E97;
+  --color-teal500: #2A7B78;
+  --color-teal600: #216260;
+  --color-teal700: #194A48;
+
+  /* Slate (Neutral) */
+  --color-slate50: #F8FAFB;
+  --color-slate100: #F1F4F8;
+  --color-slate200: #E3E8EF;
+  --color-slate300: #CDD5DF;
+  --color-slate400: #9AA5B4;
+  --color-slate500: #697686;
+  --color-slate600: #4B5563;
+  --color-slate700: #364152;
+  --color-slate800: #1E293B;
+  --color-slate900: #0F172A;
+
+  /* Semantic Colors */
+  --color-textPrimary: #1B3B5E;
+  --color-textBody: #3E6B89;
+  --color-textMuted: #697686;
+  --color-bgPage: #F8FAFB;
+  --color-bgSurface: #FFFFFF;
+  --color-bgAlt: #F0F4F8;
+  --color-border: #E3E8EF;
+  --color-link: #2A7B78;
+  --color-linkHover: #216260;
+  --color-ctaPrimaryBg: #946106;
+  --color-ctaPrimaryText: #FFFFFF;
+  --color-ctaPrimaryHover: #9A5D06;
+  --color-ctaPrimaryActive: #C27708;
+  --color-ctaSecondaryBg: #1B3B5E;
+  --color-ctaSecondaryText: #FFFFFF;
+  --color-ctaSecondaryHover: #3E6B89;
+  --color-success: #5EA03C;
+  --color-error: #DC2626;
+  --color-errorBg: #FEF2F2;
+  --color-warning: #E8920A;
+  --color-info: #2A7B78;
+  --color-white: #FFFFFF;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(10, 26, 40, 0.05);
+  --shadow-md: 0 4px 6px rgba(10, 26, 40, 0.07), 0 1px 3px rgba(10, 26, 40, 0.05);
+  --shadow-lg: 0 10px 15px rgba(10, 26, 40, 0.08), 0 4px 6px rgba(10, 26, 40, 0.04);
+  --shadow-focus: 0 0 0 3px rgba(42, 123, 120, 0.4);
+
+  /* Fonts */
+  --font-serif: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Space Grotesk Variable', system-ui, -apple-system, sans-serif;
+}
+
+/* CSS Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100dvh;
+  font-family: 'Space Grotesk Variable', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-textBody);
+  background-color: var(--color-bgPage);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Hide broken images gracefully (no broken image icon) */
+img:not([src]),
+img[src=""] {
+  visibility: hidden;
+  height: 0;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+
+p {
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--color-link);
+  text-decoration-skip-ink: auto;
+}
+
+a:hover {
+  color: var(--color-linkHover);
+}
+
+/* Focus styles */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(42, 123, 120, 0.4);
+  border-radius: 4px;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Skip to content link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-ctaPrimaryBg);
+  color: white;
+  padding: 8px 16px;
+  z-index: 100;
+  transition: top 0.2s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Visually hidden (for screen readers) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

@@ -1,0 +1,414 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import CTABlock from '../components/content/CTABlock.astro'
+import { fetchSiteSettings } from '../lib/payload'
+
+let settings: any = { phone: '(888) 414-0007', businessName: 'BaseScape', email: 'hello@basescapeutah.com' }
+try { settings = { ...settings, ...(await fetchSiteSettings()) } } catch {}
+const phone = settings.phone
+const businessName = settings.businessName
+const email = settings.email
+---
+
+<BaseLayout
+  title="Privacy Policy"
+  description={`Privacy policy for ${businessName}. Learn how we collect, use, and protect your personal information.`}
+>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__inner">
+      <span class="hero__overline">Your Privacy Matters</span>
+      <h1 class="hero__title">Privacy Policy</h1>
+      <p class="hero__subtitle">
+        We respect your privacy and are committed to protecting the personal information you
+        share with us. This policy explains what we collect, how we use it, and the choices
+        you have.
+      </p>
+    </div>
+  </section>
+
+  <!-- Policy Content -->
+  <section class="section">
+    <div class="section__inner section__inner--narrow">
+
+      <div class="policy-block">
+        <h2 class="policy-heading">Information We Collect</h2>
+        <p class="policy-text">
+          We collect information you voluntarily provide when you interact with our website
+          and services:
+        </p>
+        <ul class="policy-list">
+          <li>
+            <strong>Contact Forms:</strong> Name, email address, phone number, property address,
+            and project details you submit through our estimate request or contact forms.
+          </li>
+          <li>
+            <strong>Analytics Data:</strong> Anonymous usage data including pages visited, time
+            on site, referring source, and general geographic region. We use privacy-first
+            analytics that do not track individuals (see Analytics section below).
+          </li>
+          <li>
+            <strong>Cookies:</strong> We use only essential cookies required for the website to
+            function properly. We do not use advertising or tracking cookies.
+          </li>
+        </ul>
+      </div>
+
+      <div class="policy-block">
+        <h2 class="policy-heading">How We Use Your Information</h2>
+        <p class="policy-text">
+          The information we collect is used solely to provide and improve our services:
+        </p>
+        <ul class="policy-list">
+          <li>Responding to your estimate requests and inquiries</li>
+          <li>Scheduling consultations and managing project communication</li>
+          <li>Sending project updates and follow-up correspondence you have requested</li>
+          <li>Improving our website content and user experience based on aggregate analytics</li>
+          <li>Complying with legal obligations and protecting our legal rights</li>
+        </ul>
+      </div>
+
+      <div class="policy-block">
+        <h2 class="policy-heading">Information Sharing</h2>
+        <p class="policy-text">
+          <strong>We do not sell, rent, or trade your personal information to third parties.</strong>
+        </p>
+        <p class="policy-text">
+          We may share your information only in the following limited circumstances:
+        </p>
+        <ul class="policy-list">
+          <li>
+            <strong>Service Providers:</strong> With trusted partners who assist in operating our
+            website and business (e.g., hosting providers, email services), bound by
+            confidentiality agreements.
+          </li>
+          <li>
+            <strong>Legal Requirements:</strong> When required by law, subpoena, or legal process,
+            or to protect the rights, property, or safety of {businessName}, our customers,
+            or others.
+          </li>
+          <li>
+            <strong>Subcontractors:</strong> Project-related information may be shared with
+            licensed subcontractors directly involved in your project, solely for the purpose
+            of completing the work.
+          </li>
+        </ul>
+      </div>
+
+      <div class="policy-block">
+        <h2 class="policy-heading">Data Security</h2>
+        <p class="policy-text">
+          We implement reasonable technical and organizational measures to protect your
+          personal information:
+        </p>
+        <ul class="policy-list">
+          <li>
+            <strong>HTTPS Encryption:</strong> All data transmitted between your browser and
+            our website is encrypted using TLS/SSL.
+          </li>
+          <li>
+            <strong>Encrypted Storage:</strong> Personal information is stored in encrypted
+            databases with access limited to authorized personnel.
+          </li>
+          <li>
+            <strong>Access Controls:</strong> Only team members who need your information to
+            perform their job responsibilities have access to it.
+          </li>
+        </ul>
+        <p class="policy-text">
+          While no method of transmission or storage is 100% secure, we strive to use
+          commercially acceptable means to protect your personal information.
+        </p>
+      </div>
+
+      <div class="policy-block">
+        <h2 class="policy-heading">Analytics</h2>
+        <p class="policy-text">
+          We use <strong>Plausible Analytics</strong>, a privacy-first, cookie-free analytics
+          platform. Plausible:
+        </p>
+        <ul class="policy-list">
+          <li>Does not use cookies or track individuals across websites</li>
+          <li>Does not collect personal information</li>
+          <li>Is fully compliant with GDPR, CCPA, and PECR without requiring consent banners</li>
+          <li>Provides only aggregate data (e.g., total page views, top referral sources)</li>
+        </ul>
+        <p class="policy-text">
+          This means you will never see a cookie consent banner on our website because we
+          simply do not use tracking cookies.
+        </p>
+      </div>
+
+      <div class="policy-block">
+        <h2 class="policy-heading">Your Rights</h2>
+        <p class="policy-text">
+          You have the following rights regarding your personal information:
+        </p>
+        <ul class="policy-list">
+          <li>
+            <strong>Access:</strong> Request a copy of the personal information we hold about you.
+          </li>
+          <li>
+            <strong>Correction:</strong> Request that we update or correct inaccurate information.
+          </li>
+          <li>
+            <strong>Deletion:</strong> Request that we delete your personal information. We will
+            comply unless we are legally required to retain it.
+          </li>
+          <li>
+            <strong>Opt-Out:</strong> Unsubscribe from any marketing communications at any time
+            by clicking the unsubscribe link in our emails or contacting us directly.
+          </li>
+        </ul>
+        <p class="policy-text">
+          To exercise any of these rights, contact us using the information below. We will
+          respond to your request within 30 days.
+        </p>
+      </div>
+
+      <div class="policy-block">
+        <h2 class="policy-heading">Third-Party Links</h2>
+        <p class="policy-text">
+          Our website may contain links to third-party websites. We are not responsible for the
+          privacy practices or content of those sites. We encourage you to review the privacy
+          policy of any website you visit.
+        </p>
+      </div>
+
+      <div class="policy-block">
+        <h2 class="policy-heading">Changes to This Policy</h2>
+        <p class="policy-text">
+          We may update this privacy policy from time to time. Changes will be posted on this
+          page with an updated revision date. We encourage you to review this policy periodically.
+        </p>
+      </div>
+
+      <div class="policy-block">
+        <h2 class="policy-heading">Contact Information</h2>
+        <p class="policy-text">
+          If you have questions about this privacy policy or wish to exercise your data rights,
+          please contact us:
+        </p>
+        <div class="contact-info">
+          <p class="contact-info__item">
+            <strong>{businessName}</strong>
+          </p>
+          <p class="contact-info__item">
+            Email: <a href={`mailto:${email}`}>{email}</a>
+          </p>
+          <p class="contact-info__item">
+            Phone: <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}>{phone}</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="policy-meta">
+        <p class="policy-meta__text">Last updated: March 23, 2026</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section section--alt">
+    <div class="section__inner">
+      <CTABlock
+        headline="Have Questions? Get in Touch."
+        phone={phone}
+        variant="section"
+      />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Hero */
+  .hero {
+    background: linear-gradient(180deg, var(--color-bgPage) 0%, var(--color-bgAlt) 100%);
+  }
+
+  .hero__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding: var(--size-8) var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .hero__inner {
+      padding: var(--size-10) var(--size-6);
+      max-width: 800px;
+    }
+  }
+
+  .hero__overline {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-teal500);
+    margin-bottom: var(--size-2);
+  }
+
+  .hero__title {
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-variation-settings: "WONK" 1, "SOFT" 50;
+    font-size: clamp(2.5rem, 5vw + 1rem, 4rem);
+    line-height: 1.1;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-4);
+  }
+
+  .hero__subtitle {
+    font-family: var(--font-sans);
+    font-size: clamp(1.0625rem, 0.5vw + 0.875rem, 1.25rem);
+    line-height: 1.6;
+    color: var(--color-textBody);
+    max-width: 600px;
+  }
+
+  /* Sections */
+  .section {
+    padding: var(--size-8) 0;
+  }
+
+  @media (min-width: 768px) {
+    .section {
+      padding: var(--size-10) 0;
+    }
+  }
+
+  .section--alt {
+    background: var(--color-bgAlt);
+  }
+
+  .section__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .section__inner {
+      padding-inline: var(--size-6);
+    }
+  }
+
+  .section__inner--narrow {
+    max-width: 800px;
+  }
+
+  /* Policy Blocks */
+  .policy-block {
+    margin-bottom: var(--size-7);
+  }
+
+  .policy-block:last-of-type {
+    margin-bottom: var(--size-5);
+  }
+
+  .policy-heading {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-variation-settings: "WONK" 0, "SOFT" 100;
+    font-size: clamp(1.25rem, 1.5vw + 0.5rem, 1.5rem);
+    line-height: 1.3;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-3);
+    padding-bottom: var(--size-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .policy-text {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-3);
+  }
+
+  .policy-text:last-child {
+    margin-bottom: 0;
+  }
+
+  .policy-text strong {
+    color: var(--color-textPrimary);
+    font-weight: 600;
+  }
+
+  .policy-list {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--color-textBody);
+    padding-left: var(--size-5);
+    margin-bottom: var(--size-3);
+  }
+
+  .policy-list li {
+    margin-bottom: var(--size-2);
+  }
+
+  .policy-list li:last-child {
+    margin-bottom: 0;
+  }
+
+  .policy-list strong {
+    color: var(--color-textPrimary);
+    font-weight: 600;
+  }
+
+  /* Contact Info */
+  .contact-info {
+    margin-top: var(--size-3);
+    padding: var(--size-4);
+    background: var(--color-bgAlt);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+  }
+
+  .contact-info__item {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-1);
+  }
+
+  .contact-info__item:last-child {
+    margin-bottom: 0;
+  }
+
+  .contact-info__item strong {
+    color: var(--color-textPrimary);
+    font-weight: 600;
+  }
+
+  .contact-info__item a {
+    color: var(--color-green600);
+    text-decoration: underline;
+    text-decoration-color: var(--color-green200);
+    text-underline-offset: 2px;
+  }
+
+  .contact-info__item a:hover {
+    color: var(--color-green500);
+    text-decoration-color: var(--color-green500);
+  }
+
+  /* Policy Meta */
+  .policy-meta {
+    margin-top: var(--size-6);
+    padding-top: var(--size-4);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .policy-meta__text {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    color: var(--color-textMuted);
+    font-style: italic;
+  }
+</style>

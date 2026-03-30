@@ -1,0 +1,63 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro'
+import { fetchServices, fetchSiteSettings, resolveServiceImage } from '../../lib/payload'
+
+let service: any = null
+let settings: any = null
+
+try {
+  const [servicesRes, siteSettings] = await Promise.all([
+    fetchServices(),
+    fetchSiteSettings(),
+  ])
+  service = servicesRes.docs?.find((s: any) => s.slug === 'basement-remodeling')
+  if (service) service.heroImage = resolveServiceImage(service.slug, 'hero', service.heroImage)
+  settings = siteSettings
+} catch {
+  // Fallback for build without CMS
+}
+
+// Fallback service data if CMS unavailable
+if (!service) {
+  service = {
+    title: 'Basement Remodeling',
+    slug: 'basement-remodeling',
+    tagline: 'Full basement transformations that convert dark, underutilized space into premium living areas — unlocking your home\'s hidden potential.',
+    primaryValuePillar: 'transformation',
+    heroImage: { url: '/images/services/hero-basement-remodeling.webp', alt: 'Spacious transformed basement kitchen with island, pendant lighting, and exterior door opening to a paver patio walkout' },
+    supportingPillars: ['financial', 'safety'],
+    overview: '<p>A basement transformation goes beyond cosmetic updates. BaseScape specializes in converting raw or outdated below-grade space into fully finished, code-compliant living areas — from rental-ready ADU apartments to home theaters, gyms, and family rooms that feel like an extension of your main floor.</p><p>Unlike general remodeling contractors, BaseScape brings deep expertise in the unique challenges of below-grade construction: moisture management, structural assessment, egress compliance, and the engineering required to make basements safe, dry, and comfortable year-round.</p><h3>Basement-Specific Challenges We Solve</h3><p>Every basement has conditions that surface-level renovations miss. Cold concrete floors need insulation systems. Low ceilings need creative solutions. Moisture intrusion needs engineered prevention — not paint-over fixes. Electrical and plumbing runs through foundation walls require specialized techniques. BaseScape addresses all of these at the structural level, so your finished basement performs like the rest of your home.</p>',
+    process: [
+      { stepTitle: 'Consultation & Assessment', stepDescription: '<p>We evaluate your basement\'s current condition — foundation integrity, moisture levels, ceiling height, mechanical systems, and egress status. You\'ll get a clear picture of what\'s possible and what\'s required for code compliance.</p>' },
+      { stepTitle: 'Design & Planning', stepDescription: '<p>Collaborate on layout, finishes, and features. We produce detailed plans including structural modifications, electrical/plumbing routing, insulation systems, and permit-ready drawings. Every design accounts for moisture management and ventilation.</p>' },
+      { stepTitle: 'Construction & Build-Out', stepDescription: '<p>Framing, insulation, waterproofing, electrical, plumbing, drywall, flooring, and finish work — executed by crews who specialize in below-grade construction. Our dust containment system keeps your upstairs livable throughout the build.</p>' },
+      { stepTitle: 'Inspection & Handoff', stepDescription: '<p>Final inspections, code sign-offs, and a detailed walkthrough. We verify every system — HVAC, electrical, plumbing, egress — meets or exceeds code before handing you the keys to your new space.</p>' },
+    ],
+    anxietyStack: {
+      costAffordability: '<p>Basement remodeling projects typically range from $30K-$80K depending on scope, finishes, and whether structural work is needed. We provide detailed, line-item estimates so you know exactly where every dollar goes. Financing options include home equity loans and construction loans with interest-only periods.</p>',
+      timeline: '<p>Most basement transformations complete in 6-12 weeks depending on scope. We provide a detailed project timeline at the design phase and keep you updated with weekly progress reports throughout construction.</p>',
+      dustDisruption: '<p>Our sealed dust containment system uses negative air pressure barriers between your basement and living space. Most families stay comfortably in their homes throughout the build. We schedule noisy work during business hours and clean up daily.</p>',
+      drainageMoisture: '<p>Moisture is the #1 enemy of basement finishes. Every BaseScape basement transformation starts with a moisture assessment. We install vapor barriers, drainage systems, and waterproof membranes as needed — addressing the root cause before any finish work begins. No band-aid solutions.</p>',
+      structuralSafety: '<p>Before any finish work, we assess your foundation for cracks, settling, and load-bearing capacity. Any structural concerns are addressed first with engineered solutions. Your basement is structurally sound before we hang the first piece of drywall.</p>',
+      codeCompliance: '<p>Finished basements must meet IRC requirements for egress, ceiling height, ventilation, smoke/CO detection, and electrical. If you\'re adding a bedroom, an egress window is required by code. BaseScape handles all permits, inspections, and code compliance — nothing gets skipped.</p>',
+      aesthetics: '<p>Modern basement finishes — LVP flooring, recessed lighting, spray-foam insulation, and proper HVAC zoning — make basement living spaces feel warm, bright, and connected to the rest of your home. We design to maximize natural light from existing windows and egress openings.</p>',
+    },
+    differentiator: '<p><strong>Below-Grade Specialists</strong> — BaseScape doesn\'t treat basement remodeling as just another room to finish. Our crews are trained specifically in below-grade construction challenges: moisture engineering, foundation assessment, and code-compliant egress. While general contractors apply surface-level solutions, we address the structural and environmental realities that make basements fundamentally different from above-grade spaces. The result: a finished basement that stays dry, warm, and code-compliant for decades.</p>',
+    faqs: [
+      { question: 'How much does a basement remodel cost?', answer: 'Basement remodeling projects typically range from $30K-$80K depending on scope, finishes, and structural work needed. A basic finish (framing, drywall, flooring, lighting) starts around $30K, while full transformations with bathrooms, kitchens, and high-end finishes can reach $80K+. We provide free, detailed estimates.' },
+      { question: 'How long does a basement remodel take?', answer: 'Most basement transformations complete in 6-12 weeks. Simple finish-outs (framing, drywall, flooring) may take 6-8 weeks. Complex projects with bathrooms, structural work, or ADU conversions typically take 10-12 weeks. We provide a detailed timeline at the design phase.' },
+      { question: 'Do I need a permit for a basement remodel?', answer: 'Yes. Any basement finish that includes framing, electrical, plumbing, or structural changes requires building permits and inspections. Adding a bedroom requires an egress window. BaseScape handles the entire permitting process.' },
+      { question: 'Can I turn my basement into a rental unit?', answer: 'Yes — with proper ADU compliance. Utah\'s HB 398 and SB 174 allow accessory dwelling units in most Wasatch Front cities. Requirements include separate egress, fire separation, and (if adding a kitchen with a stove) utility metering. BaseScape handles the code requirements.' },
+      { question: 'How do you handle moisture in basements?', answer: 'Every project starts with a moisture assessment. We install vapor barriers, interior drainage systems, and waterproof membranes as needed before any finish work. We address root causes — not symptoms — so your finished space stays dry permanently.' },
+      { question: 'Does a finished basement increase home value?', answer: 'Yes. A professionally finished basement typically returns 70-80% of investment at resale and can add significant square footage to your home\'s livable area. ADU-ready basements with rental potential can return even more through ongoing income.' },
+    ],
+    projects: [],
+    reviews: [],
+    seo: {
+      metaTitle: 'Basement Remodeling & Transformation | Utah Wasatch Front | BaseScape',
+      metaDescription: 'Transform your basement into premium living space. Below-grade specialists handling moisture, structural, and code compliance. Free estimates across Utah\'s Wasatch Front.',
+    },
+  }
+}
+---
+<ServiceLayout service={service} settings={settings} />

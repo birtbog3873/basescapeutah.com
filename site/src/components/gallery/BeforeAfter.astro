@@ -1,0 +1,104 @@
+---
+interface Props {
+  beforeImage: { url: string; alt: string; caption?: string }
+  afterImage: { url: string; alt: string; caption?: string }
+}
+
+const { beforeImage, afterImage } = Astro.props
+---
+<div class="before-after">
+  <div class="before-after__panel">
+    <span class="before-after__label before-after__label--before">Before</span>
+    <img
+      src={beforeImage.url}
+      alt={beforeImage.alt}
+      loading="lazy"
+      width="600"
+      height="400"
+    />
+    {beforeImage.caption && (
+      <p class="before-after__caption">{beforeImage.caption}</p>
+    )}
+  </div>
+  <div class="before-after__panel">
+    <span class="before-after__label before-after__label--after">After</span>
+    <img
+      src={afterImage.url}
+      alt={afterImage.alt}
+      loading="lazy"
+      width="600"
+      height="400"
+    />
+    {afterImage.caption && (
+      <p class="before-after__caption">{afterImage.caption}</p>
+    )}
+  </div>
+</div>
+
+<style>
+  .before-after {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-3);
+  }
+
+  @media (min-width: 640px) {
+    .before-after {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--size-4);
+    }
+  }
+
+  .before-after__panel {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+  }
+
+  @media (max-width: 639px) {
+    .before-after__panel {
+      border-radius: 0;
+      margin-inline: calc(-1 * var(--size-4));
+    }
+  }
+
+  .before-after__panel img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    display: block;
+  }
+
+  .before-after__label {
+    position: absolute;
+    top: var(--size-3);
+    left: var(--size-3);
+    padding: var(--size-1) var(--size-3);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    z-index: 1;
+  }
+
+  .before-after__label--before {
+    background: var(--color-navy700);
+    color: white;
+  }
+
+  .before-after__label--after {
+    background: var(--color-green600);
+    color: white;
+  }
+
+  .before-after__caption {
+    padding: var(--size-2) var(--size-3);
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    color: var(--color-textMuted);
+    background: var(--color-bgSurface);
+  }
+</style>

@@ -1,0 +1,809 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import CTABlock from '../components/content/CTABlock.astro'
+import TrustBadges from '../components/trust/TrustBadges.astro'
+import JsonLd from '../components/seo/JsonLd.astro'
+import { fetchSiteSettings } from '../lib/payload'
+
+let settings: any = {
+  businessName: 'BaseScape',
+  phone: '(888) 414-0007',
+  email: 'hello@basescapeutah.com',
+  address: { street: '123 Innovation Way', city: 'Draper', state: 'UT', zip: '84020' },
+  licenseNumber: '14082066-5501 B100',
+  insuranceInfo: 'Fully Insured & Bonded — General Liability',
+  riskReversals: [
+    { statement: 'Free Written Estimates' },
+    { statement: 'No Hidden Charges' },
+    { statement: 'Dust Containment System' },
+  ],
+}
+
+try {
+  settings = { ...settings, ...(await fetchSiteSettings()) }
+} catch {
+  // Use fallback data for static build without CMS
+}
+
+const phone = settings.phone
+
+const webPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Financing Your Basement Transformation | BaseScape',
+  description:
+    'Explore rental income projections, utility rebates, tax credits, and construction financing options for your basement walkout or egress project on Utah\'s Wasatch Front.',
+  url: 'https://basescapeutah.com/financing',
+  publisher: {
+    '@type': 'Organization',
+    name: 'BaseScape',
+    url: 'https://basescapeutah.com',
+  },
+}
+
+const disclaimerText =
+  'These figures are estimates based on market research and may vary significantly based on property condition, location, market conditions, and other factors. They do not constitute financial advice. Consult a financial advisor and local real estate professional for projections specific to your situation.'
+---
+
+<BaseLayout
+  title="Financing"
+  description="Explore rental income projections, utility rebates, tax credits, and construction financing options for your basement walkout or egress project on Utah's Wasatch Front."
+>
+  <JsonLd slot="head" schema={webPageSchema} />
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__inner">
+      <span class="hero__overline">Make Your Basement Pay for Itself</span>
+      <h1 class="hero__title">
+        Your Basement Is a
+        <span class="hero__highlight">Financial Asset</span>
+      </h1>
+      <p class="hero__subtitle">
+        A walkout basement or egress upgrade isn't just a renovation — it's an investment that can
+        generate rental income, qualify for tax credits, and add tens of thousands in property value.
+        Explore financing paths that make your project pencil out from day one.
+      </p>
+      <CTABlock variant="hero" phone={phone} />
+    </div>
+  </section>
+
+  <!-- Trust Badges -->
+  <section class="trust-section">
+    <div class="trust-section__inner">
+      <TrustBadges
+        licenseNumber={settings.licenseNumber}
+        insuranceInfo={settings.insuranceInfo}
+        riskReversals={settings.riskReversals}
+      />
+    </div>
+  </section>
+
+  <!-- Rental Income Projections -->
+  <section class="section">
+    <div class="section__inner">
+      <h2 class="section-heading">Rental Income Projections</h2>
+      <p class="section-lead">
+        A finished basement with a compliant walkout entry or egress windows can become a
+        revenue-generating unit. Here are three strategies homeowners use along the Wasatch Front.
+      </p>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </div>
+          <h3 class="card__title">Long-Term Rental</h3>
+          <p class="card__figure">$1,200 - $1,800<span class="card__unit">/mo</span></p>
+          <p class="card__description">
+            Steady, predictable income with a year-round tenant. Lower management overhead and
+            consistent cash flow to offset your mortgage.
+          </p>
+          <p class="card__disclaimer">{disclaimerText}</p>
+        </div>
+        <div class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <h3 class="card__title">Short-Term Airbnb</h3>
+          <p class="card__figure">$3,100 - $8,400<span class="card__unit">/mo</span></p>
+          <p class="card__description">
+            Premium nightly rates during ski season and summer events. Utah's tourism market supports
+            strong short-term rental demand along the Wasatch Front.
+          </p>
+          <p class="card__disclaimer">{disclaimerText}</p>
+        </div>
+        <div class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+            </svg>
+          </div>
+          <h3 class="card__title">Mid-Term Corporate</h3>
+          <p class="card__figure">$2,000 - $3,000<span class="card__unit">/mo</span></p>
+          <p class="card__description">
+            Furnished 30-90 day stays for traveling professionals, medical rotations, and corporate
+            relocations. The sweet spot between income and management effort.
+          </p>
+          <p class="card__disclaimer">{disclaimerText}</p>
+        </div>
+      </div>
+      <div class="breakeven-callout">
+        <div class="breakeven-callout__icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+            <polyline points="17 6 23 6 23 12"/>
+          </svg>
+        </div>
+        <div>
+          <p class="breakeven-callout__title">Estimated Break-Even: 2 - 5 Years</p>
+          <p class="breakeven-callout__text">
+            Most basement conversion projects recoup their full investment within 2 to 5 years
+            through rental income alone — before accounting for property value appreciation.*
+          </p>
+          <p class="breakeven-callout__disclaimer">*{disclaimerText}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Utility Rebates & Tax Credits -->
+  <section class="section section--alt">
+    <div class="section__inner">
+      <h2 class="section-heading">Utility Rebates & Tax Credits</h2>
+      <p class="section-lead">
+        Energy-efficient upgrades bundled into your basement project can unlock meaningful savings.
+        Here's what may be available to Wasatch Front homeowners.
+      </p>
+      <div class="rebate-grid">
+        <div class="rebate-item">
+          <div class="rebate-item__header">
+            <div class="rebate-item__badge">Federal</div>
+            <h3 class="rebate-item__title">Energy-Efficient Windows & Doors Tax Credit</h3>
+          </div>
+          <p class="rebate-item__text">
+            The federal Energy Efficient Home Improvement Credit (25C) may cover up to 30% of the
+            cost of qualifying energy-efficient windows, doors, and skylights installed as part of
+            your egress or walkout project — up to $600 per year for windows and $500 for doors.*
+          </p>
+          <p class="rebate-item__disclaimer">*{disclaimerText}</p>
+        </div>
+        <div class="rebate-item">
+          <div class="rebate-item__header">
+            <div class="rebate-item__badge rebate-item__badge--state">Utah</div>
+            <h3 class="rebate-item__title">Utah Utility Rebates</h3>
+          </div>
+          <p class="rebate-item__text">
+            Rocky Mountain Power and Dominion Energy offer rebates for high-efficiency insulation,
+            HVAC, and water heating installed during basement finishing projects. Rebates typically
+            range from $50 to $800+ depending on the upgrade and utility provider.*
+          </p>
+          <p class="rebate-item__disclaimer">*{disclaimerText}</p>
+        </div>
+        <div class="rebate-item">
+          <div class="rebate-item__header">
+            <div class="rebate-item__badge rebate-item__badge--local">Local</div>
+            <h3 class="rebate-item__title">Local Grants & Incentives</h3>
+          </div>
+          <p class="rebate-item__text">
+            Some Wasatch Front municipalities offer ADU (Accessory Dwelling Unit) incentive
+            programs, impact fee waivers, or expedited permitting for projects that add legal
+            housing units — including walkout basement conversions.*
+          </p>
+          <p class="rebate-item__disclaimer">*{disclaimerText}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Construction Financing Features -->
+  <section class="section">
+    <div class="section__inner">
+      <h2 class="section-heading">Construction Financing Options</h2>
+      <p class="section-lead">
+        Multiple lending products are designed specifically for home improvement and renovation
+        projects. Here are the most common paths homeowners use.
+      </p>
+      <div class="finance-grid">
+        <div class="finance-item">
+          <div class="finance-item__number" aria-hidden="true">1</div>
+          <div class="finance-item__content">
+            <h3 class="finance-item__title">Interest-Only During Construction</h3>
+            <p class="finance-item__text">
+              Many construction loans offer interest-only payments while work is underway, keeping
+              your monthly costs low until the project is complete and can begin generating value.*
+            </p>
+            <p class="finance-item__disclaimer">*{disclaimerText}</p>
+          </div>
+        </div>
+        <div class="finance-item">
+          <div class="finance-item__number" aria-hidden="true">2</div>
+          <div class="finance-item__content">
+            <h3 class="finance-item__title">Draw Schedules</h3>
+            <p class="finance-item__text">
+              Funds are released in stages as construction milestones are met — excavation, framing,
+              finishing — so you only pay interest on disbursed amounts, not the full loan balance.*
+            </p>
+            <p class="finance-item__disclaimer">*{disclaimerText}</p>
+          </div>
+        </div>
+        <div class="finance-item">
+          <div class="finance-item__number" aria-hidden="true">3</div>
+          <div class="finance-item__content">
+            <h3 class="finance-item__title">Home Equity Options</h3>
+            <p class="finance-item__text">
+              HELOCs and home equity loans let you leverage your existing equity for renovation
+              funding, often at lower interest rates than personal loans or credit cards.*
+            </p>
+            <p class="finance-item__disclaimer">*{disclaimerText}</p>
+          </div>
+        </div>
+        <div class="finance-item">
+          <div class="finance-item__number" aria-hidden="true">4</div>
+          <div class="finance-item__content">
+            <h3 class="finance-item__title">FHA 203(k) Renovation Loans</h3>
+            <p class="finance-item__text">
+              FHA 203(k) loans combine your mortgage and renovation costs into a single loan with
+              one monthly payment. Ideal for homeowners who want to finance a basement conversion as
+              part of a purchase or refinance.*
+            </p>
+            <p class="finance-item__disclaimer">*{disclaimerText}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Property Value Appreciation -->
+  <section class="section section--alt">
+    <div class="section__inner">
+      <h2 class="section-heading">Property Value Appreciation</h2>
+      <p class="section-lead">
+        Beyond rental income and tax savings, a walkout basement conversion significantly increases
+        your home's market value.
+      </p>
+      <div class="value-block">
+        <div class="value-block__main">
+          <p class="value-block__label">Estimated Value Added</p>
+          <p class="value-block__figure">$40,000 - $70,000+</p>
+          <p class="value-block__context">for walkout basement additions along the Wasatch Front*</p>
+        </div>
+        <div class="value-block__details">
+          <div class="value-detail">
+            <span class="value-detail__label">Typical ROI Range</span>
+            <span class="value-detail__value">70% - 130%*</span>
+          </div>
+          <div class="value-detail">
+            <span class="value-detail__label">Livable Sq. Ft. Added</span>
+            <span class="value-detail__value">600 - 1,200+ sq ft*</span>
+          </div>
+          <div class="value-detail">
+            <span class="value-detail__label">Appraisal Impact</span>
+            <span class="value-detail__value">Significant*</span>
+          </div>
+          <div class="value-detail">
+            <span class="value-detail__label">Market Demand</span>
+            <span class="value-detail__value">High (Utah growth)*</span>
+          </div>
+        </div>
+      </div>
+      <div class="roi-callout">
+        <p class="roi-callout__text">
+          Utah's continued population growth and housing demand mean finished basement square footage
+          is increasingly valued by buyers and appraisers. A legal walkout entry transforms
+          below-grade space into above-grade livable square footage in appraisal terms — a powerful
+          multiplier for your home's value.*
+        </p>
+        <p class="roi-callout__disclaimer">*{disclaimerText}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta-section">
+    <div class="final-cta-section__inner">
+      <CTABlock
+        headline="Ready to Explore Your Financing Options?"
+        phone={phone}
+        variant="section"
+      />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Hero */
+  .hero {
+    background: linear-gradient(180deg, var(--color-bgPage) 0%, var(--color-bgAlt) 100%);
+  }
+
+  .hero__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding: var(--size-8) var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .hero__inner {
+      padding: var(--size-10) var(--size-6);
+      max-width: 800px;
+    }
+  }
+
+  .hero__overline {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-teal500);
+    margin-bottom: var(--size-2);
+  }
+
+  .hero__title {
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-variation-settings: "WONK" 1, "SOFT" 50;
+    font-size: clamp(2.5rem, 5vw + 1rem, 4rem);
+    line-height: 1.1;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-4);
+  }
+
+  .hero__highlight {
+    color: var(--color-green500);
+  }
+
+  .hero__subtitle {
+    font-family: var(--font-sans);
+    font-size: clamp(1.0625rem, 0.5vw + 0.875rem, 1.25rem);
+    line-height: 1.6;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-6);
+    max-width: 600px;
+  }
+
+  /* Trust Section */
+  .trust-section {
+    padding: var(--size-5) 0;
+  }
+
+  .trust-section__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .trust-section__inner {
+      padding-inline: var(--size-6);
+    }
+  }
+
+  /* Sections */
+  .section {
+    padding: var(--size-8) 0;
+  }
+
+  @media (min-width: 768px) {
+    .section {
+      padding: var(--size-10) 0;
+    }
+  }
+
+  .section--alt {
+    background: var(--color-bgAlt);
+  }
+
+  .section__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .section__inner {
+      padding-inline: var(--size-6);
+    }
+  }
+
+  .section-heading {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-variation-settings: "WONK" 0, "SOFT" 100;
+    font-size: clamp(1.625rem, 2vw + 0.5rem, 2.25rem);
+    line-height: 1.2;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-2);
+  }
+
+  .section-lead {
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 0.5vw + 0.75rem, 1.125rem);
+    color: var(--color-textBody);
+    margin-bottom: var(--size-6);
+    max-width: 600px;
+  }
+
+  /* Rental Income Cards */
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-5);
+  }
+
+  @media (min-width: 768px) {
+    .card-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .card {
+    background: var(--color-bgSurface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--size-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-3);
+  }
+
+  .card__icon {
+    color: var(--color-navy400);
+  }
+
+  .card__title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-variation-settings: "WONK" 0, "SOFT" 100;
+    font-size: 1.25rem;
+    color: var(--color-textPrimary);
+  }
+
+  .card__figure {
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-variation-settings: "WONK" 0, "SOFT" 50;
+    font-size: clamp(1.5rem, 2vw + 0.5rem, 2rem);
+    color: var(--color-green600);
+    line-height: 1.2;
+  }
+
+  .card__unit {
+    font-size: 0.6em;
+    font-weight: 500;
+    color: var(--color-textMuted);
+  }
+
+  .card__description {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-textBody);
+  }
+
+  .card__disclaimer {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--color-textMuted);
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--size-3);
+    margin-top: auto;
+  }
+
+  /* Break-Even Callout */
+  .breakeven-callout {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--size-4);
+    margin-top: var(--size-6);
+    padding: var(--size-5);
+    background: var(--color-bgSurface);
+    border: 1px solid var(--color-green200);
+    border-left: 4px solid var(--color-green500);
+    border-radius: var(--radius-md);
+  }
+
+  .breakeven-callout__icon {
+    flex-shrink: 0;
+    color: var(--color-green500);
+    margin-top: 2px;
+  }
+
+  .breakeven-callout__title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-variation-settings: "WONK" 0, "SOFT" 100;
+    font-size: 1.125rem;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-1);
+  }
+
+  .breakeven-callout__text {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-2);
+  }
+
+  .breakeven-callout__disclaimer {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--color-textMuted);
+  }
+
+  /* Rebate Grid */
+  .rebate-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-5);
+  }
+
+  @media (min-width: 768px) {
+    .rebate-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .rebate-item {
+    background: var(--color-bgSurface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--size-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-3);
+  }
+
+  .rebate-item__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2);
+  }
+
+  .rebate-item__badge {
+    display: inline-flex;
+    align-self: flex-start;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: var(--size-1) var(--size-3);
+    border-radius: var(--radius-full);
+    background: var(--color-navy600);
+    color: var(--color-white);
+  }
+
+  .rebate-item__badge--state {
+    background: var(--color-teal600);
+  }
+
+  .rebate-item__badge--local {
+    background: var(--color-green600);
+  }
+
+  .rebate-item__title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-variation-settings: "WONK" 0, "SOFT" 100;
+    font-size: 1.125rem;
+    color: var(--color-textPrimary);
+  }
+
+  .rebate-item__text {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-textBody);
+  }
+
+  .rebate-item__disclaimer {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--color-textMuted);
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--size-3);
+    margin-top: auto;
+  }
+
+  /* Construction Financing */
+  .finance-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-5);
+  }
+
+  @media (min-width: 768px) {
+    .finance-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .finance-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--size-4);
+    background: var(--color-bgSurface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--size-5);
+  }
+
+  .finance-item__number {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    background: var(--color-navy600);
+    color: var(--color-white);
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.125rem;
+  }
+
+  .finance-item__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2);
+  }
+
+  .finance-item__title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-variation-settings: "WONK" 0, "SOFT" 100;
+    font-size: 1.125rem;
+    color: var(--color-textPrimary);
+  }
+
+  .finance-item__text {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-textBody);
+  }
+
+  .finance-item__disclaimer {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--color-textMuted);
+  }
+
+  /* Property Value Appreciation */
+  .value-block {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-5);
+    background: var(--color-bgSurface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--size-6);
+    margin-bottom: var(--size-5);
+  }
+
+  @media (min-width: 768px) {
+    .value-block {
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+    }
+  }
+
+  .value-block__main {
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    .value-block__main {
+      text-align: left;
+    }
+  }
+
+  .value-block__label {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-textMuted);
+    margin-bottom: var(--size-1);
+  }
+
+  .value-block__figure {
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-variation-settings: "WONK" 0, "SOFT" 50;
+    font-size: clamp(2rem, 3vw + 1rem, 3rem);
+    color: var(--color-green600);
+    line-height: 1.1;
+    margin-bottom: var(--size-2);
+  }
+
+  .value-block__context {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-textBody);
+  }
+
+  .value-block__details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--size-4);
+  }
+
+  .value-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .value-detail__label {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 0.8125rem;
+    color: var(--color-textMuted);
+  }
+
+  .value-detail__value {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-textPrimary);
+  }
+
+  /* ROI Callout */
+  .roi-callout {
+    padding: var(--size-5);
+    background: var(--color-bgSurface);
+    border: 1px solid var(--color-green200);
+    border-left: 4px solid var(--color-green500);
+    border-radius: var(--radius-md);
+  }
+
+  .roi-callout__text {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-2);
+  }
+
+  .roi-callout__disclaimer {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--color-textMuted);
+  }
+
+  /* Final CTA Section */
+  .final-cta-section {
+    padding: var(--size-8) 0 var(--size-10);
+  }
+
+  .final-cta-section__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .final-cta-section__inner {
+      padding-inline: var(--size-6);
+    }
+  }
+</style>

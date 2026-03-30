@@ -1,0 +1,64 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro'
+import { fetchServices, fetchSiteSettings, resolveServiceImage } from '../../lib/payload'
+
+let service: any = null
+let settings: any = null
+
+try {
+  const [servicesRes, siteSettings] = await Promise.all([
+    fetchServices(),
+    fetchSiteSettings(),
+  ])
+  service = servicesRes.docs?.find((s: any) => s.slug === 'retaining-walls')
+  if (service) service.heroImage = resolveServiceImage(service.slug, 'hero', service.heroImage)
+  settings = siteSettings
+} catch {
+  // Fallback for build without CMS
+}
+
+// Fallback service data if CMS unavailable
+if (!service) {
+  service = {
+    title: 'Retaining Walls',
+    slug: 'retaining-walls',
+    tagline: 'Transform your landscape with engineered retaining walls — creating usable yard space, preventing erosion, and adding lasting structural beauty to your property.',
+    primaryValuePillar: 'transformation',
+    heroImage: { url: '/images/services/hero-retaining-walls.webp', alt: 'Multi-tiered engineered stone retaining wall system transforming a sloped Utah backyard into usable outdoor living space' },
+    supportingPillars: ['safety'],
+    overview: '<p>A retaining wall does more than hold back soil — it reshapes your entire landscape. BaseScape designs and builds engineered retaining walls that transform sloped, unusable terrain into level outdoor living areas, garden terraces, and protected foundations.</p><p>Whether you need a small decorative wall to define a garden bed or a large structural wall to stabilize a hillside, every BaseScape retaining wall is engineered for the specific soil pressure, drainage conditions, and load requirements of your site. We handle everything from structural engineering and city permits to excavation, construction, and landscape restoration.</p>',
+    process: [
+      { stepTitle: 'Site Assessment & Design', stepDescription: '<p>We evaluate your terrain, soil composition, drainage patterns, and load requirements. You\'ll receive a detailed wall design with material options, height specifications, and a clear scope of work.</p>' },
+      { stepTitle: 'Engineering & Permits', stepDescription: '<p>For walls over 4 feet, we provide structural engineering plans stamped by a licensed engineer. BaseScape handles all city permits, utility locates, and inspection scheduling.</p>' },
+      { stepTitle: 'Excavation & Construction', stepDescription: '<p>Foundation preparation, compacted gravel base, drainage system installation, and precision block or stone placement. Every course is leveled and backfilled to engineered specifications.</p>' },
+      { stepTitle: 'Finish & Landscape Restoration', stepDescription: '<p>Cap installation, final grading, backfill compaction, and landscape integration. Your new wall blends seamlessly with your existing yard and hardscape.</p>' },
+    ],
+    anxietyStack: {
+      structuralSafety: '<p>Every retaining wall is engineered for the specific soil pressure and load-bearing requirements of your site. Proper footings, compacted gravel bases, and reinforcement (including geogrid for taller walls) ensure long-term structural integrity.</p>',
+      codeCompliance: '<p>Walls over 4 feet in Utah require structural engineering plans and building permits. BaseScape handles all engineering, permit applications, and city inspections — you never have to visit a permit office.</p>',
+      drainageMoisture: '<p>Hydrostatic pressure is the number one cause of retaining wall failure. Every BaseScape wall includes a French drain system, weep holes, and gravel backfill engineered to channel water away from the wall face.</p>',
+      dustDisruption: '<p>Excavation is contained to the wall footprint. We protect existing landscaping, driveways, and structures adjacent to the work area. Most residential retaining walls require minimal disruption to your daily routine.</p>',
+      costAffordability: '<p>Retaining walls typically range from $5,000 to $50,000+ depending on wall height, total linear footage, and material selection. We provide detailed written estimates with transparent line-item pricing so there are no surprises.</p>',
+      aesthetics: '<p>Choose from natural stone, architectural concrete block, or poured concrete — each matched to your home\'s exterior style. We help you select materials, colors, and cap styles that complement your existing landscape and architecture.</p>',
+      timeline: '<p>Most residential retaining walls are completed in 1 to 3 weeks depending on wall size and site complexity. We provide a detailed project timeline at the design phase and keep you updated throughout construction.</p>',
+    },
+    differentiator: '<p><strong>Structural Engineering Expertise Applied to Every Wall</strong> — BaseScape brings the same structural engineering discipline we use for foundation work to every retaining wall project. While many landscapers stack blocks without engineering, we design walls that account for soil pressure, surcharge loads, drainage, and frost depth. The result: walls that don\'t lean, crack, or fail — backed by engineering calculations, not guesswork.</p>',
+    faqs: [
+      { question: 'How much does a retaining wall cost in Utah?', answer: 'Retaining wall costs on the Wasatch Front typically range from $5,000 for a small garden wall to $50,000+ for large structural walls. Key cost factors include wall height, total linear footage, material selection (natural stone vs. concrete block), and site access. BaseScape provides free written estimates with detailed scope breakdowns.' },
+      { question: 'Do I need a permit for a retaining wall in Utah?', answer: 'In most Wasatch Front cities, retaining walls over 4 feet in height (measured from the bottom of the footing to the top of the wall) require a building permit and structural engineering plans. BaseScape handles the entire permitting process including engineering, applications, and inspections.' },
+      { question: 'What is the best material for a retaining wall?', answer: 'The best material depends on your goals. Architectural concrete block (like Belgard or Pavestone) offers durability and cost-effectiveness. Natural stone provides a premium look. Poured concrete works well for modern aesthetics or very tall walls. BaseScape helps you choose the right material for your site conditions, style preferences, and budget.' },
+      { question: 'How long does a retaining wall last?', answer: 'A properly engineered and constructed retaining wall lasts 50 to 100 years or more. The keys to longevity are proper drainage (French drains and gravel backfill), adequate footings, and quality materials. BaseScape builds every wall to engineered standards that maximize lifespan.' },
+      { question: 'Can a retaining wall help with yard drainage?', answer: 'Yes. Retaining walls are often part of a comprehensive drainage solution. By reshaping terrain and incorporating French drains, gravel backfill, and proper grading, a retaining wall can redirect water away from foundations, eliminate standing water, and prevent soil erosion.' },
+      { question: 'How tall can a retaining wall be without engineering?', answer: 'In most Utah jurisdictions, retaining walls under 4 feet do not require a building permit or structural engineering. However, even shorter walls benefit from proper drainage and base preparation. For walls over 4 feet, engineering is required by code — and it protects your investment.' },
+      { question: 'Does a retaining wall increase property value?', answer: 'Yes. A well-built retaining wall increases usable yard space, improves curb appeal, and prevents erosion damage — all of which add value. Retaining walls are especially valuable on sloped Wasatch Front lots where they can create flat areas for patios, gardens, or play areas.' },
+    ],
+    projects: [],
+    reviews: [],
+    seo: {
+      metaTitle: 'Retaining Walls | Utah Wasatch Front | BaseScape',
+      metaDescription: 'Transform your landscape with engineered retaining walls. Structural expertise, full permits, and quality materials. Free estimates across Utah\'s Wasatch Front.',
+    },
+  }
+}
+---
+<ServiceLayout service={service} settings={settings} />

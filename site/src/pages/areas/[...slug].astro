@@ -1,0 +1,29 @@
+---
+import LocationLayout from '../../layouts/LocationLayout.astro'
+import { fetchServiceAreas, fetchSiteSettings } from '../../lib/payload'
+
+export async function getStaticPaths() {
+  let areas: any[] = []
+  try {
+    const res = await fetchServiceAreas()
+    areas = res.docs || []
+  } catch {
+    areas = []
+  }
+
+  return areas.map((area: any) => ({
+    params: { slug: area.slug },
+    props: { area },
+  }))
+}
+
+const { area } = Astro.props
+
+let settings: any
+try {
+  settings = await fetchSiteSettings()
+} catch {
+  settings = undefined
+}
+---
+<LocationLayout area={area} settings={settings} />

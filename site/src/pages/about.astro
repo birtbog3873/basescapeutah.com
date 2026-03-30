@@ -1,0 +1,592 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import CTABlock from '../components/content/CTABlock.astro'
+import TrustBadges from '../components/trust/TrustBadges.astro'
+import JsonLd from '../components/seo/JsonLd.astro'
+import { generateOrganizationSchema } from '../lib/schema'
+import { fetchSiteSettings } from '../lib/payload'
+
+let settings: any = {
+  businessName: 'BaseScape',
+  phone: '(888) 414-0007',
+  email: 'hello@basescapeutah.com',
+  address: { street: '123 Innovation Way', city: 'Draper', state: 'UT', zip: '84020' },
+  licenseNumber: '14082066-5501 B100',
+  insuranceInfo: 'Fully Insured & Bonded — General Liability',
+  riskReversals: [
+    { statement: 'Free Written Estimates' },
+    { statement: 'No Hidden Charges' },
+    { statement: 'Dust Containment System' },
+  ],
+}
+try {
+  settings = { ...settings, ...(await fetchSiteSettings()) }
+} catch {}
+
+const phone = settings.phone
+const orgSchema = generateOrganizationSchema(settings)
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'BaseScape Team',
+  jobTitle: 'Basement Access Specialists',
+  worksFor: {
+    '@type': 'Organization',
+    name: settings.businessName,
+    url: 'https://basescapeutah.com',
+  },
+  knowsAbout: [
+    'Walkout Basement Construction',
+    'Egress Window Installation',
+    'Foundation Cutting',
+    'Structural Engineering',
+    'Basement Remodeling',
+    'Retaining Walls',
+  ],
+}
+---
+<BaseLayout
+  title="About"
+  description="Meet the BaseScape team — Utah's Wasatch Front specialists in walkout basements, basement remodeling, pavers & hardscapes, retaining walls, artificial turf, and egress windows. Licensed, insured, and trained in structural work."
+>
+  <JsonLd slot="head" schema={[orgSchema, personSchema]} />
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__inner">
+      <span class="hero__overline">Who We Are</span>
+      <h1 class="hero__title">About BaseScape</h1>
+      <p class="hero__subtitle">
+        Utah's Wasatch Front specialists in walkout basement entries, egress windows, and window
+        well upgrades. We transform dark, inaccessible basements into light-filled living spaces
+        connected to the landscape.
+      </p>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="section section--alt">
+    <div class="section__inner">
+      <h2 class="section-heading">The Team Behind BaseScape</h2>
+      <p class="section-lead">
+        A small, focused crew dedicated to doing one thing exceptionally well.
+      </p>
+      <div class="team-grid">
+        <div class="team-member">
+          <img
+            class="team-member__photo"
+            src="/images/team-steven-bunker.webp"
+            alt="Steven Bunker, Founder of BaseScape"
+            width="750"
+            height="750"
+          />
+          <h3 class="team-member__name">Steven Bunker</h3>
+          <span class="team-member__role">Founder</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Origin Story -->
+  <section class="section">
+    <div class="section__inner">
+      <h2 class="section-heading">Why BaseScape Exists</h2>
+      <div class="story-content">
+        <p>
+          We started BaseScape because we saw the same problem over and over along the Wasatch
+          Front: homeowners sitting on thousands of square feet of dark, underused basement space
+          with no connection to the outdoors.
+        </p>
+        <p>
+          Utah's hillside terrain is perfectly suited for walkout basements, yet most homes were
+          built without them. Existing basements feel like bunkers — no natural light, no direct
+          access to the yard, and tiny code-minimum windows that barely qualify as emergency exits.
+        </p>
+        <p>
+          We're passionate about changing that. When you cut a proper entry into a basement wall
+          or install an oversized egress window, something remarkable happens: the entire character
+          of the space transforms. Suddenly it's a place people want to be — filled with light,
+          connected to the landscape, and genuinely livable.
+        </p>
+        <p>
+          That transformation is what drives us every day.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Philosophy / Differentiator -->
+  <section class="section section--alt">
+    <div class="section__inner">
+      <h2 class="section-heading">Our Philosophy</h2>
+      <blockquote class="differentiator">
+        <p>
+          "Cutting into foundational load-bearing walls is structural engineering, not
+          general carpentry."
+        </p>
+      </blockquote>
+      <div class="philosophy-content">
+        <p>
+          This belief is the foundation of everything we do. Most general contractors treat
+          basement work as just another line item. We treat it as the specialized structural
+          discipline it actually is.
+        </p>
+        <p>
+          Every opening we cut into a foundation wall requires understanding soil loads,
+          lateral pressure, bearing capacity, and the structural transfer of forces through
+          the building above. Getting this wrong isn't a cosmetic issue — it's a safety issue.
+        </p>
+        <p>
+          That's why we focus exclusively on basement access and egress. No kitchen remodels.
+          No bathroom renovations. No deck builds. By specializing, we've developed the deep
+          expertise, purpose-built equipment, and refined processes that produce consistently
+          superior results.
+        </p>
+        <div class="philosophy-pillars">
+          <div class="pillar">
+            <div class="pillar__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+            </div>
+            <h3 class="pillar__title">Structural First</h3>
+            <p class="pillar__text">
+              Every project starts with structural analysis. We engineer the solution before we
+              pick up a saw.
+            </p>
+          </div>
+          <div class="pillar">
+            <div class="pillar__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+            <h3 class="pillar__title">Purpose-Built Process</h3>
+            <p class="pillar__text">
+              Specialized dust containment, precision cutting, and waterproofing systems designed
+              specifically for foundation work.
+            </p>
+          </div>
+          <div class="pillar">
+            <div class="pillar__icon" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <h3 class="pillar__title">Single-Trade Mastery</h3>
+            <p class="pillar__text">
+              We do one thing and we do it exceptionally well. That singular focus is your
+              competitive advantage as a homeowner.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Credentials -->
+  <section class="section">
+    <div class="section__inner">
+      <h2 class="section-heading">Our Credentials</h2>
+      <p class="section-lead">
+        Working on your home's foundation demands the highest standards of professionalism and accountability.
+      </p>
+      <div class="credentials-grid">
+        <div class="credential-card">
+          <div class="credential-card__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h3 class="credential-card__title">Background Checked</h3>
+          <p class="credential-card__text">
+            Every team member passes a comprehensive background check before entering your home.
+            Your family's safety is non-negotiable.
+          </p>
+        </div>
+        <div class="credential-card">
+          <div class="credential-card__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </div>
+          <h3 class="credential-card__title">Licensed</h3>
+          <p class="credential-card__text">
+            Properly licensed for structural and foundation work in the State of Utah.
+            We pull all required permits and schedule inspections.
+          </p>
+        </div>
+        <div class="credential-card">
+          <div class="credential-card__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <h3 class="credential-card__title">Fully Insured</h3>
+          <p class="credential-card__text">
+            Comprehensive general liability and workers' compensation insurance protects you
+            and our crew throughout every project.
+          </p>
+        </div>
+        <div class="credential-card">
+          <div class="credential-card__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+            </svg>
+          </div>
+          <h3 class="credential-card__title">Bonded</h3>
+          <p class="credential-card__text">
+            A surety bond provides an additional layer of financial protection, guaranteeing
+            project completion to your satisfaction.
+          </p>
+        </div>
+        <div class="credential-card">
+          <div class="credential-card__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+          </div>
+          <h3 class="credential-card__title">Specialized Training</h3>
+          <p class="credential-card__text">
+            Our crew is trained specifically in structural foundation cutting, waterproofing
+            systems, and code-compliant egress installation.
+          </p>
+        </div>
+        <div class="credential-card">
+          <div class="credential-card__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+          </div>
+          <h3 class="credential-card__title">Permit & Inspection Ready</h3>
+          <p class="credential-card__text">
+            We handle all permitting and schedule required inspections. Every project meets
+            or exceeds Utah building codes.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Badges -->
+  <section class="section section--alt">
+    <div class="section__inner">
+      <TrustBadges
+        licenseNumber={settings.licenseNumber}
+        insuranceInfo={settings.insuranceInfo}
+        riskReversals={settings.riskReversals}
+      />
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="section">
+    <div class="section__inner">
+      <CTABlock
+        headline="Ready to Meet the Team?"
+        phone={phone}
+        variant="section"
+      />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Hero */
+  .hero {
+    background: linear-gradient(180deg, var(--color-bgPage) 0%, var(--color-bgAlt) 100%);
+    padding: var(--size-8) 0;
+  }
+
+  @media (min-width: 768px) {
+    .hero {
+      padding: var(--size-10) 0;
+    }
+  }
+
+  .hero__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+    max-width: 720px;
+  }
+
+  @media (min-width: 768px) {
+    .hero__inner {
+      padding-inline: var(--size-6);
+      text-align: center;
+      margin-inline: auto;
+    }
+  }
+
+  .hero__overline {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-teal500);
+    margin-bottom: var(--size-2);
+  }
+
+  .hero__title {
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-variation-settings: "WONK" 1, "SOFT" 50;
+    font-size: clamp(2.5rem, 5vw + 1rem, 4rem);
+    line-height: 1.1;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-4);
+  }
+
+  .hero__subtitle {
+    font-family: var(--font-sans);
+    font-size: clamp(1.0625rem, 0.5vw + 0.875rem, 1.25rem);
+    line-height: 1.6;
+    color: var(--color-textBody);
+    max-width: 600px;
+  }
+
+  @media (min-width: 768px) {
+    .hero__subtitle {
+      margin-inline: auto;
+    }
+  }
+
+  /* Section pattern */
+  .section {
+    padding: var(--size-8) 0;
+  }
+
+  @media (min-width: 768px) {
+    .section {
+      padding: var(--size-10) 0;
+    }
+  }
+
+  .section--alt {
+    background: var(--color-bgAlt);
+  }
+
+  .section__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .section__inner {
+      padding-inline: var(--size-6);
+    }
+  }
+
+  .section-heading {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-variation-settings: "WONK" 0, "SOFT" 100;
+    font-size: clamp(1.625rem, 2vw + 0.5rem, 2.25rem);
+    line-height: 1.2;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-2);
+  }
+
+  .section-lead {
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 0.5vw + 0.75rem, 1.125rem);
+    color: var(--color-textBody);
+    margin-bottom: var(--size-6);
+    max-width: 600px;
+  }
+
+  /* Team grid */
+  .team-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-5);
+    margin-bottom: var(--size-5);
+  }
+
+  @media (min-width: 768px) {
+    .team-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .team-member {
+    text-align: center;
+    min-width: 0;
+  }
+
+  .team-member__photo {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: var(--radius-md);
+    margin-bottom: var(--size-3);
+  }
+
+  .team-member__name {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-variation-settings: "WONK" 0, "SOFT" 100;
+    font-size: 1.125rem;
+    line-height: 1.3;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-1);
+  }
+
+  .team-member__role {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--color-textMuted);
+  }
+
+  /* Origin story */
+  .story-content {
+    max-width: 720px;
+  }
+
+  .story-content p {
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 0.5vw + 0.75rem, 1.125rem);
+    line-height: 1.7;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-4);
+  }
+
+  .story-content p:last-child {
+    margin-bottom: 0;
+    font-weight: 600;
+    color: var(--color-textPrimary);
+  }
+
+  /* Differentiator blockquote */
+  .differentiator {
+    border-left: 4px solid var(--color-green500);
+    padding: var(--size-5) var(--size-6);
+    margin: 0 0 var(--size-6);
+    background: var(--color-bgSurface);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+
+  .differentiator p {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-variation-settings: "WONK" 0, "SOFT" 100;
+    font-size: clamp(1.25rem, 1.5vw + 0.5rem, 1.625rem);
+    line-height: 1.4;
+    color: var(--color-textPrimary);
+    margin: 0;
+  }
+
+  /* Philosophy content */
+  .philosophy-content p {
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 0.5vw + 0.75rem, 1.125rem);
+    line-height: 1.7;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-4);
+    max-width: 720px;
+  }
+
+  .philosophy-pillars {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-5);
+    margin-top: var(--size-6);
+  }
+
+  @media (min-width: 768px) {
+    .philosophy-pillars {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .pillar {
+    padding: var(--size-5);
+    background: var(--color-bgSurface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .pillar__icon {
+    color: var(--color-navy600);
+    margin-bottom: var(--size-3);
+  }
+
+  .pillar__title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-variation-settings: "WONK" 0, "SOFT" 100;
+    font-size: 1.125rem;
+    line-height: 1.3;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-2);
+  }
+
+  .pillar__text {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-textBody);
+    margin: 0;
+  }
+
+  /* Credentials grid */
+  .credentials-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-5);
+  }
+
+  @media (min-width: 768px) {
+    .credentials-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .credential-card {
+    padding: var(--size-5);
+    background: var(--color-bgAlt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .credential-card__icon {
+    color: var(--color-navy600);
+    margin-bottom: var(--size-3);
+  }
+
+  .credential-card__title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-variation-settings: "WONK" 0, "SOFT" 100;
+    font-size: 1.125rem;
+    line-height: 1.3;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-2);
+  }
+
+  .credential-card__text {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-textBody);
+    margin: 0;
+  }
+</style>

@@ -1,0 +1,416 @@
+---
+import BaseLayout from './BaseLayout.astro'
+import CTABlock from '../components/content/CTABlock.astro'
+import TrustBadges from '../components/trust/TrustBadges.astro'
+import ReviewCard from '../components/trust/ReviewCard.astro'
+import FAQ from '../components/content/FAQ.astro'
+import BeforeAfter from '../components/gallery/BeforeAfter.astro'
+import ProjectCard from '../components/gallery/ProjectCard.astro'
+import JsonLd from '../components/seo/JsonLd.astro'
+import { generateServiceSchema, generateFAQPageSchema } from '../lib/schema'
+import { fetchSiteSettings } from '../lib/payload'
+import { serializeLexical } from '../lib/serialize-lexical'
+
+interface Props {
+  service: any
+  settings?: any
+}
+
+const { service, settings: propSettings } = Astro.props
+
+let settings = propSettings
+if (!settings) {
+  try {
+    settings = await fetchSiteSettings()
+  } catch {
+    settings = {
+      businessName: 'BaseScape',
+      phone: '(888) 414-0007',
+      licenseNumber: '14082066-5501 B100',
+      insuranceInfo: 'Fully Insured & Bonded — General Liability',
+      riskReversals: [],
+    }
+  }
+}
+
+const phone = settings?.phone || '(888) 414-0007'
+const faqs = service.faqs?.filter((f: any) => f && f.question) || []
+const projects = service.projects?.filter((p: any) => p && p.title) || []
+const reviews = service.reviews?.filter((r: any) => r && r.reviewerName) || []
+
+const anxietyFields = [
+  { key: 'structuralSafety', label: 'Structural Safety' },
+  { key: 'codeCompliance', label: 'Code Compliance' },
+  { key: 'drainageMoisture', label: 'Drainage & Moisture' },
+  { key: 'dustDisruption', label: 'Dust & Disruption' },
+  { key: 'costAffordability', label: 'Cost & Affordability' },
+  { key: 'aesthetics', label: 'Aesthetics' },
+  { key: 'timeline', label: 'Timeline' },
+]
+
+const faqItems = faqs.map((f: any) => ({
+  question: f.question,
+  answer: serializeLexical(f.answer),
+}))
+
+const serviceSchema = generateServiceSchema(
+  { title: service.title, slug: service.slug, tagline: service.tagline },
+  settings,
+)
+const faqSchema = faqItems.length > 0 ? generateFAQPageSchema(faqItems) : null
+
+const pillarAccents: Record<string, { color: string; label: string }> = {
+  financial: { color: 'var(--color-amber500)', label: 'Financial Enablement' },
+  safety: { color: 'var(--color-navy600)', label: 'Life Safety' },
+  transformation: { color: 'var(--color-green500)', label: 'Architectural Transformation' },
+}
+const pillar = pillarAccents[service.primaryValuePillar] || pillarAccents.transformation
+---
+<BaseLayout
+  title={service.seo?.metaTitle || service.title}
+  description={service.seo?.metaDescription || service.tagline}
+  ogImage={service.seo?.ogImage?.url}
+>
+  <JsonLd slot="head" schema={[serviceSchema, ...(faqSchema ? [faqSchema] : [])]} />
+
+  <!-- Hero -->
+  <section class="service-hero">
+    <div class="service-hero__inner">
+      <span class="service-hero__overline" style={`color: ${pillar.color}`}>
+        {pillar.label}
+      </span>
+      <h1 class="service-hero__title">{service.title}</h1>
+      <p class="service-hero__tagline">{service.tagline}</p>
+      <CTABlock variant="hero" phone={phone} />
+    </div>
+    {service.heroImage && (
+      <div class="service-hero__image">
+        <img src={service.heroImage.url} alt={service.heroImage.alt} width="1200" height="800" />
+      </div>
+    )}
+  </section>
+
+  <!-- Overview -->
+  <section class="service-section">
+    <div class="service-section__inner">
+      <div class="service-overview" set:html={serializeLexical(service.overview)} />
+    </div>
+  </section>
+
+  <!-- Process Steps -->
+  {service.process?.length > 0 && (
+    <section class="service-section service-section--alt">
+      <div class="service-section__inner">
+        <h2 class="service-section__heading">Our Process</h2>
+        <div class="process-steps">
+          {service.process.map((step: any, index: number) => (
+            <div class="process-step">
+              <div class="process-step__number">{index + 1}</div>
+              <div class="process-step__content">
+                <h3 class="process-step__title">{step.stepTitle}</h3>
+                <div class="process-step__desc" set:html={serializeLexical(step.stepDescription)} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Anxiety Stack -->
+  <section class="service-section">
+    <div class="service-section__inner">
+      <h2 class="service-section__heading">Your Questions, Answered</h2>
+      <div class="anxiety-stack">
+        {anxietyFields.map((field) => {
+          const content = service.anxietyStack?.[field.key]
+          if (!content) return null
+          return (
+            <div class="anxiety-item">
+              <h3 class="anxiety-item__title">{field.label}</h3>
+              <div class="anxiety-item__content" set:html={serializeLexical(content)} />
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- Differentiator -->
+  {service.differentiator && (
+    <section class="service-section service-section--alt">
+      <div class="service-section__inner service-section__inner--narrow">
+        <h2 class="service-section__heading">What Sets Us Apart</h2>
+        <div class="differentiator" set:html={serializeLexical(service.differentiator)} />
+      </div>
+    </section>
+  )}
+
+  <!-- Gallery Proof -->
+  {projects.length > 0 && (
+    <section class="service-section">
+      <div class="service-section__inner">
+        <h2 class="service-section__heading">Our Work</h2>
+        <div class="projects-grid">
+          {projects.slice(0, 3).map((project: any) => (
+            <ProjectCard
+              title={project.title}
+              slug={project.slug}
+              projectType={service.title}
+              city={project.city?.cityName}
+              thumbnail={project.afterImages?.[0]?.image}
+              challenge={typeof project.challenge === 'string' ? project.challenge : ''}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Reviews (hidden when showReviews is false) -->
+  {settings?.showReviews && reviews.length > 0 && (
+    <section class="service-section service-section--alt">
+      <div class="service-section__inner">
+        <h2 class="service-section__heading">What Homeowners Say</h2>
+        <div class="reviews-grid">
+          {reviews.slice(0, 3).map((review: any) => (
+            <ReviewCard
+              reviewerName={review.reviewerName}
+              reviewText={review.reviewText}
+              starRating={review.starRating}
+              city={review.city?.cityName}
+              source={review.source}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- FAQs -->
+  {faqItems.length > 0 && (
+    <section class="service-section">
+      <div class="service-section__inner service-section__inner--narrow">
+        <h2 class="service-section__heading">Frequently Asked Questions</h2>
+        <FAQ faqs={faqItems} />
+      </div>
+    </section>
+  )}
+
+  <!-- Trust + CTA -->
+  <section class="service-section service-section--alt">
+    <div class="service-section__inner service-section__inner--narrow">
+      <TrustBadges
+        licenseNumber={settings?.licenseNumber}
+        insuranceInfo={settings?.insuranceInfo}
+        riskReversals={settings?.riskReversals}
+      />
+      <div style="margin-top: var(--size-6);">
+        <CTABlock
+          headline={service.ctaHeadline || `Ready to discuss your ${service.title.toLowerCase()} project?`}
+          phone={phone}
+          variant="section"
+        />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .service-hero {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-6);
+    max-width: 1200px;
+    margin-inline: auto;
+    padding: var(--size-8) var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .service-hero {
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: var(--size-10) var(--size-6);
+    }
+  }
+
+  .service-hero__overline {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .service-hero__title {
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-variation-settings: "WONK" 1, "SOFT" 50;
+    font-size: clamp(2rem, 4vw + 0.5rem, 3rem);
+    line-height: 1.1;
+    color: var(--color-textPrimary);
+    margin-top: var(--size-2);
+    margin-bottom: var(--size-3);
+  }
+
+  .service-hero__tagline {
+    font-family: var(--font-sans);
+    font-size: clamp(1.0625rem, 0.5vw + 0.875rem, 1.1875rem);
+    line-height: 1.6;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-5);
+  }
+
+  .service-hero__image {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .service-hero__image img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+
+  .service-section {
+    padding: var(--size-8) 0;
+  }
+
+  .service-section--alt {
+    background: var(--color-bgAlt);
+  }
+
+  .service-section__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .service-section__inner {
+      padding-inline: var(--size-6);
+    }
+    .service-section {
+      padding: var(--size-10) 0;
+    }
+  }
+
+  .service-section__inner--narrow {
+    max-width: 800px;
+  }
+
+  .service-section__heading {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-variation-settings: "WONK" 0, "SOFT" 100;
+    font-size: clamp(1.5rem, 2vw + 0.5rem, 2.25rem);
+    line-height: 1.2;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-6);
+  }
+
+  .process-steps {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-5);
+  }
+
+  .process-step {
+    display: flex;
+    gap: var(--size-4);
+    align-items: flex-start;
+  }
+
+  .process-step__number {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-green500);
+    color: white;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: var(--radius-full);
+  }
+
+  .process-step__title {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1.0625rem;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-1);
+  }
+
+  .process-step__desc {
+    font-size: 0.9375rem;
+    color: var(--color-textBody);
+    line-height: 1.6;
+  }
+
+  .anxiety-stack {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-6);
+  }
+
+  @media (min-width: 768px) {
+    .anxiety-stack {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .anxiety-item {
+    padding: var(--size-4);
+    background: var(--color-bgSurface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .anxiety-item__title {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-2);
+  }
+
+  .anxiety-item__content {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-textBody);
+  }
+
+  .differentiator {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-textBody);
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-5);
+  }
+
+  @media (min-width: 768px) {
+    .projects-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-5);
+  }
+
+  @media (min-width: 768px) {
+    .reviews-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

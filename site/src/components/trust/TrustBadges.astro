@@ -1,0 +1,147 @@
+---
+interface Props {
+  licenseNumber?: string
+  insuranceInfo?: string
+  riskReversals?: Array<{ statement: string }>
+  compact?: boolean
+}
+
+const {
+  licenseNumber = '',
+  insuranceInfo = '',
+  riskReversals = [],
+  compact = false,
+} = Astro.props
+
+const badges = [
+  licenseNumber && { icon: 'shield', label: 'Licensed', detail: `License #${licenseNumber}` },
+  insuranceInfo && { icon: 'check-circle', label: 'Insured & Bonded', detail: insuranceInfo },
+  { icon: 'file-text', label: 'Free Written Estimates', detail: 'No obligation' },
+].filter(Boolean) as Array<{ icon: string; label: string; detail: string }>
+---
+<div class={`trust-badges ${compact ? 'trust-badges--compact' : ''}`}>
+  <div class="trust-badges__grid">
+    {badges.map((badge) => (
+      <div class="trust-badge">
+        <div class="trust-badge__icon" aria-hidden="true">
+          {badge.icon === 'shield' && (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          )}
+          {badge.icon === 'check-circle' && (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          )}
+          {badge.icon === 'file-text' && (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+          )}
+        </div>
+        <div class="trust-badge__content">
+          <span class="trust-badge__label">{badge.label}</span>
+          <span class="trust-badge__detail">{badge.detail}</span>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  {riskReversals.length > 0 && (
+    <div class="trust-badges__reversals">
+      {riskReversals.map((r) => (
+        <span class="trust-reversal">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          {r.statement}
+        </span>
+      ))}
+    </div>
+  )}
+</div>
+
+<style>
+  .trust-badges {
+    padding: var(--size-5);
+    background: var(--color-bgAlt);
+    border: 1px solid var(--color-navy200);
+    border-radius: var(--radius-md);
+  }
+
+  .trust-badges--compact {
+    padding: var(--size-3);
+  }
+
+  .trust-badges__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-4);
+  }
+
+  @media (min-width: 640px) {
+    .trust-badges__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .trust-badge {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--size-3);
+  }
+
+  .trust-badge__icon {
+    flex-shrink: 0;
+    color: var(--color-navy600);
+  }
+
+  .trust-badge__content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .trust-badge__label {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--color-navy600);
+  }
+
+  .trust-badge__detail {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.8125rem;
+    color: var(--color-navy600);
+  }
+
+  .trust-badges__reversals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--size-3);
+    margin-top: var(--size-4);
+    padding-top: var(--size-4);
+    border-top: 1px solid var(--color-navy200);
+  }
+
+  .trust-reversal {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--size-1);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-navy600);
+  }
+
+  .trust-reversal svg {
+    color: var(--color-green500);
+  }
+</style>

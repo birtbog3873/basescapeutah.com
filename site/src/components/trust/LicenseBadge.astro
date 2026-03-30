@@ -1,0 +1,62 @@
+---
+interface Props {
+  licenseNumber: string
+  insuranceStatus?: string
+}
+
+const { licenseNumber, insuranceStatus = 'Fully Insured & Bonded' } = Astro.props
+---
+<div class="license-badge">
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="license-badge__icon" aria-hidden="true">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    <polyline points="9 12 11 14 15 10"/>
+  </svg>
+  <div class="license-badge__content">
+    <span class="license-badge__title">Licensed Contractor</span>
+    <span class="license-badge__number">License #{licenseNumber}</span>
+    <span class="license-badge__insurance">{insuranceStatus}</span>
+  </div>
+</div>
+
+<style>
+  .license-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--size-3);
+    padding: var(--size-3) var(--size-4);
+    background: var(--color-bgAlt);
+    border: 1px solid var(--color-navy200);
+    border-radius: var(--radius-md);
+  }
+
+  .license-badge__icon {
+    flex-shrink: 0;
+    color: var(--color-navy600);
+  }
+
+  .license-badge__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .license-badge__title {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--color-navy600);
+  }
+
+  .license-badge__number {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.8125rem;
+    color: var(--color-textMuted);
+  }
+
+  .license-badge__insurance {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    color: var(--color-textMuted);
+  }
+</style>

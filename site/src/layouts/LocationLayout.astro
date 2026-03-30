@@ -1,0 +1,567 @@
+---
+import BaseLayout from './BaseLayout.astro'
+import CTABlock from '../components/content/CTABlock.astro'
+import TrustBadges from '../components/trust/TrustBadges.astro'
+import ReviewCard from '../components/trust/ReviewCard.astro'
+import FAQ from '../components/content/FAQ.astro'
+import ProjectCard from '../components/gallery/ProjectCard.astro'
+import JsonLd from '../components/seo/JsonLd.astro'
+import {
+  generateLocalBusinessSchema,
+  generateServiceSchema,
+  generateFAQPageSchema,
+  generateBreadcrumbSchema,
+} from '../lib/schema'
+import { fetchSiteSettings, fetchProjects } from '../lib/payload'
+
+interface Props {
+  area: any
+  settings?: any
+}
+
+const { area, settings: propSettings } = Astro.props
+
+let settings = propSettings
+if (!settings) {
+  try {
+    settings = await fetchSiteSettings()
+  } catch {
+    settings = {
+      businessName: 'BaseScape',
+      phone: '(888) 414-0007',
+      email: 'hello@basescapeutah.com',
+      address: { street: '123 Innovation Way', city: 'Draper', state: 'UT', zip: '84020' },
+      operatingHours: [
+        { day: 'Mon', open: '08:00', close: '18:00' },
+        { day: 'Tue', open: '08:00', close: '18:00' },
+        { day: 'Wed', open: '08:00', close: '18:00' },
+        { day: 'Thu', open: '08:00', close: '18:00' },
+        { day: 'Fri', open: '08:00', close: '18:00' },
+        { day: 'Sat', open: '09:00', close: '14:00' },
+      ],
+      licenseNumber: '14082066-5501 B100',
+      insuranceInfo: 'Fully Insured & Bonded — General Liability',
+      riskReversals: [
+        { statement: 'Free Written Estimates' },
+        { statement: 'No Hidden Charges' },
+        { statement: 'Dust Containment System' },
+      ],
+    }
+  }
+}
+
+const phone = settings?.phone || '(888) 414-0007'
+const cityName = area.cityName
+const stateAbbrev = area.stateAbbrev || 'UT'
+const fullLocation = `${cityName}, ${stateAbbrev}`
+
+// Local relationships with populated data
+const localProjects = area.localProjects?.filter((p: any) => p && p.title) || []
+const localReviews = area.localReviews?.filter((r: any) => r && r.reviewerName) || []
+const localFAQs = area.localFAQs?.filter((f: any) => f && f.question) || []
+
+// Fallback to site-wide projects if no local ones
+let displayProjects = localProjects
+if (displayProjects.length === 0) {
+  try {
+    const allProjects = await fetchProjects()
+    displayProjects = (allProjects.docs || []).slice(0, 3)
+  } catch {
+    displayProjects = []
+  }
+}
+
+const faqItems = localFAQs.map((f: any) => ({
+  question: f.question,
+  answer: typeof f.answer === 'string'
+    ? f.answer
+    : f.answer?.root?.children?.map((c: any) => c.children?.map((t: any) => t.text).join('')).join('<br>') || '',
+}))
+
+// JSON-LD schemas
+const localBusinessSchema = generateLocalBusinessSchema(settings, {
+  coordinates: area.coordinates,
+  serviceRadius: area.serviceRadius,
+  aggregateRating: localReviews.length > 0
+    ? {
+        ratingValue: localReviews.reduce((sum: number, r: any) => sum + r.starRating, 0) / localReviews.length,
+        reviewCount: localReviews.length,
+      }
+    : undefined,
+  servicesOffered: ['Walkout Basements', 'Basement Remodeling', 'Pavers & Hardscapes', 'Retaining Walls', 'Artificial Turf', 'Egress Windows'],
+})
+
+const faqSchema = faqItems.length > 0 ? generateFAQPageSchema(faqItems) : null
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: 'Home', url: 'https://basescapeutah.com' },
+  { name: 'Service Areas', url: 'https://basescapeutah.com/areas' },
+  { name: fullLocation, url: `https://basescapeutah.com/areas/${area.slug}` },
+])
+
+const schemas = [localBusinessSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [])]
+---
+<BaseLayout
+  title={area.seo?.metaTitle || `Walkout Basements & Egress Windows in ${fullLocation}`}
+  description={area.seo?.metaDescription || `BaseScape serves ${fullLocation} with walkout basements, basement remodeling, pavers & hardscapes, retaining walls, artificial turf, and egress windows. Licensed, bonded, insured.`}
+>
+  <JsonLd slot="head" schema={schemas} />
+
+  <!-- Hero -->
+  <section class="location-hero">
+    <div class="location-hero__inner">
+      <div class="location-hero__content">
+        <span class="location-hero__overline">{area.county?.replace('-', ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())} County</span>
+        <h1 class="location-hero__title">
+          Walkout Basements & Egress Windows in
+          <span class="location-hero__highlight">{fullLocation}</span>
+        </h1>
+        <p class="location-hero__subtitle">
+          BaseScape provides specialized basement access and egress solutions for homeowners in {cityName} and surrounding areas within {area.serviceRadius || 15} miles.
+        </p>
+        <CTABlock variant="hero" phone={phone} />
+      </div>
+      <div class="location-hero__visual">
+        {area.heroImage ? (
+          <img
+            src={area.heroImage.url}
+            alt={area.heroImage.alt || `BaseScape projects in ${fullLocation}`}
+            width="1200"
+            height="800"
+            class="location-hero__img"
+          />
+        ) : (
+          <div class="location-hero__placeholder" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="10" r="3" />
+              <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z" />
+            </svg>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Badges -->
+  <section class="location-section">
+    <div class="location-section__inner">
+      <TrustBadges
+        licenseNumber={settings?.licenseNumber}
+        insuranceInfo={settings?.insuranceInfo}
+        riskReversals={settings?.riskReversals}
+      />
+    </div>
+  </section>
+
+  <!-- Localized Content -->
+  <section class="location-section location-section--alt">
+    <div class="location-section__inner">
+      <h2 class="location-section__heading">Basement Solutions for {cityName} Homeowners</h2>
+      <div class="location-content" set:html={
+        typeof area.localContent === 'string' ? area.localContent : ''
+      } />
+      {area.localReferences && (
+        <div class="location-references">
+          <p class="location-references__text">{area.localReferences}</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Services Available -->
+  <section class="location-section">
+    <div class="location-section__inner">
+      <h2 class="location-section__heading">Our Services in {cityName}</h2>
+      <div class="services-list">
+        <a href="/services/walkout-basements" class="service-link">
+          <div class="service-link__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="service-link__title">Walkout Basements</h3>
+            <p class="service-link__desc">Full basement entry creation with landscape integration</p>
+          </div>
+        </a>
+        <a href="/services/egress-windows" class="service-link">
+          <div class="service-link__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="service-link__title">Egress Windows</h3>
+            <p class="service-link__desc">Code-compliant emergency exits with natural light</p>
+          </div>
+        </a>
+        <a href="/services/retaining-walls" class="service-link">
+          <div class="service-link__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <line x1="3" y1="9" x2="21" y2="9"/>
+              <line x1="3" y1="15" x2="21" y2="15"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="service-link__title">Retaining Walls</h3>
+            <p class="service-link__desc">Engineered retaining walls for slopes and outdoor spaces</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Local Projects Gallery -->
+  {displayProjects.length > 0 && (
+    <section class="location-section location-section--alt">
+      <div class="location-section__inner">
+        <h2 class="location-section__heading">
+          {localProjects.length > 0 ? `Our Work in ${cityName}` : 'Recent Projects'}
+        </h2>
+        <div class="projects-grid">
+          {displayProjects.slice(0, 3).map((project: any) => (
+            <ProjectCard
+              title={project.title}
+              slug={project.slug}
+              projectType={project.projectType?.title || ''}
+              city={project.city?.cityName || cityName}
+              thumbnail={project.afterImages?.[0]?.image}
+              challenge={typeof project.challenge === 'string' ? project.challenge : ''}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Local Reviews -->
+  {localReviews.length > 0 && (
+    <section class="location-section">
+      <div class="location-section__inner">
+        <h2 class="location-section__heading">What {cityName} Homeowners Say</h2>
+        <div class="reviews-grid">
+          {localReviews.slice(0, 3).map((review: any) => (
+            <ReviewCard
+              reviewerName={review.reviewerName}
+              reviewText={review.reviewText}
+              starRating={review.starRating}
+              city={review.city?.cityName || cityName}
+              source={review.source}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Local FAQs -->
+  {faqItems.length > 0 && (
+    <section class="location-section location-section--alt">
+      <div class="location-section__inner location-section__inner--narrow">
+        <h2 class="location-section__heading">Common Questions in {cityName}</h2>
+        <FAQ faqs={faqItems} id={`faq-${area.slug}`} />
+      </div>
+    </section>
+  )}
+
+  <!-- NAP + CTA -->
+  <section class="location-section">
+    <div class="location-section__inner location-section__inner--narrow">
+      <div class="nap-block">
+        <p class="nap-block__name">{settings?.businessName || 'BaseScape'}</p>
+        <p class="nap-block__address">
+          {settings?.address?.street}, {settings?.address?.city}, {settings?.address?.state} {settings?.address?.zip}
+        </p>
+        <p class="nap-block__phone">
+          <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}>{phone}</a>
+        </p>
+      </div>
+      <CTABlock
+        headline={`Ready to start your ${cityName} project?`}
+        phone={phone}
+        variant="section"
+      />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .location-hero {
+    background: linear-gradient(180deg, var(--color-bgPage) 0%, var(--color-bgAlt) 100%);
+  }
+
+  .location-hero__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-6);
+    max-width: 1200px;
+    margin-inline: auto;
+    padding: var(--size-8) var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .location-hero__inner {
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: var(--size-10) var(--size-6);
+    }
+  }
+
+  .location-hero__overline {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-teal500);
+    margin-bottom: var(--size-2);
+  }
+
+  .location-hero__title {
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-variation-settings: "WONK" 1, "SOFT" 50;
+    font-size: clamp(2rem, 4vw + 0.5rem, 3rem);
+    line-height: 1.1;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-3);
+  }
+
+  .location-hero__highlight {
+    color: var(--color-green500);
+  }
+
+  .location-hero__subtitle {
+    font-family: var(--font-sans);
+    font-size: clamp(1.0625rem, 0.5vw + 0.875rem, 1.1875rem);
+    line-height: 1.6;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-5);
+  }
+
+  .location-hero__visual {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .location-hero__visual {
+      display: block;
+    }
+  }
+
+  .location-hero__img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+  }
+
+  .location-hero__placeholder {
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(135deg, var(--color-navy50) 0%, var(--color-teal50, var(--color-green50)) 100%);
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-navy300);
+    opacity: 0.5;
+  }
+
+  .location-section {
+    padding: var(--size-8) 0;
+  }
+
+  .location-section--alt {
+    background: var(--color-bgAlt);
+  }
+
+  .location-section__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .location-section__inner {
+      padding-inline: var(--size-6);
+    }
+    .location-section {
+      padding: var(--size-10) 0;
+    }
+  }
+
+  .location-section__inner--narrow {
+    max-width: 800px;
+  }
+
+  .location-section__heading {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-variation-settings: "WONK" 0, "SOFT" 100;
+    font-size: clamp(1.5rem, 2vw + 0.5rem, 2.25rem);
+    line-height: 1.2;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-6);
+  }
+
+  .location-content {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-textBody);
+    max-width: 800px;
+  }
+
+  .location-content :global(p) {
+    margin-bottom: var(--size-4);
+  }
+
+  .location-content :global(h3) {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1.125rem;
+    color: var(--color-textPrimary);
+    margin-top: var(--size-6);
+    margin-bottom: var(--size-2);
+  }
+
+  .location-references {
+    margin-top: var(--size-5);
+    padding: var(--size-4);
+    background: var(--color-bgSurface);
+    border-left: 3px solid var(--color-teal500);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+
+  .location-references__text {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-textBody);
+    font-style: italic;
+  }
+
+  .services-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .services-list {
+      flex-direction: row;
+    }
+  }
+
+  .service-link {
+    display: flex;
+    gap: var(--size-4);
+    align-items: flex-start;
+    padding: var(--size-5);
+    background: var(--color-bgSurface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    flex: 1;
+  }
+
+  .service-link:hover {
+    border-color: var(--color-green500);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .service-link__icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-green50, var(--color-bgAlt));
+    border-radius: var(--radius-md);
+    color: var(--color-green500);
+  }
+
+  .service-link__title {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-1);
+  }
+
+  .service-link__desc {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--color-textMuted);
+    line-height: 1.5;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-5);
+  }
+
+  @media (min-width: 768px) {
+    .projects-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-5);
+  }
+
+  @media (min-width: 768px) {
+    .reviews-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .nap-block {
+    text-align: center;
+    margin-bottom: var(--size-6);
+    padding-bottom: var(--size-6);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .nap-block__name {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-2);
+  }
+
+  .nap-block__address {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-1);
+  }
+
+  .nap-block__phone {
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    font-weight: 600;
+  }
+
+  .nap-block__phone a {
+    color: var(--color-navy600);
+    text-decoration: none;
+  }
+
+  .nap-block__phone a:hover {
+    color: var(--color-navy500, var(--color-navy600));
+    text-decoration: underline;
+  }
+</style>

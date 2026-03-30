@@ -1,0 +1,273 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import FAQ from '../components/content/FAQ.astro'
+import FAQCategory from '../components/content/FAQCategory.astro'
+import CTABlock from '../components/content/CTABlock.astro'
+import JsonLd from '../components/seo/JsonLd.astro'
+import { generateFAQPageSchema } from '../lib/schema'
+import { fetchFAQs, fetchSiteSettings } from '../lib/payload'
+
+let settings: any = {
+  businessName: 'BaseScape',
+  phone: '(888) 414-0007',
+  email: 'hello@basescapeutah.com',
+  address: { street: '123 Innovation Way', city: 'Draper', state: 'UT', zip: '84020' },
+  licenseNumber: '14082066-5501 B100',
+  insuranceInfo: 'Fully Insured & Bonded — General Liability',
+  riskReversals: [
+    { statement: 'Free Written Estimates' },
+    { statement: 'No Hidden Charges' },
+    { statement: 'Dust Containment System' },
+  ],
+}
+try {
+  settings = { ...settings, ...(await fetchSiteSettings()) }
+} catch {}
+
+const phone = settings.phone
+
+/* ---------- Fetch & transform FAQs ---------- */
+let rawFaqs: any[] = []
+try {
+  const res = await fetchFAQs()
+  rawFaqs = res.docs || []
+} catch {}
+
+// Fallback FAQ content when CMS is unavailable or empty
+if (rawFaqs.length === 0) {
+  rawFaqs = [
+    { question: 'How much does a typical project cost?', answer: 'Costs vary by service: walkout basement conversions range $50K-$100K, basement remodeling $30K-$80K, paver patios $15-$35 per sq ft, retaining walls $20-$50 per sq ft, artificial turf $8-$15 per sq ft, and egress windows $5K-$12K per window. We provide free written estimates with detailed scope breakdowns.', category: 'cost', sortOrder: 1 },
+    { question: 'Are your estimates really free?', answer: 'Yes. Every BaseScape estimate is free with no obligation. We visit your property, assess the scope, and provide a detailed written estimate within 3-5 business days. No pressure, no hidden fees.', category: 'cost', sortOrder: 2 },
+    { question: 'What financing options are available?', answer: 'Common options include home equity loans, HELOCs, and construction loans with interest-only periods during the build phase. Many homeowners offset costs with rental income from basement conversions, seeing ROI within 2-5 years.', category: 'cost', sortOrder: 3 },
+    { question: 'How long do projects typically take?', answer: 'Timelines vary by service: walkout conversions take 4-8 weeks, basement remodeling 6-12 weeks, paver patios 3-5 days, retaining walls 1-3 weeks, artificial turf 2-4 days, and egress windows 2-3 days per window. We provide a detailed timeline before work begins.', category: 'timeline', sortOrder: 1 },
+    { question: 'When can you start my project?', answer: 'Our current scheduling window is typically 2-4 weeks out. We recommend starting the estimate process early so engineering, permits, and materials can be coordinated ahead of your preferred start date.', category: 'timeline', sortOrder: 2 },
+    { question: 'What areas do you serve?', answer: 'BaseScape serves the entire Wasatch Front including Salt Lake County, Utah County, and Davis County. Our primary service area covers communities from Santaquin to Ogden.', category: 'general', sortOrder: 1 },
+    { question: 'Are you licensed and insured?', answer: 'Yes. BaseScape holds Utah Contractor License #14082066-5501 (B100 General Building) and carries full general liability insurance. We are bonded and insured for your protection.', category: 'general', sortOrder: 2 },
+    { question: 'What should I expect during the process?', answer: 'Every project starts with a free on-site assessment, followed by a detailed written estimate. Once approved, we handle permits, engineering, and scheduling. During construction, our dust containment system minimizes disruption. You receive regular progress updates and a final walkthrough at completion.', category: 'general', sortOrder: 3 },
+    { question: 'Do you handle permits and inspections?', answer: 'Yes. BaseScape handles the entire permitting process — from application through final inspection sign-off. All structural work includes engineering plans stamped by a licensed structural engineer. We schedule and attend all required city inspections.', category: 'code-compliance', sortOrder: 1 },
+    { question: 'Do building codes vary by city in Utah?', answer: 'Yes. While the IRC provides the base code, individual cities may have additional requirements for setbacks, egress specifications, and ADU regulations. BaseScape navigates the specific requirements for each city we serve.', category: 'code-compliance', sortOrder: 2 },
+    { question: 'Will there be dust and disruption during construction?', answer: 'Our dust containment system uses negative air pressure and sealed barriers to minimize impact on your living space. Most families stay comfortably in their homes throughout the project. We schedule noisy work during business hours and clean up daily.', category: 'disruption', sortOrder: 1 },
+  ]
+}
+
+const categoryLabels: Record<string, string> = {
+  cost: 'Cost & Pricing',
+  'code-compliance': 'Code Compliance',
+  'city-variability': 'City-Specific Regulations',
+  timeline: 'Timeline & Scheduling',
+  disruption: 'Dust & Disruption',
+  'financing-rebates': 'Financing & Rebates',
+  'drainage-moisture': 'Drainage & Moisture',
+  'rental-readiness': 'Rental Readiness',
+  general: 'General Questions',
+}
+
+const categoryOrder = Object.keys(categoryLabels)
+
+function richTextToString(answer: any): string {
+  if (typeof answer === 'string') return answer
+  return (
+    answer?.root?.children
+      ?.map((c: any) => c.children?.map((t: any) => t.text).join(''))
+      .join('<br>') || ''
+  )
+}
+
+/* Group by category, preserving sortOrder within each group */
+const grouped: Record<string, Array<{ question: string; answer: string }>> = {}
+
+for (const faq of rawFaqs) {
+  const cat = faq.category || 'general'
+  const item = {
+    question: faq.question,
+    answer: richTextToString(faq.answer),
+  }
+  if (!grouped[cat]) grouped[cat] = []
+  grouped[cat].push(item)
+}
+
+/* Ordered list of categories that actually have FAQs */
+const categories = categoryOrder.filter((cat) => grouped[cat]?.length)
+
+/* Flat list for JSON-LD */
+const allFaqs = categories.flatMap((cat) => grouped[cat])
+
+const faqSchema = generateFAQPageSchema(allFaqs)
+---
+
+<BaseLayout
+  title="FAQ"
+  description="Answers to common questions about walkout basement entries, egress windows, permits, costs, timelines, and more — from BaseScape, Utah's Wasatch Front basement access specialists."
+>
+  <JsonLd slot="head" schema={faqSchema} />
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__inner">
+      <span class="hero__overline">Your Questions, Answered</span>
+      <h1 class="hero__title">Frequently Asked Questions</h1>
+      <p class="hero__subtitle">
+        Everything you need to know about walkout basements, basement remodeling, pavers &amp; hardscapes,
+        retaining walls, artificial turf, egress windows, permits, costs, and timelines along Utah's Wasatch Front.
+      </p>
+    </div>
+  </section>
+
+  <!-- FAQ Accordion -->
+  <section class="section">
+    <div class="section__inner">
+      <div class="faq-accordion">
+        {categories.map((cat) => (
+          <FAQCategory label={categoryLabels[cat]} id={`faq-${cat}`}>
+            <FAQ faqs={grouped[cat]} />
+          </FAQCategory>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Empty state when no FAQs are published -->
+  {categories.length === 0 && (
+    <section class="section">
+      <div class="section__inner">
+        <p class="empty-state">
+          We're building out our FAQ section. In the meantime, give us a call at{' '}
+          <a href={`tel:${phone.replace(/[^+\d]/g, '')}`}>{phone}</a> — we're happy to answer
+          any questions.
+        </p>
+      </div>
+    </section>
+  )}
+
+  <!-- Final CTA -->
+  <section class="section section--cta">
+    <div class="section__inner">
+      <CTABlock
+        headline="Still Have Questions?"
+        phone={phone}
+        variant="section"
+      />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Hero */
+  .hero {
+    background: linear-gradient(180deg, var(--color-bgPage) 0%, var(--color-bgAlt) 100%);
+    padding: var(--size-8) 0;
+  }
+
+  @media (min-width: 768px) {
+    .hero {
+      padding: var(--size-10) 0;
+    }
+  }
+
+  .hero__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+    max-width: 720px;
+  }
+
+  @media (min-width: 768px) {
+    .hero__inner {
+      padding-inline: var(--size-6);
+      text-align: center;
+      margin-inline: auto;
+    }
+  }
+
+  .hero__overline {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-teal500);
+    margin-bottom: var(--size-2);
+  }
+
+  .hero__title {
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-variation-settings: "WONK" 1, "SOFT" 50;
+    font-size: clamp(2.5rem, 5vw + 1rem, 4rem);
+    line-height: 1.1;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-4);
+  }
+
+  .hero__subtitle {
+    font-family: var(--font-sans);
+    font-size: clamp(1.0625rem, 0.5vw + 0.875rem, 1.25rem);
+    line-height: 1.6;
+    color: var(--color-textBody);
+    max-width: 600px;
+  }
+
+  @media (min-width: 768px) {
+    .hero__subtitle {
+      margin-inline: auto;
+    }
+  }
+
+  /* Section pattern */
+  .section {
+    padding: var(--size-8) 0;
+  }
+
+  @media (min-width: 768px) {
+    .section {
+      padding: var(--size-10) 0;
+    }
+  }
+
+  .section--cta {
+    padding-bottom: var(--size-10);
+  }
+
+  .section__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .section__inner {
+      padding-inline: var(--size-6);
+    }
+  }
+
+  /* Accordion container */
+  .faq-accordion {
+    max-width: 800px;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-3);
+  }
+
+  /* Empty state */
+  .empty-state {
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 0.5vw + 0.75rem, 1.125rem);
+    line-height: 1.7;
+    color: var(--color-textBody);
+    text-align: center;
+    padding: var(--size-8) 0;
+  }
+
+  .empty-state a {
+    color: var(--color-link);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .empty-state a:hover {
+    color: var(--color-linkHover);
+    text-decoration: underline;
+  }
+</style>

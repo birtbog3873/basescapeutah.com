@@ -1,0 +1,36 @@
+{
+  "name": "basescape-cms",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-04-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "alias": {
+    "file-type": "./src/file-type-shim.ts",
+    "undici": "./src/undici-shim.ts"
+  },
+  "define": {
+    "import.meta.url": "'file:///worker.js'"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "basescape-cms",
+      "database_id": "21ab5002-aca5-4af7-a4dc-c1606bd13545"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2_BUCKET",
+      "bucket_name": "basescape-media"
+    }
+  ],
+  "rate_limits": [
+    {
+      "binding": "FORM_RATE_LIMITER",
+      "namespace_id": "0",
+      "simple": {
+        "period": 60,
+        "limit": 15
+      }
+    }
+  ]
+}

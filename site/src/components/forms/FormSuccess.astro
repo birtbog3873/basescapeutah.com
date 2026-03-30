@@ -1,0 +1,75 @@
+---
+interface Props {
+  phone?: string
+}
+
+const { phone = '(888) 414-0007' } = Astro.props
+---
+<div class="form-success">
+  <div class="form-success__icon">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+      <polyline points="22 4 12 14.01 9 11.01"/>
+    </svg>
+  </div>
+  <h3 class="form-success__title">Thank You!</h3>
+  <p class="form-success__text">
+    We've received your request. Here's what happens next:
+  </p>
+  <ol class="form-success__steps">
+    <li>A BaseScape specialist will review your project details</li>
+    <li>We'll call you within 24 hours to discuss next steps</li>
+    <li>We'll schedule a free on-site structural assessment</li>
+  </ol>
+  <p class="form-success__phone">
+    Need to reach us sooner? Call
+    <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}>{phone}</a>
+  </p>
+</div>
+
+<style>
+  .form-success {
+    text-align: center;
+    padding: var(--size-8) var(--size-5);
+  }
+
+  .form-success__icon {
+    color: var(--color-green500);
+    margin-bottom: var(--size-4);
+  }
+
+  .form-success__title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-3);
+  }
+
+  .form-success__text {
+    font-size: 1.0625rem;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-4);
+  }
+
+  .form-success__steps {
+    text-align: left;
+    max-width: 400px;
+    margin: 0 auto var(--size-5);
+    padding-left: var(--size-5);
+    font-size: 0.9375rem;
+    line-height: 1.8;
+    color: var(--color-textBody);
+  }
+
+  .form-success__phone {
+    font-size: 0.9375rem;
+    color: var(--color-textMuted);
+  }
+
+  .form-success__phone a {
+    color: var(--color-navy600);
+    font-weight: 600;
+    text-decoration: none;
+  }
+</style>

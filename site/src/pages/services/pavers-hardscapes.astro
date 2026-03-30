@@ -1,0 +1,62 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro'
+import { fetchServices, fetchSiteSettings, resolveServiceImage } from '../../lib/payload'
+
+let service: any = null
+let settings: any = null
+
+try {
+  const [servicesRes, siteSettings] = await Promise.all([
+    fetchServices(),
+    fetchSiteSettings(),
+  ])
+  service = servicesRes.docs?.find((s: any) => s.slug === 'pavers-hardscapes')
+  if (service) service.heroImage = resolveServiceImage(service.slug, 'hero', service.heroImage)
+  settings = siteSettings
+} catch {
+  // Fallback for build without CMS
+}
+
+// Fallback service data if CMS unavailable
+if (!service) {
+  service = {
+    title: 'Pavers & Hardscapes',
+    slug: 'pavers-hardscapes',
+    tagline: 'Custom paver patios, walkways, and hardscape installations that extend your living space outdoors — built to handle Utah\'s freeze-thaw cycles.',
+    primaryValuePillar: 'transformation',
+    heroImage: { url: '/images/services/hero-pavers-hardscapes.webp', alt: 'Complete hardscape installation featuring paver patio with fire pit, stone retaining wall, and outdoor furniture in a Utah backyard' },
+    serviceType: 'specialized',
+    overview: '<p>A professionally installed paver patio or walkway transforms your outdoor space into a functional extension of your home. Unlike poured concrete that cracks under Utah\'s freeze-thaw cycles, interlocking pavers flex with ground movement and can be individually replaced if damaged.</p><p>BaseScape designs and installs custom hardscape systems — patios, walkways, driveways, fire pit surrounds, and outdoor living areas — using premium interlocking pavers, natural stone, and engineered base systems built for the Wasatch Front\'s climate. Proper base preparation and drainage engineering are the difference between a patio that lasts 25+ years and one that settles, shifts, or floods within 5.</p><p>Whether you\'re creating an entertainment space, connecting a new walkout basement entry to your landscape, or replacing cracked concrete, we engineer every hardscape installation for structural integrity, drainage, and long-term durability.</p>',
+    process: [
+      { stepTitle: 'Design Consultation', stepDescription: '<p>On-site evaluation of your space, soil conditions, drainage patterns, and existing landscape. We discuss material options, layout preferences, and how your new hardscape integrates with your home\'s architecture.</p>' },
+      { stepTitle: 'Material Selection & Engineering', stepDescription: '<p>Choose from a curated selection of interlocking pavers, natural stone, or porcelain options. We engineer the base depth, compaction specs, and drainage plan based on your soil type and Utah\'s freeze-thaw requirements.</p>' },
+      { stepTitle: 'Excavation & Base Installation', stepDescription: '<p>Precision excavation to engineered depth, geotextile fabric placement, compacted aggregate base installation, and screed sand leveling. The base is the most critical phase — we don\'t cut corners here.</p>' },
+      { stepTitle: 'Paver Installation & Finishing', stepDescription: '<p>Pattern layout, paver placement, edge restraint installation, polymeric sand application, and final compaction. We finish with proper grading to direct water away from your foundation.</p>' },
+    ],
+    anxietyStack: {
+      structuralSafety: '<p>Every hardscape installation starts with a compacted aggregate base engineered for your soil conditions. We use 6-8 inches of base material for patios and 10-12 inches for driveways, ensuring long-term stability even through Utah\'s freeze-thaw cycles.</p>',
+      codeCompliance: '<p>We verify setback requirements, HOA guidelines, and local drainage ordinances before design begins. Permits are pulled where required. Retaining walls over 4 feet require engineered plans — we handle that too.</p>',
+      drainageMoisture: '<p>Proper slope (minimum 1% grade away from structures), French drains, and permeable paver options ensure water moves away from your foundation and doesn\'t pool on your new patio.</p>',
+      costAffordability: '<p>Paver patios typically range from $15-$35 per square foot installed, depending on paver selection and site complexity. A 300 sq ft patio runs $4,500-$10,500. Premium natural stone or complex patterns fall at the higher end.</p>',
+      aesthetics: '<p>Choose from hundreds of paver styles, colors, and patterns — from classic herringbone brick to modern large-format slabs. We can match or complement your home\'s exterior finishes for a cohesive look.</p>',
+      timeline: '<p>Most patio installations complete in 3-5 days. Larger projects with retaining walls or complex grading may take 1-2 weeks. We provide an exact timeline after the design phase.</p>',
+    },
+    differentiator: '<p><strong>Engineered for Utah\'s Climate</strong> — The Wasatch Front\'s freeze-thaw cycles destroy poorly installed hardscapes within a few seasons. BaseScape\'s installations use climate-appropriate base depths, proper drainage engineering, and flexible interlocking systems designed to move with the ground without cracking. Every installation is built to last 25+ years, not just look good on day one.</p>',
+    faqs: [
+      { question: 'How long do paver patios last in Utah?', answer: 'A properly installed paver patio with an engineered base lasts 25-50 years in Utah\'s climate. Individual pavers that crack or stain can be replaced without disturbing the rest of the patio.' },
+      { question: 'Are pavers better than concrete for patios?', answer: 'For Utah\'s freeze-thaw climate, pavers are generally superior. Poured concrete develops cracks as the ground shifts. Interlocking pavers flex with movement without cracking and are easier to repair.' },
+      { question: 'How much does a paver patio cost per square foot?', answer: 'Paver patio installation in Utah typically costs $15-$35 per square foot installed. A typical 300 sq ft patio runs $4,500-$10,500.' },
+      { question: 'Do paver patios need maintenance?', answer: 'Minimal maintenance: polymeric sand replenishment every 2-3 years, occasional pressure washing, and prompt weed removal. Pavers handle salt and ice melt without damage.' },
+      { question: 'Can you install pavers over existing concrete?', answer: 'In some cases, if the existing concrete is level and structurally sound. However, cracked or heaved concrete should be removed for a proper aggregate base.' },
+      { question: 'Do I need a permit for a paver patio in Utah?', answer: 'Most residential paver patios don\'t require a permit. Retaining walls over 4 feet and structures with utilities may need permits. HOA approval is often required.' },
+    ],
+    projects: [],
+    reviews: [],
+    seo: {
+      metaTitle: 'Paver Patios & Hardscapes | Utah Wasatch Front | BaseScape',
+      metaDescription: 'Custom paver patios, walkways, and hardscape installations in Utah. Engineered for freeze-thaw durability. Premium materials, proper drainage. Free estimates.',
+    },
+  }
+}
+---
+<ServiceLayout service={service} settings={settings} />

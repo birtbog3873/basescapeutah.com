@@ -1,0 +1,62 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro'
+import { fetchServices, fetchSiteSettings, resolveServiceImage } from '../../lib/payload'
+
+let service: any = null
+let settings: any = null
+
+try {
+  const [servicesRes, siteSettings] = await Promise.all([
+    fetchServices(),
+    fetchSiteSettings(),
+  ])
+  service = servicesRes.docs?.find((s: any) => s.slug === 'artificial-turf')
+  if (service) service.heroImage = resolveServiceImage(service.slug, 'hero', service.heroImage)
+  settings = siteSettings
+} catch {
+  // Fallback for build without CMS
+}
+
+// Fallback service data if CMS unavailable
+if (!service) {
+  service = {
+    title: 'Artificial Turf',
+    slug: 'artificial-turf',
+    tagline: 'Low-maintenance, year-round green spaces that save water and eliminate mowing — professionally installed for Utah\'s climate.',
+    primaryValuePillar: 'transformation',
+    heroImage: { url: '/images/services/hero-artificial-turf.webp', alt: 'Family enjoying a lush artificial turf yard with paver borders, brown Utah foothills contrasting the year-round green' },
+    serviceType: 'specialized',
+    overview: '<p>Artificial turf installation replaces natural grass with premium synthetic turf that stays green year-round without watering, mowing, or fertilizing. In Utah\'s semi-arid climate, where outdoor water use accounts for up to 60% of residential consumption, artificial turf delivers immediate water savings while eliminating ongoing lawn maintenance.</p><p>BaseScape installs commercial-grade artificial turf systems — not the plastic-looking turf of a decade ago. Modern synthetic turf features realistic blade shapes, color variations, and thatch layers that are virtually indistinguishable from natural grass. We install pet-friendly, heat-resistant varieties with proper drainage and antimicrobial infill designed for Utah families.</p><p>Whether you want a maintenance-free front lawn, a pet area that stays mud-free, a backyard putting green, or a play surface for kids, we engineer every installation with proper sub-base, drainage, and infill systems built to last 15-20 years.</p>',
+    process: [
+      { stepTitle: 'Site Assessment & Design', stepDescription: '<p>We evaluate your existing landscape, soil conditions, drainage patterns, sun exposure, and intended use (pets, kids, entertaining). We measure precisely and discuss turf options suited to your needs.</p>' },
+      { stepTitle: 'Site Preparation', stepDescription: '<p>Existing sod and organic material are removed, the sub-grade is graded for proper drainage (minimum 1% slope), and a compacted aggregate base is installed. This is the foundation that determines how your turf performs for years.</p>' },
+      { stepTitle: 'Turf Installation', stepDescription: '<p>Premium turf is rolled out, trimmed to fit, and seamed together with outdoor-rated adhesive. Edges are secured with landscape spikes or bender board. Infill material (silica sand or antimicrobial options) is spread and brushed in.</p>' },
+      { stepTitle: 'Finishing & Walkthrough', stepDescription: '<p>Final brushing to stand fibers upright, perimeter cleanup, and a walkthrough to verify drainage, seam quality, and edge finishing. We show you how to maintain your turf for maximum lifespan.</p>' },
+    ],
+    anxietyStack: {
+      structuralSafety: '<p>Our turf installations use a compacted aggregate base (3-4 inches) over geotextile fabric to prevent settling, sinkholes, and weed growth. Edges are secured with professional-grade restraints to prevent shifting.</p>',
+      codeCompliance: '<p>Many Utah cities and HOAs now encourage or incentivize artificial turf for water conservation. Some offer rebates of $1-$3 per square foot. We verify your HOA\'s landscape guidelines and help you apply for available rebates.</p>',
+      drainageMoisture: '<p>Premium artificial turf drains at 30+ inches per hour — faster than natural grass. Combined with a properly graded aggregate base, standing water is never an issue. Pet waste rinses clean with a hose.</p>',
+      costAffordability: '<p>Artificial turf installation typically costs $8-$15 per square foot installed, depending on turf quality and site preparation. A 500 sq ft lawn runs $4,000-$7,500. Most homeowners recoup costs within 3-5 years through water savings and eliminated maintenance expenses.</p>',
+      aesthetics: '<p>Modern artificial turf features multi-toned blades, realistic thatch layers, and varied pile heights that look and feel like natural grass. We offer options for lawns, putting greens, pet areas, and play surfaces — each optimized for its intended use.</p>',
+      timeline: '<p>Most residential turf installations complete in 2-4 days depending on area size and site preparation requirements. Complex projects with grading or retaining work may take up to a week.</p>',
+    },
+    differentiator: '<p><strong>Built for Utah\'s Water Reality</strong> — Utah is the second-driest state in the nation, and outdoor watering accounts for up to 60% of residential water use. BaseScape\'s artificial turf installations aren\'t just about convenience — they\'re a practical response to Utah\'s water future. We use premium, UV-stabilized turf rated for 15-20 year lifespans with proper sub-base engineering that prevents the settling, drainage failures, and weed problems that plague DIY or discount installations.</p>',
+    faqs: [
+      { question: 'How long does artificial turf last?', answer: 'Premium artificial turf with proper base preparation lasts 15-20 years. UV-stabilized fibers resist fading from Utah\'s intense sun exposure.' },
+      { question: 'Is artificial turf safe for pets?', answer: 'Yes. Modern pet-friendly turf features antimicrobial infill that prevents bacteria and odor. Liquid waste drains through, and solid waste is easily picked up.' },
+      { question: 'Does artificial turf get hot in summer?', answer: 'Turf can reach 120-150°F in direct sunlight but cools quickly in shade or with a light spray of water. We offer heat-reflective options that reduce temperatures by 15-20%.' },
+      { question: 'How much water does artificial turf save?', answer: 'A typical 1,000 sq ft lawn uses 40,000-60,000 gallons per year in Utah. Artificial turf eliminates virtually all of that, saving $200-$500+ per year on water bills.' },
+      { question: 'Are there rebates for artificial turf in Utah?', answer: 'Several Utah water districts offer rebates of $1-$3 per square foot for converting to water-efficient landscaping. BaseScape helps you apply for available rebates.' },
+      { question: 'Does artificial turf drain well in rain and snow?', answer: 'Premium turf drains at 30+ inches per hour. Snow melts normally and can be gently removed with a leaf blower or plastic shovel.' },
+    ],
+    projects: [],
+    reviews: [],
+    seo: {
+      metaTitle: 'Artificial Turf Installation | Utah Wasatch Front | BaseScape',
+      metaDescription: 'Professional artificial turf installation in Utah. Water-saving, pet-friendly, year-round green. Premium materials with proper drainage. Free estimates.',
+    },
+  }
+}
+---
+<ServiceLayout service={service} settings={settings} />

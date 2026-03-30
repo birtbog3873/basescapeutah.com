@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://basescape.com/sitemap-index.xml
+
+# Disallow admin and API paths
+Disallow: /admin/
+Disallow: /api/

@@ -1,0 +1,151 @@
+---
+interface Props {
+  title: string
+  tagline: string
+  slug: string
+  valuePillar?: string
+  heroImage?: { url: string; alt: string }
+}
+
+const { title, tagline, slug, valuePillar, heroImage } = Astro.props
+
+const pillarColors: Record<string, string> = {
+  financial: 'var(--color-amber700, #9A5D06)',
+  safety: 'var(--color-navy600)',
+  transformation: 'var(--color-green700, #3D6B28)',
+}
+const pillarLabels: Record<string, string> = {
+  financial: 'Financial Enablement',
+  safety: 'Life Safety',
+  transformation: 'Architectural Transformation',
+}
+---
+<a href={`/services/${slug}`} class="service-card" aria-label={`Learn more about ${title}`}>
+  <div class="service-card__image">
+    {heroImage ? (
+      <img src={heroImage.url} alt={heroImage.alt} loading="lazy" width="600" height="400" />
+    ) : (
+      <div class="service-card__placeholder" aria-hidden="true">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+      </div>
+    )}
+  </div>
+  <div class="service-card__body">
+    {valuePillar && (
+      <span
+        class="service-card__pillar"
+        style={`--pillar-color: ${pillarColors[valuePillar] || 'var(--color-teal500)'}`}
+      >
+        {pillarLabels[valuePillar] || valuePillar}
+      </span>
+    )}
+    <h3 class="service-card__title">{title}</h3>
+    <p class="service-card__tagline">{tagline}</p>
+    <span class="service-card__link">
+      Learn More
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </span>
+  </div>
+</a>
+
+<style>
+  .service-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bgSurface);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .service-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .service-card__image {
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: var(--color-bgAlt);
+  }
+
+  .service-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .service-card:hover .service-card__image img {
+    transform: scale(1.03);
+  }
+
+  .service-card__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-navy300);
+    background: linear-gradient(135deg, var(--color-navy50), var(--color-bgAlt));
+  }
+
+  .service-card__body {
+    padding: var(--size-4) var(--size-5) var(--size-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2);
+    flex: 1;
+  }
+
+  .service-card__pillar {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pillar-color);
+    align-self: flex-start;
+  }
+
+  .service-card__title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-variation-settings: "WONK" 0, "SOFT" 100;
+    font-size: 1.25rem;
+    line-height: 1.25;
+    color: var(--color-textPrimary);
+  }
+
+  .service-card__tagline {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-textBody);
+    flex: 1;
+  }
+
+  .service-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--size-1);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--color-teal500);
+    margin-top: var(--size-2);
+  }
+
+  .service-card:hover .service-card__link {
+    color: var(--color-teal600);
+  }
+</style>

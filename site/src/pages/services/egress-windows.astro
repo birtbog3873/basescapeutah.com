@@ -1,0 +1,62 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro'
+import { fetchServices, fetchSiteSettings, resolveServiceImage } from '../../lib/payload'
+
+let service: any = null
+let settings: any = null
+
+try {
+  const [servicesRes, siteSettings] = await Promise.all([
+    fetchServices(),
+    fetchSiteSettings(),
+  ])
+  service = servicesRes.docs?.find((s: any) => s.slug === 'egress-windows')
+  if (service) service.heroImage = resolveServiceImage(service.slug, 'hero', service.heroImage)
+  settings = siteSettings
+} catch {
+  // Fallback for build without CMS
+}
+
+// Fallback service data if CMS unavailable
+if (!service) {
+  service = {
+    title: 'Egress Windows',
+    slug: 'egress-windows',
+    tagline: 'Code-compliant emergency exit windows that flood your basement with natural light — because life safety and beautiful living space aren\'t mutually exclusive.',
+    primaryValuePillar: 'safety',
+    heroImage: { url: '/images/services/hero-egress-windows.webp', alt: 'Bright basement bedroom with a large egress window flooding the room with natural light, decorative rock visible in the window well' },
+    supportingPillars: ['transformation', 'financial'],
+    overview: '<p>An egress window is a code-required emergency exit from any habitable basement room. The International Residential Code (IRC) mandates a minimum 5.7 square foot opening, a maximum 44-inch sill height from the finished floor, and a minimum 24-inch wide by 20-inch tall clear opening — ensuring every occupant can escape in an emergency and every firefighter can enter.</p><p>But egress windows aren\'t just a safety checkbox. A properly installed egress window transforms a dark, underground room into a bright, ventilated living space. BaseScape cuts the foundation opening with surgical precision, installs a structurally engineered header, and finishes the window well exterior so your basement bedroom, office, or family room meets code and feels like a real room.</p><p>If your basement has bedrooms without egress windows, they cannot legally be counted as bedrooms — which directly impacts your home\'s appraised value and your family\'s safety.</p>',
+    process: [
+      { stepTitle: 'Assessment & Code Review', stepDescription: '<p>We evaluate your foundation type, basement layout, and existing window openings against current IRC egress requirements. We identify the optimal window placement for both code compliance and natural light.</p>' },
+      { stepTitle: 'Engineering & Permits', stepDescription: '<p>Structural engineering plans for the foundation cut, window well sizing, and drainage design. We pull all required permits and coordinate utility locates before any work begins.</p>' },
+      { stepTitle: 'Foundation Cut & Installation', stepDescription: '<p>Precision diamond-blade cutting of the foundation wall, structural header installation, window framing, flashing, and weatherproofing. The window well is set with proper drainage and a code-compliant egress ladder or steps.</p>' },
+      { stepTitle: 'Finishing & Inspection', stepDescription: '<p>Interior drywall finishing around the new window, exterior backfill, window well cover installation, and final city inspection. We don\'t leave until you have a signed-off, code-compliant egress window.</p>' },
+    ],
+    anxietyStack: {
+      structuralSafety: '<p>Cutting into a foundation wall requires a structural header to redistribute the load above the opening. We engineer every header for your home\'s specific load path — steel lintels or LVL beams sized by a licensed structural engineer. Your foundation is stronger and code-compliant after installation.</p>',
+      codeCompliance: '<p>Every egress window we install meets or exceeds IRC Section R310 requirements: 5.7 sq ft minimum opening area, 24-inch minimum width, 20-inch minimum height, and 44-inch maximum sill height. We schedule the city inspection and walk you through the sign-off.</p>',
+      drainageMoisture: '<p>Window wells are engineered with 12 inches of clean gravel backfill, a perforated drain pipe tied to your foundation drainage system, and a sloped window well cover. Water management is built into the design, not bolted on after the fact.</p>',
+      dustDisruption: '<p>Foundation cutting generates concrete dust. Our containment protocol uses sealed poly barriers and negative-pressure HEPA filtration to keep dust out of your living space. Most egress window installations complete in 2-3 days with minimal disruption to your daily routine.</p>',
+      costAffordability: '<p>Egress window installations typically range from $5,000-$12,000 per window depending on foundation type, window size, and well depth. This investment directly increases your home\'s legal bedroom count and appraised value — most homeowners see a 2:1 return on resale.</p>',
+      aesthetics: '<p>We offer a range of egress window styles — casement, sliding, and hopper — in vinyl, fiberglass, or aluminum-clad frames. Window wells come in corrugated steel, composite stone, or poured concrete with optional terraced landscaping for a premium finished look.</p>',
+      timeline: '<p>A standard single egress window installation takes 2-3 days from foundation cut to final inspection. Multiple windows on the same project typically add 1-2 days per additional window. We provide an exact timeline during the engineering phase.</p>',
+    },
+    differentiator: '<p><strong>Safety-First Engineering</strong> — Every egress window project starts with structural engineering, not a tape measure and a saw. BaseScape\'s foundation specialists calculate load paths, specify header sizes, and design drainage systems before the first cut is made. General contractors often treat egress windows as a simple carpentry task. We treat them as what they are: structural modifications to your home\'s foundation that must be engineered correctly for your family\'s safety and your home\'s long-term integrity.</p>',
+    faqs: [
+      { question: 'What size does an egress window need to be?', answer: 'Per IRC Section R310, egress windows must have a minimum net clear opening of 5.7 square feet, with a minimum width of 20 inches and minimum height of 24 inches. The sill height cannot exceed 44 inches from the finished floor.' },
+      { question: 'Do I need an egress window in my basement bedroom?', answer: "Yes. The International Residential Code requires every sleeping room to have at least one egress window or door. Without one, your basement bedroom cannot legally be counted as a bedroom." },
+      { question: 'How much does an egress window add to home value?', answer: 'An egress window installation typically costs $5,000-$12,000 and can add $10,000-$25,000+ to your home\'s value by legally converting non-conforming basement space into a counted bedroom.' },
+      { question: 'How long does egress window installation take?', answer: 'A standard single egress window installation takes 2-3 days. Multiple windows typically add 1-2 days per additional window.' },
+      { question: 'Will there be dust and disruption during installation?', answer: 'Our containment protocol uses sealed poly barriers and negative-pressure HEPA filtration to keep dust out of your living space. Most installations complete with minimal disruption.' },
+    ],
+    projects: [],
+    reviews: [],
+    seo: {
+      metaTitle: 'Egress Window Installation | Code-Compliant | Utah Wasatch Front | BaseScape',
+      metaDescription: 'Professional egress window installation for Utah basements. IRC code-compliant, structurally engineered, with proper drainage. Increase safety, light, and home value. Free estimates.',
+    },
+  }
+}
+---
+<ServiceLayout service={service} settings={settings} />
