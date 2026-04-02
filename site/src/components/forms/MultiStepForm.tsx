@@ -22,16 +22,17 @@ const STEP_LABELS = ['Services', 'Date & Time', 'Contact']
 interface Props {
   sourcePage?: string
   phone?: string
+  preselectedService?: string
 }
 
-export default function MultiStepForm({ sourcePage = '/', phone = '(888) 414-0007' }: Props) {
+export default function MultiStepForm({ sourcePage = '/', phone = '(888) 414-0007', preselectedService }: Props) {
   const [step, setStep] = useState(1)
   const [sessionId, setSessionId] = useState('')
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const [serviceType, setServiceType] = useState('')
+  const [serviceType, setServiceType] = useState(preselectedService || '')
   const [zipCode, setZipCode] = useState(() => {
     if (typeof window !== 'undefined') {
       return new URLSearchParams(window.location.search).get('zip') || ''
@@ -178,13 +179,18 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(888) 414-000
     if (!lastName.trim()) newErrors.lastName = 'Last name is required'
     if (!emailField.trim()) newErrors.email = 'Email is required'
     if (!phoneField.trim()) newErrors.phone = 'Phone number is required'
+    if (!smsConsent) newErrors.smsConsent = 'Sorry, due to federal TCPA compliance, you must agree to receive communications for us to contact you. 😊'
     if (Object.keys(newErrors).length) return setErrors(newErrors)
 
     setLoading(true)
     try {
-      const { error } = await actions.saveFormStep({
+      const result = await actions.saveFormStep({
         step: 3 as const,
         sessionId,
+        serviceType: serviceType as any,
+        zipCode,
+        preferredDate: preferredDate || undefined,
+        timePreference: (timePreference as any) || undefined,
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         email: emailField.trim(),
@@ -193,17 +199,29 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(888) 414-000
         comments: comments.trim() || undefined,
         smsConsent,
         honeypot,
+        source: getSource(),
       })
 
-      if (error) {
+      if (result.error) {
+        console.error('[Form Step 3] Action error:', JSON.stringify(result.error, null, 2))
+        setErrors({ form: 'Something went wrong. Please try again.' })
+      } else if (result.data && !result.data.success) {
+        console.error('[Form Step 3] CMS error:', (result.data as any).debugError)
         setErrors({ form: 'Something went wrong. Please try again.' })
       } else {
         setSuccess(true)
+        // Hide the hero and scroll to top for clean thank-you view
+        const hero = document.querySelector('.contact-hero') as HTMLElement
+        if (hero) hero.style.display = 'none'
+        const scrollArea = document.querySelector('.page-scroll') as HTMLElement
+        if (scrollArea) scrollArea.scrollTop = 0
+        else window.scrollTo({ top: 0 })
         ;(window as any).plausible?.('Form Complete', { props: { service: serviceType } })
         ;(window as any).gtag?.('event', 'form_complete', { service: serviceType })
       }
-    } catch {
-      setErrors({ form: 'Something went wrong. Please try again.' })
+    } catch (err: any) {
+      console.error('[Form Step 3] Catch error:', err)
+      setErrors({ form: `Error: ${err?.message || 'Network error'}` })
     }
     setLoading(false)
   }
@@ -579,12 +597,12 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(888) 414-000
             />
           </div>
 
-          <div className="multi-form__consent">
+          <div className={`multi-form__consent${errors.smsConsent ? ' multi-form__consent--error' : ''}`}>
             <label className="multi-form__checkbox">
               <input
                 type="checkbox"
                 checked={smsConsent}
-                onChange={(e) => setSmsConsent(e.target.checked)}
+                onChange={(e) => { setSmsConsent(e.target.checked); if (e.target.checked) setErrors((prev) => { const { smsConsent: _, ...rest } = prev; return rest }) }}
                 className="multi-form__checkbox-input"
               />
               <span className="multi-form__checkbox-text">
@@ -598,6 +616,7 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(888) 414-000
                 <a href="/terms" target="_blank" rel="noopener noreferrer">Terms and Conditions</a>.
               </span>
             </label>
+            {errors.smsConsent && <p className="multi-form__consent-error">{errors.smsConsent}</p>}
 
             <p className="multi-form__legal">
               By clicking submit, I agree to receive marketing, customer care, and account

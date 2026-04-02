@@ -39,13 +39,16 @@ if (!showGallery) {
 <header class="header" id="site-header">
   <div class="header__inner">
     <a href="/" class="header__logo" aria-label="BaseScape — Home">
-      <img
-        src="/images/basescape-logo.png"
-        alt="BaseScape — Walkout Entries, Daylight Windows & Egress"
-        class="header__logo-img"
-        width="200"
-        height="56"
-      />
+      <picture>
+        <source srcset="/images/basescape-logo.webp" type="image/webp" />
+        <img
+          src="/images/basescape-logo.png"
+          alt="BaseScape — Walkout Entries, Daylight Windows & Egress"
+          class="header__logo-img"
+          width="200"
+          height="56"
+        />
+      </picture>
     </a>
 
     <nav class="header__nav" aria-label="Main navigation">

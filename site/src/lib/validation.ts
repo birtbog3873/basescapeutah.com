@@ -41,6 +41,17 @@ export const leadStepTwoSchema = z.object({
 export const leadStepThreeSchema = z.object({
   step: z.literal(3),
   sessionId: z.string().uuid('Invalid session'),
+  serviceType: z.enum([
+    'walkout-basement',
+    'basement-remodeling',
+    'pavers-hardscapes',
+    'retaining-walls',
+    'artificial-turf',
+    'egress-windows',
+  ]),
+  zipCode: z.string().regex(/^\d{5}$/, 'Enter a valid 5-digit zip code'),
+  preferredDate: z.string().optional(),
+  timePreference: z.enum(['morning', 'afternoon', 'evening', 'not-sure']).optional(),
   firstName: z.string().min(1, 'First name is required').max(50, 'First name too long'),
   lastName: z.string().min(1, 'Last name is required').max(50, 'Last name too long'),
   email: z.string().email('Enter a valid email address'),
@@ -49,6 +60,7 @@ export const leadStepThreeSchema = z.object({
   comments: z.string().max(1000, 'Comments too long').optional(),
   smsConsent: z.boolean(),
   honeypot: honeypotSchema,
+  source: sourceSchema,
 })
 
 export const quickCallbackSchema = z.object({

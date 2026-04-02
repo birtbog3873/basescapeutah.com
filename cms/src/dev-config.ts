@@ -18,6 +18,8 @@ import { BlogPosts } from './collections/BlogPosts.js'
 import { SiteSettings } from './globals/SiteSettings.js'
 import { Navigation } from './globals/Navigation.js'
 
+import { afterLeadCreate } from './hooks/afterLeadCreate.js'
+
 // Environment variables:
 // PAYLOAD_SECRET        — CMS auth secret
 // RESEND_API_KEY        — Email service
@@ -44,7 +46,13 @@ export default buildConfig({
     FAQs,
     Reviews,
     Projects,
-    Leads,
+    {
+      ...Leads,
+      hooks: {
+        ...Leads.hooks,
+        afterChange: [...(Leads.hooks?.afterChange || []), afterLeadCreate],
+      },
+    },
     Offers,
     PaidLandingPages,
     LeadMagnets,

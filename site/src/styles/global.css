@@ -129,6 +129,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Mobile: flex layout so bottom bar never overlaps content */
+@media (max-width: 1023px) {
+  body {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .page-scroll {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 img,
 picture,
 video,

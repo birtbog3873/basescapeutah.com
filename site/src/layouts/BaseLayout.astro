@@ -26,11 +26,18 @@ const {
 
 const siteTitle = title === 'Home' ? 'BaseScape | Walkout Entries, Daylight Windows & Egress' : `${title} | BaseScape`
 const plausibleDomain = import.meta.env.PLAUSIBLE_DOMAIN
-const ga4MeasurementId = import.meta.env.GA4_MEASUREMENT_ID
 ---
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Google Tag Manager -->
+    <script is:inline>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TD7KRSBB');</script>
+    <!-- End Google Tag Manager -->
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
@@ -57,19 +64,6 @@ const ga4MeasurementId = import.meta.env.GA4_MEASUREMENT_ID
       />
     )}
 
-    <!-- Google Analytics 4 -->
-    {ga4MeasurementId && (
-      <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4MeasurementId}`} />
-    )}
-    {ga4MeasurementId && (
-      <script define:vars={{ ga4MeasurementId }}>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', ga4MeasurementId);
-      </script>
-    )}
-
     <slot name="head" />
 
     <!-- Pass Google Places API key to client-side React components -->
@@ -80,12 +74,19 @@ const ga4MeasurementId = import.meta.env.GA4_MEASUREMENT_ID
     )}
   </head>
   <body>
-    <a href="#main-content" class="skip-link">Skip to main content</a>
-    <Header />
-    <main id="main-content">
-      <slot />
-    </main>
-    <Footer />
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TD7KRSBB"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <div class="page-scroll">
+      <a href="#main-content" class="skip-link">Skip to main content</a>
+      <Header />
+      <main id="main-content">
+        <slot />
+      </main>
+      <Footer />
+    </div>
     <MobileBottomBar hideEstimate={hideEstimate} />
 
     <!-- JS-disabled fallback: phone CTA direction -->

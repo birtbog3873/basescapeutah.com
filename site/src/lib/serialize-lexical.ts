@@ -57,8 +57,9 @@ function serializeNode(node: any): string {
       return `<li>${serializeChildren(node.children)}</li>`
 
     case 'link': {
-      const url = node.fields?.url || '#'
-      return `<a href="${escapeHtml(url)}">${serializeChildren(node.children)}</a>`
+      const raw = (node.fields?.url || '#').trim()
+      const safe = /^(https?:|mailto:|tel:|\/|#)/i.test(raw) ? raw : '#'
+      return `<a href="${escapeHtml(safe)}">${serializeChildren(node.children)}</a>`
     }
 
     default:

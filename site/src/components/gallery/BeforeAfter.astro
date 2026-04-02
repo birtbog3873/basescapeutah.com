@@ -13,6 +13,7 @@ const { beforeImage, afterImage } = Astro.props
       src={beforeImage.url}
       alt={beforeImage.alt}
       loading="lazy"
+      decoding="async"
       width="600"
       height="400"
     />
@@ -26,6 +27,7 @@ const { beforeImage, afterImage } = Astro.props
       src={afterImage.url}
       alt={afterImage.alt}
       loading="lazy"
+      decoding="async"
       width="600"
       height="400"
     />

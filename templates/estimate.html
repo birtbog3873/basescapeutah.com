@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BaseScape Estimate</title>
+  <style>
+    /* ── Fonts ── */
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Space+Grotesk:wght@400;500;600&display=swap');
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Palette ── */
+    :root {
+      --navy600: #1B3B5E;
+      --navy700: #152E4A;
+      --navy100: #D9E2EC;
+      --navy50: #F0F4F8;
+      --green600: #4A8030;
+      --green500: #5EA03C;
+      --green50: #F2F9EE;
+      --amber500: #E8920A;
+      --amber700: #9A5D06;
+      --teal500: #2A7B78;
+      --teal50: #EEF8F7;
+      --slate100: #F1F4F8;
+      --slate200: #E3E8EF;
+      --slate400: #9AA5B4;
+      --slate500: #697686;
+      --slate600: #4B5563;
+      --white: #FFFFFF;
+      --bg: #F8FAFB;
+      --font-serif: 'Fraunces', Georgia, serif;
+      --font-sans: 'Space Grotesk', system-ui, sans-serif;
+    }
+
+    /* ── Page ── */
+    @page {
+      size: letter;
+      margin: 0.5in 0.6in;
+    }
+
+    html { font-size: 14px; }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--navy600);
+      line-height: 1.5;
+      background: var(--white);
+      max-width: 8.5in;
+      margin: 0 auto;
+      padding: 0.5in 0.6in;
+    }
+
+    @media print {
+      body { padding: 0; }
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 1.25rem;
+      border-bottom: 3px solid var(--navy600);
+      margin-bottom: 1.5rem;
+    }
+
+    .header__brand { display: flex; align-items: center; gap: 0.75rem; }
+
+    .header__logo {
+      width: 48px;
+      height: 48px;
+      background: var(--navy600);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+
+    .header__name {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--navy600);
+      line-height: 1.2;
+    }
+
+    .header__tagline {
+      font-size: 0.75rem;
+      color: var(--slate500);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .header__meta {
+      text-align: right;
+      font-size: 0.8125rem;
+      color: var(--slate600);
+      line-height: 1.6;
+    }
+
+    .header__meta strong { color: var(--navy600); }
+
+    /* ── Document Title ── */
+    .doc-title {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .doc-title h1 {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 1.75rem;
+      color: var(--navy700);
+      margin-bottom: 0.25rem;
+    }
+
+    .doc-title .estimate-number {
+      font-size: 0.8125rem;
+      color: var(--slate500);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Info Grid ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .info-box {
+      border: 1px solid var(--slate200);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+    }
+
+    .info-box__label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--teal500);
+      margin-bottom: 0.5rem;
+    }
+
+    .info-box p {
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: var(--slate600);
+    }
+
+    .info-box p strong { color: var(--navy600); }
+
+    /* ── Section Headings ── */
+    .section-heading {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: var(--navy700);
+      padding-bottom: 0.375rem;
+      border-bottom: 2px solid var(--navy100);
+      margin-bottom: 0.875rem;
+      margin-top: 1.5rem;
+    }
+
+    .section-heading:first-of-type { margin-top: 0; }
+
+    /* ── Scope Description ── */
+    .scope-text {
+      font-size: 0.875rem;
+      line-height: 1.7;
+      color: var(--slate600);
+      margin-bottom: 1rem;
+    }
+
+    .scope-list {
+      list-style: none;
+      margin-bottom: 1rem;
+    }
+
+    .scope-list li {
+      font-size: 0.875rem;
+      color: var(--slate600);
+      padding: 0.375rem 0;
+      padding-left: 1.25rem;
+      position: relative;
+    }
+
+    .scope-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.625rem;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green500);
+    }
+
+    /* ── Line Items Table ── */
+    .line-items {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+    }
+
+    .line-items thead th {
+      background: var(--navy600);
+      color: var(--white);
+      font-weight: 500;
+      text-align: left;
+      padding: 0.625rem 0.75rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .line-items thead th:first-child { border-radius: 6px 0 0 0; }
+    .line-items thead th:last-child { border-radius: 0 6px 0 0; text-align: right; }
+    .line-items thead th.text-right { text-align: right; }
+
+    .line-items tbody td {
+      padding: 0.625rem 0.75rem;
+      border-bottom: 1px solid var(--slate200);
+      vertical-align: top;
+    }
+
+    .line-items tbody tr:nth-child(even) td { background: var(--bg); }
+    .line-items tbody td.text-right { text-align: right; font-variant-numeric: tabular-nums; }
+    .line-items .item-desc { font-size: 0.75rem; color: var(--slate500); margin-top: 0.125rem; }
+
+    /* ── Totals ── */
+    .totals-wrap {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.5rem;
+    }
+
+    .totals {
+      width: 280px;
+    }
+
+    .totals-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      font-size: 0.875rem;
+      color: var(--slate600);
+      border-bottom: 1px solid var(--slate200);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .totals-row.total {
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: var(--navy700);
+      border-bottom: 3px double var(--navy600);
+      padding: 0.75rem 0;
+    }
+
+    /* ── Investment Callout ── */
+    .investment-callout {
+      background: linear-gradient(135deg, var(--green50) 0%, var(--teal50) 100%);
+      border: 1px solid var(--green500);
+      border-left: 4px solid var(--green500);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .investment-callout__title {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--green600);
+      margin-bottom: 0.375rem;
+    }
+
+    .investment-callout__text {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--slate600);
+    }
+
+    .investment-callout__highlight {
+      font-weight: 600;
+      color: var(--green600);
+    }
+
+    /* ── Timeline ── */
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .timeline-step {
+      border: 1px solid var(--slate200);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      text-align: center;
+    }
+
+    .timeline-step__number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--navy600);
+      color: var(--white);
+      font-weight: 600;
+      font-size: 0.75rem;
+      margin-bottom: 0.375rem;
+    }
+
+    .timeline-step__title {
+      font-weight: 600;
+      font-size: 0.8125rem;
+      color: var(--navy600);
+      line-height: 1.3;
+    }
+
+    .timeline-step__duration {
+      font-size: 0.75rem;
+      color: var(--slate500);
+      margin-top: 0.125rem;
+    }
+
+    /* ── Terms ── */
+    .terms-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .terms-block h4 {
+      font-weight: 600;
+      font-size: 0.8125rem;
+      color: var(--navy600);
+      margin-bottom: 0.375rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .terms-block p, .terms-block li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--slate600);
+    }
+
+    .terms-block ul {
+      list-style: disc;
+      padding-left: 1.125rem;
+    }
+
+    .terms-block ul li { padding: 0.125rem 0; }
+
+    /* ── Acceptance ── */
+    .acceptance {
+      border: 2px solid var(--navy600);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      page-break-inside: avoid;
+    }
+
+    .acceptance__title {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: var(--navy700);
+      margin-bottom: 0.75rem;
+    }
+
+    .acceptance__text {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--slate600);
+      margin-bottom: 1.25rem;
+    }
+
+    .sig-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .sig-block { }
+
+    .sig-line {
+      border-bottom: 1px solid var(--slate400);
+      height: 2rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .sig-label {
+      font-size: 0.75rem;
+      color: var(--slate500);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .sig-block + .sig-block .sig-line { margin-top: 1rem; }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 2px solid var(--navy100);
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--slate500);
+      line-height: 1.8;
+    }
+
+    .footer strong { color: var(--navy600); }
+
+    /* ── Helpers ── */
+    .editable {
+      background: var(--navy50);
+      border: 1px dashed var(--slate400);
+      border-radius: 4px;
+      padding: 0.125rem 0.375rem;
+      min-width: 4rem;
+      display: inline-block;
+    }
+
+    .editable:empty::before {
+      content: attr(data-placeholder);
+      color: var(--slate400);
+      font-style: italic;
+    }
+
+    @media print {
+      .editable {
+        background: none;
+        border: none;
+        padding: 0;
+      }
+      .editable:empty::before { display: none; }
+      .no-print { display: none !important; }
+    }
+
+    /* ── Edit Mode Banner ── */
+    .edit-banner {
+      position: sticky;
+      top: 0;
+      background: var(--amber500);
+      color: var(--white);
+      text-align: center;
+      padding: 0.5rem 1rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      z-index: 10;
+      margin: -0.5in -0.6in 1rem;
+      width: calc(100% + 1.2in);
+    }
+
+    .edit-banner a {
+      color: var(--white);
+      text-decoration: underline;
+      cursor: pointer;
+      margin-left: 1rem;
+    }
+
+    @media print {
+      .edit-banner { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Edit Mode Banner -->
+  <div class="edit-banner no-print">
+    Click any highlighted field to edit. &nbsp; <a onclick="window.print()">Print / Save as PDF</a>
+  </div>
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="header">
+    <div class="header__brand">
+      <div class="header__logo">B</div>
+      <div>
+        <div class="header__name">BaseScape</div>
+        <div class="header__tagline">Architectural Contracting</div>
+      </div>
+    </div>
+    <div class="header__meta">
+      <strong>(888) 414-0007</strong><br>
+      hello@basescapeutah.com<br>
+      basescapeutah.com
+    </div>
+  </header>
+
+  <!-- ═══════════════ TITLE ═══════════════ -->
+  <div class="doc-title">
+    <h1>Project Estimate</h1>
+    <div class="estimate-number">
+      Estimate #<span contenteditable="true" class="editable" data-placeholder="BS-0001">BS-0001</span>
+      &nbsp;&middot;&nbsp;
+      Date: <span contenteditable="true" class="editable" data-placeholder="April 1, 2026">April 1, 2026</span>
+      &nbsp;&middot;&nbsp;
+      Valid for 30 days
+    </div>
+  </div>
+
+  <!-- ═══════════════ CLIENT / PROJECT INFO ═══════════════ -->
+  <div class="info-grid">
+    <div class="info-box">
+      <div class="info-box__label">Prepared For</div>
+      <p>
+        <strong contenteditable="true" class="editable" data-placeholder="Homeowner Name"></strong><br>
+        <span contenteditable="true" class="editable" data-placeholder="123 Main Street"></span><br>
+        <span contenteditable="true" class="editable" data-placeholder="City, UT 84XXX"></span><br>
+        <span contenteditable="true" class="editable" data-placeholder="(801) 555-0000"></span>
+        &nbsp;&middot;&nbsp;
+        <span contenteditable="true" class="editable" data-placeholder="email@example.com"></span>
+      </p>
+    </div>
+    <div class="info-box">
+      <div class="info-box__label">Project Details</div>
+      <p>
+        <strong>Service:</strong> <span contenteditable="true" class="editable" data-placeholder="Walkout Basement">Walkout Basement</span><br>
+        <strong>Project Address:</strong> <span contenteditable="true" class="editable" data-placeholder="Same as above"></span><br>
+        <strong>Consultation Date:</strong> <span contenteditable="true" class="editable" data-placeholder="March 31, 2026"></span><br>
+        <strong>Estimated Start:</strong> <span contenteditable="true" class="editable" data-placeholder="TBD upon approval"></span>
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SCOPE OF WORK ═══════════════ -->
+  <h2 class="section-heading">Scope of Work</h2>
+
+  <p class="scope-text" contenteditable="true">
+    BaseScape will design and construct a code-compliant walkout basement entry on the south-facing elevation of the residence, including all excavation, structural framing, waterproofing, concrete flatwork, and finish grading. The completed walkout will provide a separate exterior entrance suitable for an accessory dwelling unit (ADU) or rental suite.
+  </p>
+
+  <ul class="scope-list">
+    <li contenteditable="true">Site excavation and soil retention (approx. 12 linear feet)</li>
+    <li contenteditable="true">Structural engineering and load-bearing header installation</li>
+    <li contenteditable="true">Foundation wall cut, reinforcement, and waterproof membrane</li>
+    <li contenteditable="true">Exterior door rough-in and installation (36" insulated entry door)</li>
+    <li contenteditable="true">Concrete landing, steps, and approach walkway</li>
+    <li contenteditable="true">Drainage system with French drain and sump tie-in</li>
+    <li contenteditable="true">Finish grading and site restoration</li>
+    <li contenteditable="true">All required permits and inspections</li>
+  </ul>
+
+  <!-- ═══════════════ LINE ITEMS ═══════════════ -->
+  <h2 class="section-heading">Investment Breakdown</h2>
+
+  <table class="line-items">
+    <thead>
+      <tr>
+        <th style="width: 40%;">Item</th>
+        <th>Description</th>
+        <th class="text-right" style="width: 15%;">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <strong>Excavation &amp; Site Work</strong>
+          <div class="item-desc">Dig-out, haul-off, temporary shoring</div>
+        </td>
+        <td contenteditable="true">Machine excavation, soil removal (est. 40 cu. yards), temporary bracing</td>
+        <td class="text-right" contenteditable="true">$5,800</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Structural &amp; Engineering</strong>
+          <div class="item-desc">Engineering stamp, headers, reinforcement</div>
+        </td>
+        <td contenteditable="true">Structural engineer plan, steel header, rebar and concrete reinforcement</td>
+        <td class="text-right" contenteditable="true">$7,200</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Waterproofing &amp; Drainage</strong>
+          <div class="item-desc">Membrane, French drain, sump</div>
+        </td>
+        <td contenteditable="true">Exterior waterproof membrane, perimeter French drain, sump connection</td>
+        <td class="text-right" contenteditable="true">$4,500</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Door &amp; Framing</strong>
+          <div class="item-desc">Rough-in, entry door, trim</div>
+        </td>
+        <td contenteditable="true">36" insulated steel entry door, framing, interior/exterior trim</td>
+        <td class="text-right" contenteditable="true">$3,800</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Concrete &amp; Flatwork</strong>
+          <div class="item-desc">Landing, stairs, walkway</div>
+        </td>
+        <td contenteditable="true">4" reinforced concrete landing (4'x6'), 5-tread stairway, walkway</td>
+        <td class="text-right" contenteditable="true">$6,200</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Finish &amp; Restoration</strong>
+          <div class="item-desc">Grading, cleanup, final inspection</div>
+        </td>
+        <td contenteditable="true">Backfill, finish grading, seed/sod patch, debris removal, final inspection</td>
+        <td class="text-right" contenteditable="true">$2,500</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Permits &amp; Inspections</strong>
+          <div class="item-desc">Building permit, engineering review</div>
+        </td>
+        <td contenteditable="true">Municipal building permit, plan review fees, all required inspections</td>
+        <td class="text-right" contenteditable="true">$1,500</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ═══════════════ TOTALS ═══════════════ -->
+  <div class="totals-wrap">
+    <div class="totals">
+      <div class="totals-row">
+        <span>Subtotal</span>
+        <span contenteditable="true" class="editable" data-placeholder="$31,500">$31,500</span>
+      </div>
+      <div class="totals-row">
+        <span>Sales Tax (0%)*</span>
+        <span>$0</span>
+      </div>
+      <div class="totals-row total">
+        <span>Total Investment</span>
+        <span contenteditable="true" class="editable" data-placeholder="$31,500">$31,500</span>
+      </div>
+    </div>
+  </div>
+
+  <p style="font-size: 0.75rem; color: var(--slate500); text-align: right; margin-top: -1rem; margin-bottom: 1.5rem;">
+    *Utah does not charge sales tax on contractor labor for new construction on residential real property. Materials tax is included in line-item pricing.
+  </p>
+
+  <!-- ═══════════════ ROI CALLOUT ═══════════════ -->
+  <div class="investment-callout">
+    <div class="investment-callout__title">Why This Is an Investment, Not an Expense</div>
+    <div class="investment-callout__text">
+      A code-compliant walkout entry enables a <span class="investment-callout__highlight">legal basement apartment generating $1,200 &ndash; $2,000/month in rental income</span> &mdash;
+      a <span class="investment-callout__highlight">1.5 &ndash; 2.5% gross monthly ROI</span> on this project. Most homeowners recoup the full investment within
+      <span contenteditable="true" class="editable" data-placeholder="18-24">18&ndash;24</span> months. Beyond cash flow, a finished walkout adds an estimated
+      <span contenteditable="true" class="editable" data-placeholder="$40,000-60,000">$40,000&ndash;$60,000</span> in appraised property value.
+    </div>
+  </div>
+
+  <!-- ═══════════════ TIMELINE ═══════════════ -->
+  <h2 class="section-heading">Estimated Project Timeline</h2>
+
+  <div class="timeline-grid">
+    <div class="timeline-step">
+      <div class="timeline-step__number">1</div>
+      <div class="timeline-step__title">Permits &amp; Engineering</div>
+      <div class="timeline-step__duration" contenteditable="true">1 &ndash; 2 weeks</div>
+    </div>
+    <div class="timeline-step">
+      <div class="timeline-step__number">2</div>
+      <div class="timeline-step__title">Excavation &amp; Shoring</div>
+      <div class="timeline-step__duration" contenteditable="true">2 &ndash; 3 days</div>
+    </div>
+    <div class="timeline-step">
+      <div class="timeline-step__number">3</div>
+      <div class="timeline-step__title">Structural &amp; Framing</div>
+      <div class="timeline-step__duration" contenteditable="true">3 &ndash; 5 days</div>
+    </div>
+    <div class="timeline-step">
+      <div class="timeline-step__number">4</div>
+      <div class="timeline-step__title">Waterproofing &amp; Concrete</div>
+      <div class="timeline-step__duration" contenteditable="true">5 &ndash; 7 days</div>
+    </div>
+    <div class="timeline-step">
+      <div class="timeline-step__number">5</div>
+      <div class="timeline-step__title">Finish &amp; Inspection</div>
+      <div class="timeline-step__duration" contenteditable="true">3 &ndash; 5 days</div>
+    </div>
+  </div>
+
+  <p class="scope-text" style="font-style: italic;">
+    Total estimated on-site duration: <strong contenteditable="true" class="editable" data-placeholder="4-5 weeks">4&ndash;5 weeks</strong> from permit approval. Timeline may vary based on weather, permit processing, and inspection scheduling.
+  </p>
+
+  <!-- ═══════════════ TERMS ═══════════════ -->
+  <h2 class="section-heading">Terms &amp; Conditions</h2>
+
+  <div class="terms-grid">
+    <div class="terms-block">
+      <h4>Payment Schedule</h4>
+      <ul>
+        <li><strong>30%</strong> due upon signed agreement (deposit)</li>
+        <li><strong>30%</strong> due at excavation completion</li>
+        <li><strong>30%</strong> due at framing/waterproofing completion</li>
+        <li><strong>10%</strong> due upon final inspection &amp; walkthrough</li>
+      </ul>
+    </div>
+    <div class="terms-block">
+      <h4>Warranty</h4>
+      <ul>
+        <li><strong>1-year workmanship warranty</strong> on all labor</li>
+        <li><strong>Manufacturer warranties</strong> on all materials (per product)</li>
+        <li><strong>10-year waterproofing warranty</strong> on membrane system</li>
+        <li>Warranty is transferable to new property owners</li>
+      </ul>
+    </div>
+    <div class="terms-block">
+      <h4>What's Included</h4>
+      <ul>
+        <li>All permits and inspection fees</li>
+        <li>Structural engineering stamp</li>
+        <li>Dumpster and debris removal</li>
+        <li>Site cleanup and finish grading</li>
+        <li>Project management and scheduling</li>
+      </ul>
+    </div>
+    <div class="terms-block">
+      <h4>Exclusions</h4>
+      <ul>
+        <li>Interior finishing (drywall, paint, flooring)</li>
+        <li>Electrical and plumbing beyond rough-in</li>
+        <li>Landscaping beyond basic sod/seed repair</li>
+        <li>HOA or architectural review fees (if applicable)</li>
+        <li>Unforeseen subsurface conditions (billed T&amp;M)</li>
+      </ul>
+    </div>
+  </div>
+
+  <p style="font-size: 0.8125rem; color: var(--slate600); line-height: 1.6; margin-bottom: 0.5rem;">
+    <strong>Change orders:</strong> Any work outside the scope described above will be documented in a written change order with pricing approved by the homeowner before work begins. No surprise charges.
+  </p>
+  <p style="font-size: 0.8125rem; color: var(--slate600); line-height: 1.6;">
+    <strong>Cancellation:</strong> This estimate may be cancelled by either party in writing before work begins. If cancelled after material ordering, the homeowner is responsible for non-refundable material costs.
+  </p>
+
+  <!-- ═══════════════ ACCEPTANCE ═══════════════ -->
+  <div class="acceptance">
+    <div class="acceptance__title">Authorization to Proceed</div>
+    <p class="acceptance__text">
+      By signing below, I authorize SAB Works Inc. (DBA BaseScape) to perform the work described in this estimate at the total investment listed above. I have reviewed the scope of work, payment schedule, warranty terms, and exclusions. I understand that a 30% deposit is due upon signing to secure my project on the schedule.
+    </p>
+
+    <div class="sig-grid">
+      <div class="sig-block">
+        <div class="sig-line"></div>
+        <div class="sig-label">Homeowner Signature</div>
+        <div style="margin-top: 1rem;">
+          <div class="sig-line"></div>
+          <div class="sig-label">Printed Name &nbsp;&nbsp;&middot;&nbsp;&nbsp; Date</div>
+        </div>
+      </div>
+      <div class="sig-block">
+        <div class="sig-line"></div>
+        <div class="sig-label">BaseScape Representative</div>
+        <div style="margin-top: 1rem;">
+          <div class="sig-line"></div>
+          <div class="sig-label">Printed Name &nbsp;&nbsp;&middot;&nbsp;&nbsp; Date</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer class="footer">
+    <strong>SAB Works Inc.</strong> &nbsp;&middot;&nbsp; DBA BaseScape &nbsp;&middot;&nbsp; Utah Contractor License <strong>#14082066-5501</strong> (B100 General)<br>
+    General Liability Insurance on file &nbsp;&middot;&nbsp; Certificate available upon request<br>
+    (888) 414-0007 &nbsp;&middot;&nbsp; hello@basescapeutah.com &nbsp;&middot;&nbsp; basescapeutah.com
+  </footer>
+
+</body>
+</html>

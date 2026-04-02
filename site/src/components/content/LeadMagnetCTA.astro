@@ -18,7 +18,7 @@ const {
 <div class="lead-magnet-cta">
   {thumbnailUrl && (
     <div class="lead-magnet-cta__thumb">
-      <img src={thumbnailUrl} alt={title} width="200" height="260" />
+      <img src={thumbnailUrl} alt={title} loading="lazy" decoding="async" width="200" height="260" />
     </div>
   )}
   <div class="lead-magnet-cta__content">

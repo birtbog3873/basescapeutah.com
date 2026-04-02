@@ -2,8 +2,6 @@ import type { CollectionAfterChangeHook } from 'payload'
 import { generateConfirmationEmail } from '../email/lead-confirmation'
 import { generateTeamNotification } from '../email/team-notification'
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
 export const afterLeadCreate: CollectionAfterChangeHook = async ({
   doc,
   previousDoc,
@@ -56,7 +54,7 @@ export const afterLeadCreate: CollectionAfterChangeHook = async ({
       req.payload.logger.error({
         msg: 'Failed to send confirmation email',
         leadId: doc.id,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error,
       })
     }
   }
@@ -83,7 +81,7 @@ export const afterLeadCreate: CollectionAfterChangeHook = async ({
     await req.payload.sendEmail({
       to: teamEmail,
       from: `BaseScape Leads <leads@basescape.com>`,
-      replyTo: doc.email && EMAIL_RE.test(doc.email) ? doc.email : undefined,
+      replyTo: doc.email || undefined,
       subject: notification.subject,
       html: notification.html,
     })
@@ -97,7 +95,7 @@ export const afterLeadCreate: CollectionAfterChangeHook = async ({
     req.payload.logger.error({
       msg: 'Failed to send team notification',
       leadId: doc.id,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error,
     })
   }
 
@@ -133,7 +131,7 @@ export const afterLeadCreate: CollectionAfterChangeHook = async ({
       req.payload.logger.error({
         msg: 'Failed to POST to Google Sheets webhook',
         leadId: doc.id,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error,
       })
     }
   }

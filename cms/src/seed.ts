@@ -45,6 +45,55 @@ function richText(text: string) {
   }
 }
 
+// Lexical node helpers for complex body content
+function heading(text: string) {
+  return {
+    type: 'heading',
+    tag: 'h2',
+    children: [{ type: 'text', text, format: 0, detail: 0, mode: 'normal', style: '', version: 1 }],
+    direction: 'ltr',
+    format: '',
+    indent: 0,
+    version: 1,
+  }
+}
+
+function paragraph(text: string) {
+  return {
+    type: 'paragraph',
+    children: [{ type: 'text', text, format: 0, detail: 0, mode: 'normal', style: '', version: 1 }],
+    direction: 'ltr',
+    format: '',
+    indent: 0,
+    textFormat: 0,
+    version: 1,
+  }
+}
+
+function listItem(text: string) {
+  return {
+    type: 'list',
+    listType: 'bullet',
+    children: [
+      {
+        type: 'listitem',
+        children: [{ type: 'text', text, format: 0, detail: 0, mode: 'normal', style: '', version: 1 }],
+        direction: 'ltr',
+        format: '',
+        indent: 0,
+        version: 1,
+        value: 1,
+      },
+    ],
+    direction: 'ltr',
+    format: '',
+    indent: 0,
+    start: 1,
+    tag: 'ul',
+    version: 1,
+  }
+}
+
 const CITIES = [
   { cityName: 'Provo', county: 'utah', lat: 40.2338, lng: -111.6585 },
   { cityName: 'Orem', county: 'utah', lat: 40.2969, lng: -111.6946 },
@@ -471,6 +520,132 @@ async function seed() {
       beforeImages: [{ image: projectBefore, caption: 'Dark basement before conversion' }],
       afterImages: [{ image: projectAfter, caption: 'Bright walkout with landscape access' }],
       featured: true,
+      status: 'published',
+    } as any,
+  })
+
+  // 8. Paid Landing Pages
+  console.log('Creating Paid Landing Pages...')
+
+  await payload.create({
+    collection: 'paid-landing-pages',
+    data: {
+      campaignSlug: 'walkout-basements',
+      headline: 'Your Basement Could Be Earning $1,500/Month',
+      subheadline: 'We build code-compliant walkout entries that turn finished basements into legal rental units. Fixed pricing, structural engineering included, 4–5 weeks from permit to done.',
+      heroImage: heroWalkout,
+      trustBadges: ['licensed', 'insured', 'free-estimate', 'no-hidden-charges'],
+      formType: 'multi-step',
+      targetService: walkout.id,
+      suppressNavigation: true,
+      utmCampaign: 'walkout-basements',
+      bodyContent: {
+        root: {
+          type: 'root',
+          children: [
+            heading('Here\u2019s How the Numbers Work for Most Utah Homeowners'),
+            paragraph('A finished walkout entry rents for $1,200\u2013$2,000/month on the Wasatch Front \u2014 that\u2019s $14,400\u2013$24,000/year in new income from space you already own.'),
+            paragraph('Most homeowners recoup the full investment in under 2 years. A walkout adds an estimated $40,000\u2013$60,000 in appraised home value on day one. With Utah\u2019s HB 82 ADU laws, your basement apartment is legal and in demand.'),
+            heading('Everything We Handle So You Don\u2019t Have To'),
+            listItem('Structural engineering stamp \u2014 so your wall meets code the first time'),
+            listItem('Full excavation and soil retention \u2014 we protect your yard and neighboring property'),
+            listItem('Waterproof membrane with 10-year warranty \u2014 no leaks, guaranteed'),
+            listItem('Concrete landing, stairs, and approach \u2014 finished and ready to use'),
+            listItem('All permits and inspections \u2014 you never visit city hall'),
+            listItem('Finish grading and full site cleanup \u2014 your yard looks better than before'),
+            heading('How Your Walkout Gets Built'),
+            paragraph('Step 1: We Visit Your Home \u2014 Free, no obligation.'),
+            paragraph('Step 2: You Get a Fixed Price \u2014 No surprises, ever.'),
+            paragraph('Step 3: We Handle the Paperwork \u2014 Permits, plans, inspections.'),
+            paragraph('Step 4: We Build It \u2014 4\u20135 weeks on site.'),
+            paragraph('Most projects completed in 6\u20138 weeks from contract to final inspection. Spring 2026 schedule is filling \u2014 book your visit this week.'),
+            heading('Common Questions'),
+            paragraph('How much does a walkout basement cost?'),
+            paragraph('Most walkout projects on the Wasatch Front run $35,000\u2013$55,000 depending on site conditions, length of the opening, and finish level. You\u2019ll get a fixed price after our free site visit \u2014 no ranges, no surprises.'),
+            paragraph('Do I need a permit?'),
+            paragraph('Yes \u2014 and we handle all of it. We pull the building permit, coordinate the structural engineering stamp, and schedule every required inspection. You never visit city hall.'),
+            paragraph('How long does it take?'),
+            paragraph('4\u20135 weeks of on-site work after permits are approved (permit approval takes 1\u20132 weeks). Most projects are done in 6\u20138 weeks total.'),
+            paragraph('What if you find something unexpected during excavation?'),
+            paragraph('Any work outside the original scope is documented in a written change order with pricing you approve before we proceed. No surprise charges, ever.'),
+            heading('Let\u2019s See If a Walkout Makes Sense for Your Home'),
+            paragraph('The first step is a free 15-minute site visit. We\u2019ll evaluate your property and show you the numbers \u2014 no obligation.'),
+          ],
+          direction: 'ltr',
+          format: '',
+          indent: 0,
+          version: 1,
+        },
+      },
+      seo: {
+        metaTitle: 'Walkout Basements | Earn $1,500/Month from Your Basement',
+        metaDescription: 'Code-compliant walkout basement entries on the Wasatch Front. Fixed pricing, structural engineering included, 4\u20135 weeks. Free site visit.',
+        noindex: true,
+      },
+      status: 'published',
+    } as any,
+  })
+
+  await payload.create({
+    collection: 'paid-landing-pages',
+    data: {
+      campaignSlug: 'retaining-walls',
+      headline: 'Retaining Walls That Actually Last on Wasatch Front Soil',
+      subheadline: 'Engineered retaining walls that stop erosion, redirect water, and add usable yard space. Structural engineering included. Fixed pricing \u2014 no surprises.',
+      heroImage: heroWalkout,
+      trustBadges: ['licensed', 'insured', 'bonded', 'free-estimate'],
+      formType: 'quick-callback',
+      targetService: retainingWalls.id,
+      suppressNavigation: true,
+      utmCampaign: 'retaining-walls',
+      bodyContent: {
+        root: {
+          type: 'root',
+          children: [
+            heading('Why Retaining Walls Can\u2019t Wait'),
+            paragraph('Wasatch Front soils shift. Spring runoff, clay expansion, and freeze-thaw cycles put pressure on slopes every year. A failing hillside doesn\u2019t fix itself \u2014 it gets worse and more expensive.'),
+            paragraph('Sound familiar? If you\u2019re seeing any of these, your slope is moving:'),
+            listItem('Fence or existing wall starting to lean'),
+            listItem('Cracks in your foundation, driveway, or patio'),
+            listItem('Water pooling against the house after rain'),
+            listItem('Soil creeping downhill or visible erosion channels'),
+            listItem('Doors or windows that stick (sign of settling)'),
+            paragraph('Even one of these means your slope is actively moving. The cost to fix it only goes up.'),
+            heading('We\u2019ll Recommend the Right Wall for Your Site'),
+            paragraph('Every slope is different. During your free site assessment, we evaluate soil type, grade, and drainage to recommend the best solution \u2014 not a one-size-fits-all answer.'),
+            listItem('Segmental block walls \u2014 versatile, cost-effective, great for 2\u20136 ft heights'),
+            listItem('Poured concrete walls \u2014 maximum strength for tall or load-bearing applications'),
+            listItem('Natural stone walls \u2014 premium look with structural engineering behind it'),
+            listItem('Terraced systems \u2014 multi-tier solutions that turn steep slopes into usable yard'),
+            paragraph('All walls over 4 feet include structural engineering stamp. Drainage systems included in every project.'),
+            heading('How Your Wall Gets Built'),
+            paragraph('Step 1: We Assess Your Site \u2014 Soil, grade, drainage \u2014 free.'),
+            paragraph('Step 2: You Get a Fixed Price \u2014 Engineered plans included.'),
+            paragraph('Step 3: We Build the Wall \u2014 Proper base, drainage, backfill.'),
+            paragraph('Step 4: You Get Your Yard Back \u2014 Inspected, cleaned up, done.'),
+            heading('Common Questions'),
+            paragraph('How much does a retaining wall cost?'),
+            paragraph('It depends on height, length, material, and site conditions. A short segmental block wall runs less than a tall engineered concrete wall. You\u2019ll get a fixed price after our free site visit \u2014 no vague ranges.'),
+            paragraph('Do retaining walls need permits?'),
+            paragraph('In most Wasatch Front cities, walls over 4 feet require a permit and structural engineering. We handle both. Even shorter walls get proper engineering when the soil or grade warrants it.'),
+            paragraph('How long does construction take?'),
+            paragraph('Most retaining wall projects take 1\u20133 weeks of on-site work, depending on length and complexity. Terraced or multi-wall systems may take longer.'),
+            paragraph('What happens if I wait?'),
+            paragraph('Slope erosion is progressive \u2014 every rain cycle makes it worse. A wall that costs $X today may cost 2\u20133X next year if the hillside reaches your foundation. The assessment is free. At minimum, you\u2019ll know what you\u2019re dealing with.'),
+            heading('The Assessment Is Free. The Peace of Mind Is Immediate.'),
+            paragraph('We\u2019ll evaluate your slope, explain your options, and give you a fixed price. No obligation, no pressure.'),
+          ],
+          direction: 'ltr',
+          format: '',
+          indent: 0,
+          version: 1,
+        },
+      },
+      seo: {
+        metaTitle: 'Retaining Walls | Wasatch Front Slope Solutions',
+        metaDescription: 'Engineered retaining walls that stop erosion and add usable yard space. Structural engineering included. Fixed pricing. Free site assessment.',
+        noindex: true,
+      },
       status: 'published',
     } as any,
   })

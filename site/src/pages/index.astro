@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 import CTABlock from '../components/content/CTABlock.astro'
 import ServiceCard from '../components/content/ServiceCard.astro'
 import TrustBadges from '../components/trust/TrustBadges.astro'
+import { Handshake, MessageCircle, ShieldCheck } from 'lucide-astro'
 import ReviewCard from '../components/trust/ReviewCard.astro'
 import JsonLd from '../components/seo/JsonLd.astro'
 import {
@@ -83,13 +84,13 @@ const localSchema = generateLocalBusinessSchema(settings, {
   <section class="hero">
     <div class="hero__inner">
       <div class="hero__content">
-        <span class="hero__overline">Utah's Wasatch Front</span>
+        <span class="hero__overline">Proudly Serving Utah's Wasatch Front</span>
         <h1 class="hero__title">
-          Your Basement Has a
-          <span class="hero__highlight">Better Future</span>
+          Worry-Free
+          <span class="hero__highlight">Basements & Outdoor Living</span>
         </h1>
         <p class="hero__subtitle">
-          Licensed, insured, and trusted by Wasatch Front homeowners. We handle everything — design, permits, and build — so you don't have to.
+          Get a written estimate with real pricing — no sales pitch, no surprises, no obligation. Just honest answers.
         </p>
         <form class="hero__zip-form" method="GET" action="/contact">
           <label for="hero-zip" class="sr-only">Enter your ZIP code</label>
@@ -104,8 +105,13 @@ const localSchema = generateLocalBusinessSchema(settings, {
             required
             class="hero__zip-input"
           />
-          <button type="submit" class="hero__zip-btn">Schedule a Free Design</button>
+          <button type="submit" class="hero__zip-btn">Get My Free Estimate</button>
         </form>
+        <ul class="hero__trust-line">
+          <li>Licensed & Insured</li>
+          <li>Full Design-Build</li>
+          <li>All Permits Handled</li>
+        </ul>
       </div>
       <div class="hero__visual">
         <img
@@ -114,6 +120,8 @@ const localSchema = generateLocalBusinessSchema(settings, {
           alt="Completed walkout basement on a Utah home — sliding glass doors open to an inviting patio with stone retaining walls, green lawn above, and Wasatch mountains in the distance"
           width="1200"
           height="805"
+          fetchpriority="high"
+          decoding="async"
         />
       </div>
     </div>
@@ -127,6 +135,28 @@ const localSchema = generateLocalBusinessSchema(settings, {
         insuranceInfo={settings.insuranceInfo}
         riskReversals={settings.riskReversals}
       />
+    </div>
+  </section>
+
+  <!-- BaseScape Promise -->
+  <section class="promise-section">
+    <div class="promise-section__inner">
+      <h2 class="promise-section__heading">The BaseScape Promise</h2>
+      <div class="promise-grid">
+        <div class="promise-card">
+          <Handshake class="promise-card__icon" size={48} stroke-width={1.25} />
+          <p class="promise-card__text">Never Feel Pressured</p>
+        </div>
+        <div class="promise-card">
+          <MessageCircle class="promise-card__icon" size={48} stroke-width={1.25} />
+          <p class="promise-card__text">Never Chase an Update</p>
+        </div>
+        <div class="promise-card">
+          <ShieldCheck class="promise-card__icon" size={48} stroke-width={1.25} />
+          <p class="promise-card__text">Never Worry</p>
+        </div>
+      </div>
+      <a href="/about" class="promise-cta">Our Brand Promise</a>
     </div>
   </section>
 
@@ -303,6 +333,35 @@ const localSchema = generateLocalBusinessSchema(settings, {
     background: var(--color-ctaPrimaryHover);
   }
 
+  .hero__trust-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--size-2) var(--size-4);
+    list-style: none;
+    padding: 0;
+    margin: var(--size-4) 0 0;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-textBody);
+  }
+
+  .hero__trust-line li {
+    display: flex;
+    align-items: center;
+    gap: var(--size-2);
+  }
+
+  .hero__trust-line li::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-green500);
+    flex-shrink: 0;
+  }
+
   .hero__visual {
     display: none;
   }
@@ -333,6 +392,90 @@ const localSchema = generateLocalBusinessSchema(settings, {
     .trust-section__inner {
       padding-inline: var(--size-6);
     }
+  }
+
+  .promise-section {
+    padding: var(--size-9) 0;
+    background: var(--color-bgAlt);
+    text-align: center;
+  }
+
+  .promise-section__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .promise-section__inner {
+      padding-inline: var(--size-6);
+    }
+  }
+
+  .promise-section__heading {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-variation-settings: "WONK" 0, "SOFT" 100;
+    font-size: clamp(1.625rem, 2vw + 0.5rem, 2.25rem);
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-6);
+  }
+
+  .promise-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-4);
+    margin-bottom: var(--size-6);
+  }
+
+  @media (min-width: 768px) {
+    .promise-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--size-5);
+    }
+  }
+
+  .promise-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--size-4);
+    padding: var(--size-7) var(--size-5);
+    background: var(--color-navy600);
+    border-radius: var(--radius-lg);
+    color: white;
+  }
+
+  .promise-card :global(.promise-card__icon) {
+    color: var(--color-green300);
+    opacity: 0.85;
+  }
+
+  .promise-card__text {
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 0.5vw + 0.75rem, 1.1875rem);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    margin: 0;
+  }
+
+  .promise-cta {
+    display: inline-block;
+    padding: var(--size-3) var(--size-6);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    letter-spacing: 0.03em;
+    color: white;
+    background: var(--color-navy600);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+
+  .promise-cta:hover {
+    background: var(--color-navy700);
   }
 
   .services-section,

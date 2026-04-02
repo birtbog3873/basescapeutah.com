@@ -40,7 +40,7 @@ const phoneClean = phone.replace(/[^\d+]/g, '')
     </div>
   </section>
 
-  <section class="contact-form-section">
+  <section class="contact-form-section" id="form">
     <div class="contact-form-section__inner">
       <MultiStepForm client:load sourcePage="/contact" phone={phone} />
     </div>
@@ -68,6 +68,17 @@ const phoneClean = phone.replace(/[^\d+]/g, '')
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  // Auto-scroll to the form when landing on the contact page
+  // Use requestAnimationFrame to wait for React hydration
+  requestAnimationFrame(() => {
+    const formSection = document.getElementById('form')
+    if (formSection) {
+      formSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  })
+</script>
 
 <style>
   .contact-hero {
@@ -101,12 +112,19 @@ const phoneClean = phone.replace(/[^\d+]/g, '')
 
   .contact-form-section {
     padding: var(--size-6) 0;
+    scroll-margin-top: var(--size-2);
   }
 
   .contact-form-section__inner {
     max-width: 600px;
     margin-inline: auto;
-    padding-inline: var(--size-4);
+    padding-inline: var(--size-2);
+  }
+
+  @media (min-width: 480px) {
+    .contact-form-section__inner {
+      padding-inline: var(--size-4);
+    }
   }
 
   .contact-trust-section {

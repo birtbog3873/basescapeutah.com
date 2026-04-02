@@ -3,9 +3,12 @@ import '@fontsource-variable/fraunces'
 import '@fontsource-variable/space-grotesk'
 import '../styles/global.css'
 import MobileBottomBar from '../components/layout/MobileBottomBar.astro'
+import MultiStepForm from '../components/forms/MultiStepForm.tsx'
+import QuickCallback from '../components/forms/QuickCallback.tsx'
 import TrustBadges from '../components/trust/TrustBadges.astro'
 import JsonLd from '../components/seo/JsonLd.astro'
 import { fetchSiteSettings } from '../lib/payload'
+import { serializeLexical } from '../lib/serialize-lexical'
 
 interface Props {
   page: any
@@ -45,10 +48,22 @@ const trustBadgeLabels: Record<string, string> = {
 const selectedBadges = (page.trustBadges || []).map((b: string) => trustBadgeLabels[b] || b)
 
 const noindex = page.seo?.noindex !== false
+
+const formType = page.formType
+const preselectedService = page.targetService?.slug || ''
+const mobileBarLabel = formType === 'quick-callback' ? 'Free Assessment' : 'Get My Plan'
 ---
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Google Tag Manager -->
+    <script is:inline>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TD7KRSBB');</script>
+    <!-- End Google Tag Manager -->
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={page.seo?.metaDescription || ''} />
@@ -65,6 +80,12 @@ const noindex = page.seo?.noindex !== false
     <slot name="head" />
   </head>
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TD7KRSBB"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <div class="page-scroll">
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <!-- Minimal landing page header -->
@@ -113,18 +134,37 @@ const noindex = page.seo?.noindex !== false
 
           {page.heroImage && (
             <div class="lp-hero__image">
-              <img src={page.heroImage.url} alt={page.heroImage.alt || page.headline} width="600" height="400" />
+              <img src={page.heroImage.url} alt={page.heroImage.alt || page.headline} width="600" height="400" fetchpriority="high" decoding="async" />
             </div>
           )}
         </div>
       </section>
 
+      <!-- Lead Capture Form -->
+      {formType && (
+        <section class="lp-form" id="lp-form">
+          <div class="lp-form__inner">
+            {formType === 'multi-step' ? (
+              <MultiStepForm
+                client:visible
+                sourcePage={`/lp/${page.campaignSlug}`}
+                phone={phone}
+                preselectedService={preselectedService}
+              />
+            ) : (
+              <QuickCallback
+                client:visible
+                sourcePage={`/lp/${page.campaignSlug}`}
+              />
+            )}
+          </div>
+        </section>
+      )}
+
       <!-- Body Content -->
       <section class="lp-body">
         <div class="lp-body__inner">
-          <div class="lp-body__content" set:html={
-            typeof page.bodyContent === 'string' ? page.bodyContent : ''
-          } />
+          <div class="lp-body__content" set:html={serializeLexical(page.bodyContent)} />
         </div>
       </section>
 
@@ -150,8 +190,12 @@ const noindex = page.seo?.noindex !== false
         </div>
       </section>
     </main>
+    </div>
 
-    <MobileBottomBar />
+    <MobileBottomBar
+      estimateLabel={formType ? mobileBarLabel : 'Free Estimate'}
+      estimateHref={formType ? '#lp-form' : '/contact'}
+    />
   </body>
 </html>
 
@@ -289,6 +333,19 @@ const noindex = page.seo?.noindex !== false
 
   .lp-badge svg {
     color: var(--color-green500);
+  }
+
+  .lp-form {
+    padding: var(--size-6) 0;
+    background: var(--color-bgSurface, #fff);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .lp-form__inner {
+    max-width: 600px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
   }
 
   .lp-body {

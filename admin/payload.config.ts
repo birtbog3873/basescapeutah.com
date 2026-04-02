@@ -21,8 +21,9 @@ import { BlogPosts } from './src/collections/BlogPosts'
 import { SiteSettings } from './src/globals/SiteSettings'
 import { Navigation } from './src/globals/Navigation'
 
-// Deploy hook (copied from cms/src/hooks/)
+// Hooks
 import { deployHookCollection, deployHookGlobal } from './src/hooks/deployHook'
+import { afterLeadCreate } from './src/hooks/afterLeadCreate'
 
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET || 'dev-secret-change-me',
@@ -92,7 +93,13 @@ export default buildConfig({
         afterChange: [...(Projects.hooks?.afterChange || []), deployHookCollection],
       },
     },
-    Leads,
+    {
+      ...Leads,
+      hooks: {
+        ...Leads.hooks,
+        afterChange: [...(Leads.hooks?.afterChange || []), afterLeadCreate],
+      },
+    },
     Offers,
     PaidLandingPages,
     LeadMagnets,

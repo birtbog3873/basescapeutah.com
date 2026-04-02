@@ -42,9 +42,14 @@ async function getConfig(env: Env) {
   const { Navigation } = await import('./globals/Navigation')
 
   const { deployHookCollection, deployHookGlobal } = await import('./hooks/deployHook')
+  const { afterLeadCreate } = await import('./hooks/afterLeadCreate')
+
+  if (!process.env.PAYLOAD_SECRET) {
+    throw new Error('PAYLOAD_SECRET environment variable is required')
+  }
 
   cachedConfig = buildConfig({
-    secret: process.env.PAYLOAD_SECRET || 'dev-secret-change-me',
+    secret: process.env.PAYLOAD_SECRET,
     editor: lexicalEditor(),
     db: sqliteD1Adapter({
       binding: env.DB,
@@ -108,7 +113,13 @@ async function getConfig(env: Env) {
           afterChange: [...(Projects.hooks?.afterChange || []), deployHookCollection],
         },
       },
-      Leads,
+      {
+        ...Leads,
+        hooks: {
+          ...Leads.hooks,
+          afterChange: [...(Leads.hooks?.afterChange || []), afterLeadCreate],
+        },
+      },
       Offers,
       PaidLandingPages,
       LeadMagnets,

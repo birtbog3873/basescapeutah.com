@@ -13,7 +13,7 @@ const { title, slug, projectType, city, thumbnail, challenge } = Astro.props
 <a href={`/gallery#${slug}`} class="project-card">
   <div class="project-card__image">
     {thumbnail ? (
-      <img src={thumbnail.url} alt={thumbnail.alt} loading="lazy" width="600" height="400" />
+      <img src={thumbnail.url} alt={thumbnail.alt} loading="lazy" decoding="async" width="600" height="400" />
     ) : (
       <div class="project-card__placeholder" aria-hidden="true">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">

@@ -13,6 +13,7 @@ import {
   generateBreadcrumbSchema,
 } from '../lib/schema'
 import { fetchSiteSettings, fetchProjects } from '../lib/payload'
+import { serializeLexical } from '../lib/serialize-lexical'
 
 interface Props {
   area: any
@@ -73,9 +74,7 @@ if (displayProjects.length === 0) {
 
 const faqItems = localFAQs.map((f: any) => ({
   question: f.question,
-  answer: typeof f.answer === 'string'
-    ? f.answer
-    : f.answer?.root?.children?.map((c: any) => c.children?.map((t: any) => t.text).join('')).join('<br>') || '',
+  answer: serializeLexical(f.answer),
 }))
 
 // JSON-LD schemas

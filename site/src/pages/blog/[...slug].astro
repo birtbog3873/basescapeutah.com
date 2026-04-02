@@ -5,6 +5,7 @@ import LeadMagnetCTA from '../../components/content/LeadMagnetCTA.astro'
 import JsonLd from '../../components/seo/JsonLd.astro'
 import { generateArticleSchema, generateBreadcrumbSchema } from '../../lib/schema'
 import { fetchBlogPosts, fetchSiteSettings } from '../../lib/payload'
+import { serializeLexical } from '../../lib/serialize-lexical'
 
 export async function getStaticPaths() {
   let posts: any[] = []
@@ -97,9 +98,7 @@ const leadMagnet = post.leadMagnetCTA
 
     <!-- Content -->
     <div class="blog-article__body">
-      <div class="blog-article__content" set:html={
-        typeof post.content === 'string' ? post.content : ''
-      } />
+      <div class="blog-article__content" set:html={serializeLexical(post.content)} />
 
       <!-- Inline Lead Magnet CTA -->
       {leadMagnet && leadMagnet.title && (

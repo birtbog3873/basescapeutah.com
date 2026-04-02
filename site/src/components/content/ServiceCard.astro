@@ -23,7 +23,7 @@ const pillarLabels: Record<string, string> = {
 <a href={`/services/${slug}`} class="service-card" aria-label={`Learn more about ${title}`}>
   <div class="service-card__image">
     {heroImage ? (
-      <img src={heroImage.url} alt={heroImage.alt} loading="lazy" width="600" height="400" />
+      <img src={heroImage.url} alt={heroImage.alt} loading="lazy" decoding="async" width="600" height="400" />
     ) : (
       <div class="service-card__placeholder" aria-hidden="true">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">

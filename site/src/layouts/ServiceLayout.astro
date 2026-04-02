@@ -85,7 +85,7 @@ const pillar = pillarAccents[service.primaryValuePillar] || pillarAccents.transf
     </div>
     {service.heroImage && (
       <div class="service-hero__image">
-        <img src={service.heroImage.url} alt={service.heroImage.alt} width="1200" height="800" />
+        <img src={service.heroImage.url} alt={service.heroImage.alt} width="1200" height="800" fetchpriority="high" decoding="async" />
       </div>
     )}
   </section>

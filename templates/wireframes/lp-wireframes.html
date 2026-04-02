@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BaseScape Landing Page Wireframes</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy600: #1B3B5E;
+      --navy700: #152E4A;
+      --navy800: #102437;
+      --navy100: #D9E2EC;
+      --navy50: #F0F4F8;
+      --green600: #4A8030;
+      --green500: #5EA03C;
+      --green50: #F2F9EE;
+      --amber500: #E8920A;
+      --amber600: #C27708;
+      --amber700: #9A5D06;
+      --amber50: #FFF8EB;
+      --teal500: #2A7B78;
+      --teal50: #EEF8F7;
+      --slate100: #F1F4F8;
+      --slate200: #E3E8EF;
+      --slate300: #CDD5DF;
+      --slate400: #9AA5B4;
+      --slate500: #697686;
+      --slate600: #4B5563;
+      --white: #FFFFFF;
+      --bg: #F8FAFB;
+      --font-serif: 'Fraunces', Georgia, serif;
+      --font-sans: 'Space Grotesk', system-ui, sans-serif;
+    }
+
+    html { font-size: 15px; scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: #0F172A;
+      color: var(--slate200);
+      min-height: 100vh;
+    }
+
+    /* ── Nav between wireframes ── */
+    .wf-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .wf-nav__title {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--white);
+    }
+
+    .wf-nav__title span { color: var(--green500); }
+
+    .wf-nav__links {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .wf-nav__link {
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      text-decoration: none;
+      color: var(--slate300);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.15s;
+    }
+
+    .wf-nav__link:hover, .wf-nav__link.active {
+      background: var(--navy600);
+      color: var(--white);
+      border-color: var(--navy600);
+    }
+
+    /* ── Page Container ── */
+    .wf-page {
+      max-width: 480px;
+      margin: 2.5rem auto;
+      background: var(--white);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+      position: relative;
+    }
+
+    .wf-page-label {
+      text-align: center;
+      padding: 2rem 2rem 0.5rem;
+    }
+
+    .wf-page-label h2 {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--white);
+    }
+
+    .wf-page-label p {
+      font-size: 0.8125rem;
+      color: var(--slate400);
+      margin-top: 0.25rem;
+    }
+
+    .wf-page-label .wf-slug {
+      display: inline-block;
+      font-family: monospace;
+      font-size: 0.75rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      color: var(--teal500);
+      margin-top: 0.5rem;
+    }
+
+    /* ── Section annotations ── */
+    .ann {
+      position: relative;
+    }
+
+    .ann::before {
+      content: attr(data-field);
+      position: absolute;
+      right: -8px;
+      top: 8px;
+      transform: translateX(100%);
+      font-family: monospace;
+      font-size: 0.625rem;
+      color: var(--amber500);
+      background: rgba(232, 146, 10, 0.12);
+      border: 1px solid rgba(232, 146, 10, 0.25);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+      white-space: nowrap;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    @media (max-width: 700px) {
+      .ann::before { display: none; }
+    }
+
+    /* ── Inside the wireframe page ── */
+
+    /* Header */
+    .lp-wf-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--slate200);
+    }
+
+    .lp-wf-logo {
+      font-family: var(--font-serif);
+      font-weight: 800;
+      font-size: 1.125rem;
+      color: var(--navy700);
+      text-decoration: none;
+    }
+
+    .lp-wf-logo span { color: var(--green500); }
+
+    .lp-wf-phone {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      font-weight: 600;
+      font-size: 0.8125rem;
+      color: var(--navy600);
+      text-decoration: none;
+    }
+
+    /* Hero */
+    .lp-wf-hero {
+      padding: 2rem 1.5rem 1.5rem;
+      background: linear-gradient(180deg, var(--bg) 0%, var(--white) 100%);
+    }
+
+    .lp-wf-hero__overline {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--teal500);
+      margin-bottom: 0.5rem;
+    }
+
+    .lp-wf-hero h1 {
+      font-family: var(--font-serif);
+      font-weight: 800;
+      font-size: 1.75rem;
+      line-height: 1.15;
+      color: var(--navy700);
+      margin-bottom: 0.75rem;
+    }
+
+    .lp-wf-hero__sub {
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      color: var(--slate600);
+      margin-bottom: 1rem;
+    }
+
+    .lp-wf-hero__img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      margin-top: 1.25rem;
+    }
+
+    .lp-wf-hero__img-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--slate400);
+    }
+
+    .lp-wf-hero__img-placeholder.walkout {
+      background: linear-gradient(135deg, #8B9C7B 0%, #5C7A4E 40%, #3D5A2E 100%);
+      color: rgba(255,255,255,0.7);
+    }
+
+    .lp-wf-hero__img-placeholder.retaining {
+      background: linear-gradient(135deg, #9B8B7B 0%, #7A6A5E 40%, #5A4A3E 100%);
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* Trust Badges */
+    .lp-wf-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+    }
+
+    .lp-wf-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.625rem;
+      background: var(--navy50);
+      border: 1px solid var(--navy100);
+      border-radius: 6px;
+      font-size: 0.6875rem;
+      font-weight: 500;
+      color: var(--navy600);
+    }
+
+    .lp-wf-badge svg { color: var(--green500); flex-shrink: 0; }
+
+    /* CTA button */
+    .lp-wf-cta {
+      display: block;
+      width: 100%;
+      padding: 0.875rem;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      margin-top: 1.25rem;
+    }
+
+    .lp-wf-cta--primary {
+      background: var(--amber700);
+      color: var(--white);
+    }
+
+    .lp-wf-cta--secondary {
+      background: var(--navy600);
+      color: var(--white);
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    /* Sections */
+    .lp-wf-section {
+      padding: 1.75rem 1.5rem;
+    }
+
+    .lp-wf-section + .lp-wf-section {
+      border-top: 1px solid var(--slate200);
+    }
+
+    .lp-wf-section h2 {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--navy700);
+      margin-bottom: 0.75rem;
+      line-height: 1.25;
+    }
+
+    .lp-wf-section p {
+      font-size: 0.875rem;
+      line-height: 1.7;
+      color: var(--slate600);
+      margin-bottom: 0.75rem;
+    }
+
+    .lp-wf-section p:last-child { margin-bottom: 0; }
+
+    /* ROI Callout */
+    .lp-wf-roi {
+      background: linear-gradient(135deg, var(--green50) 0%, var(--teal50) 100%);
+      border: 1px solid var(--green500);
+      border-left: 4px solid var(--green500);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+    }
+
+    .lp-wf-roi__title {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 0.9375rem;
+      color: var(--green600);
+      margin-bottom: 0.375rem;
+    }
+
+    .lp-wf-roi__text {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--slate600);
+    }
+
+    .lp-wf-roi__text strong { color: var(--green600); }
+
+    /* Safety Callout (retaining walls) */
+    .lp-wf-safety {
+      background: linear-gradient(135deg, var(--navy50) 0%, var(--teal50) 100%);
+      border: 1px solid var(--navy600);
+      border-left: 4px solid var(--navy600);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+    }
+
+    .lp-wf-safety__title {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 0.9375rem;
+      color: var(--navy700);
+      margin-bottom: 0.375rem;
+    }
+
+    .lp-wf-safety__text {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--slate600);
+    }
+
+    /* Checklist */
+    .lp-wf-checklist {
+      list-style: none;
+      margin: 0.75rem 0;
+    }
+
+    .lp-wf-checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--slate600);
+      padding: 0.375rem 0;
+      line-height: 1.5;
+    }
+
+    .lp-wf-checklist li svg { flex-shrink: 0; margin-top: 2px; color: var(--green500); }
+
+    /* Process Steps */
+    .lp-wf-steps {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 0.75rem 0;
+    }
+
+    .lp-wf-step {
+      text-align: center;
+      padding: 1rem 0.75rem;
+      border: 1px solid var(--slate200);
+      border-radius: 8px;
+      background: var(--bg);
+    }
+
+    .lp-wf-step__num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--navy600);
+      color: var(--white);
+      font-weight: 700;
+      font-size: 0.8125rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.375rem;
+    }
+
+    .lp-wf-step__title {
+      font-weight: 600;
+      font-size: 0.8125rem;
+      color: var(--navy600);
+      line-height: 1.3;
+    }
+
+    .lp-wf-step__sub {
+      font-size: 0.6875rem;
+      color: var(--slate500);
+      margin-top: 0.125rem;
+    }
+
+    /* Form placeholder */
+    .lp-wf-form {
+      border: 2px dashed var(--amber500);
+      border-radius: 10px;
+      padding: 1.5rem;
+      background: var(--amber50);
+      text-align: center;
+    }
+
+    .lp-wf-form__title {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 1.125rem;
+      color: var(--navy700);
+      margin-bottom: 0.375rem;
+    }
+
+    .lp-wf-form__note {
+      font-size: 0.75rem;
+      color: var(--amber700);
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+
+    .lp-wf-form__fields {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-width: 320px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .lp-wf-form__field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .lp-wf-form__field label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--slate600);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .lp-wf-form__field .mock-input {
+      height: 36px;
+      border: 1px solid var(--slate300);
+      border-radius: 6px;
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      padding: 0 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--slate400);
+    }
+
+    .lp-wf-form__field .mock-select {
+      height: 36px;
+      border: 1px solid var(--slate300);
+      border-radius: 6px;
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--slate400);
+    }
+
+    /* Social Proof */
+    .lp-wf-proof {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem 1rem;
+      background: var(--navy50);
+      border-radius: 8px;
+      margin: 0.75rem 0;
+    }
+
+    .lp-wf-proof__stars {
+      color: var(--amber500);
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
+
+    .lp-wf-proof__text {
+      font-size: 0.8125rem;
+      color: var(--slate600);
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    .lp-wf-proof__attr {
+      font-size: 0.6875rem;
+      font-style: normal;
+      font-weight: 600;
+      color: var(--navy600);
+    }
+
+    /* Phone CTA */
+    .lp-wf-phone-cta {
+      text-align: center;
+      padding: 1.5rem;
+      background: var(--navy700);
+      color: var(--white);
+    }
+
+    .lp-wf-phone-cta p {
+      font-size: 0.875rem;
+      color: var(--navy100);
+      margin-bottom: 0.5rem;
+    }
+
+    .lp-wf-phone-cta a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: var(--white);
+      text-decoration: none;
+      padding: 0.5rem 1.5rem;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 8px;
+    }
+
+    /* Terms */
+    .lp-wf-terms {
+      padding: 0.75rem 1.5rem;
+      background: var(--bg);
+      font-size: 0.6875rem;
+      color: var(--slate500);
+      line-height: 1.6;
+    }
+
+    /* Mobile bar */
+    .lp-wf-mobile-bar {
+      display: flex;
+      border-top: 1px solid var(--slate200);
+      background: var(--white);
+    }
+
+    .lp-wf-mobile-bar a {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.375rem;
+      padding: 0.75rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .lp-wf-mobile-bar a:first-child {
+      background: var(--amber700);
+      color: var(--white);
+    }
+
+    .lp-wf-mobile-bar a:last-child {
+      background: var(--navy600);
+      color: var(--white);
+    }
+
+    /* ── Design Note Blocks ── */
+    .design-note {
+      margin: 1.5rem 2rem;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+    }
+
+    .design-note--warn {
+      background: rgba(232, 146, 10, 0.1);
+      border: 1px solid rgba(232, 146, 10, 0.3);
+      color: var(--amber500);
+    }
+
+    .design-note--info {
+      background: rgba(42, 123, 120, 0.1);
+      border: 1px solid rgba(42, 123, 120, 0.3);
+      color: var(--teal500);
+    }
+
+    .design-note strong { display: block; margin-bottom: 0.25rem; }
+
+    /* ── Section Divider ── */
+    .wf-divider {
+      text-align: center;
+      padding: 3rem 2rem;
+    }
+
+    .wf-divider hr {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 2rem;
+    }
+
+    .wf-divider h3 {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 1.125rem;
+      color: var(--slate400);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ TOP NAV ═══ -->
+  <nav class="wf-nav">
+    <div class="wf-nav__title">Base<span>Scape</span> &mdash; Landing Page Wireframes</div>
+    <div class="wf-nav__links">
+      <a href="#walkout" class="wf-nav__link active">Walkout Basements</a>
+      <a href="#retaining" class="wf-nav__link">Retaining Walls</a>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       WIREFRAME 1: BASEMENT WALKOUTS
+       /lp/walkout-basements
+       ══════════════════════════════════════════════════════════════ -->
+
+  <div id="walkout" class="wf-page-label">
+    <h2>Walkout Basements Landing Page</h2>
+    <p>Anchor service &mdash; Financial ROI narrative &mdash; $35K-55K projects</p>
+    <div class="wf-slug">/lp/walkout-basements</div>
+  </div>
+
+  <div class="wf-page">
+
+    <!-- Header -->
+    <header class="lp-wf-header">
+      <a class="lp-wf-logo">Base<span>Scape</span></a>
+      <a class="lp-wf-phone">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.88.37 1.74.7 2.56a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.82.33 1.68.57 2.56.7A2 2 0 0 1 22 16.92z"/></svg>
+        (888) 414-0007
+      </a>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="lp-wf-hero ann" data-field="headline + subheadline">
+      <div class="lp-wf-hero__overline">Wasatch Front &bull; Licensed B100 General Contractor</div>
+      <h1>Your Basement Could Be Earning $1,500/Month</h1>
+      <p class="lp-wf-hero__sub">
+        We build code-compliant walkout entries that turn finished basements into legal rental units. Fixed pricing, structural engineering included, 4&ndash;5 weeks from permit to done.
+      </p>
+
+      <div class="lp-wf-badges ann" data-field="trustBadges[]">
+        <span class="lp-wf-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          Licensed
+        </span>
+        <span class="lp-wf-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          Insured
+        </span>
+        <span class="lp-wf-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          Free Estimates
+        </span>
+        <span class="lp-wf-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          No Hidden Charges
+        </span>
+      </div>
+
+      <div class="lp-wf-hero__img ann" data-field="heroImage">
+        <div class="lp-wf-hero__img-placeholder walkout">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Completed walkout basement with exterior entrance &mdash; landscaped, code-compliant
+        </div>
+      </div>
+    </section>
+
+    <!-- Form Section (NOT IN CURRENT LAYOUT) -->
+    <section class="lp-wf-section">
+      <div class="lp-wf-form ann" data-field="formType: multi-step">
+        <div class="lp-wf-form__title">See What Your Walkout Would Cost</div>
+        <div class="lp-wf-form__note">MultiStepForm component &mdash; not yet wired into LandingLayout.astro</div>
+
+        <div class="lp-wf-form__fields">
+          <div class="lp-wf-form__field">
+            <label>Service Type</label>
+            <div class="mock-select">Walkout Basement (pre-selected) <span>&darr;</span></div>
+          </div>
+          <div class="lp-wf-form__field">
+            <label>Your Zip Code</label>
+            <div class="mock-input">84XXX</div>
+          </div>
+          <button class="lp-wf-cta lp-wf-cta--primary" style="margin-top: 0.5rem;">Get My Custom Walkout Plan &rarr;</button>
+        </div>
+        <p style="font-size: 0.6875rem; color: var(--slate500); margin-top: 0.75rem;">No sales pressure. You'll get a site-specific cost range within 48 hours.</p>
+      </div>
+    </section>
+
+    <!-- ROI Narrative -->
+    <section class="lp-wf-section ann" data-field="bodyContent (rich text)">
+      <h2>Here's How the Numbers Work for Most Utah Homeowners</h2>
+      <p>A finished walkout entry rents for <strong style="color: var(--green600);">$1,200&ndash;$2,000/month</strong> on the Wasatch Front &mdash; that's <strong style="color: var(--green600);">$14,400&ndash;$24,000/year</strong> in new income from space you already own.</p>
+
+      <div class="lp-wf-roi">
+        <div class="lp-wf-roi__title">The Investment Math</div>
+        <div class="lp-wf-roi__text">
+          Most homeowners recoup the full investment in <strong>under 2 years</strong>.<br>
+          A walkout adds an estimated <strong>$40,000&ndash;$60,000</strong> in appraised home value on day one.<br>
+          With Utah's HB 82 ADU laws, your basement apartment is legal and in demand.
+        </div>
+      </div>
+    </section>
+
+    <!-- What's Included -->
+    <section class="lp-wf-section">
+      <h2>Everything We Handle So You Don't Have To</h2>
+      <ul class="lp-wf-checklist">
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <div><strong style="color: var(--navy600);">Structural engineering stamp</strong> &mdash; so your wall meets code the first time</div>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <div><strong style="color: var(--navy600);">Full excavation and soil retention</strong> &mdash; we protect your yard and neighboring property</div>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <div><strong style="color: var(--navy600);">Waterproof membrane with 10-year warranty</strong> &mdash; no leaks, guaranteed</div>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <div><strong style="color: var(--navy600);">Concrete landing, stairs, and approach</strong> &mdash; finished and ready to use</div>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <div><strong style="color: var(--navy600);">All permits and inspections</strong> &mdash; you never visit city hall</div>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <div><strong style="color: var(--navy600);">Finish grading and full site cleanup</strong> &mdash; your yard looks better than before</div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Process -->
+    <section class="lp-wf-section">
+      <h2>How Your Walkout Gets Built</h2>
+      <div class="lp-wf-steps">
+        <div class="lp-wf-step">
+          <div class="lp-wf-step__num">1</div>
+          <div class="lp-wf-step__title">We Visit Your Home</div>
+          <div class="lp-wf-step__sub">Free, no obligation</div>
+        </div>
+        <div class="lp-wf-step">
+          <div class="lp-wf-step__num">2</div>
+          <div class="lp-wf-step__title">You Get a Fixed Price</div>
+          <div class="lp-wf-step__sub">No surprises, ever</div>
+        </div>
+        <div class="lp-wf-step">
+          <div class="lp-wf-step__num">3</div>
+          <div class="lp-wf-step__title">We Handle the Paperwork</div>
+          <div class="lp-wf-step__sub">Permits, plans, inspections</div>
+        </div>
+        <div class="lp-wf-step">
+          <div class="lp-wf-step__num">4</div>
+          <div class="lp-wf-step__title">We Build It</div>
+          <div class="lp-wf-step__sub">4&ndash;5 weeks on site</div>
+        </div>
+      </div>
+      <p style="text-align: center; font-size: 0.8125rem; color: var(--slate500); margin-top: 0.5rem;">
+        Most projects completed in <strong style="color: var(--navy600);">6&ndash;8 weeks</strong> from contract to final inspection. Spring 2026 schedule is filling &mdash; book your visit this week.
+      </p>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="lp-wf-section">
+      <h2>What Homeowners Say</h2>
+      <div class="lp-wf-proof">
+        <div>
+          <div class="lp-wf-proof__stars">&starf;&starf;&starf;&starf;&starf;</div>
+        </div>
+        <div>
+          <div class="lp-wf-proof__text">
+            "The walkout has been renting for $1,800/month since day one. Best investment we've made on this house."
+            <div class="lp-wf-proof__attr">&mdash; Review placeholder, Lehi UT</div>
+          </div>
+        </div>
+      </div>
+      <div class="lp-wf-proof">
+        <div>
+          <div class="lp-wf-proof__stars">&starf;&starf;&starf;&starf;&starf;</div>
+        </div>
+        <div>
+          <div class="lp-wf-proof__text">
+            "They handled everything &mdash; permits, engineering, inspections. We didn't have to worry about a thing."
+            <div class="lp-wf-proof__attr">&mdash; Review placeholder, Draper UT</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="lp-wf-section">
+      <h2>Common Questions</h2>
+      <div style="margin-bottom: 1rem;">
+        <p style="font-weight: 600; color: var(--navy600); margin-bottom: 0.25rem;">How much does a walkout basement cost?</p>
+        <p>Most walkout projects on the Wasatch Front run $35,000&ndash;$55,000 depending on site conditions, length of the opening, and finish level. You'll get a fixed price after our free site visit &mdash; no ranges, no surprises.</p>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <p style="font-weight: 600; color: var(--navy600); margin-bottom: 0.25rem;">Do I need a permit?</p>
+        <p>Yes &mdash; and we handle all of it. We pull the building permit, coordinate the structural engineering stamp, and schedule every required inspection. You never visit city hall.</p>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <p style="font-weight: 600; color: var(--navy600); margin-bottom: 0.25rem;">How long does it take?</p>
+        <p>4&ndash;5 weeks of on-site work after permits are approved (permit approval takes 1&ndash;2 weeks). Most projects are done in 6&ndash;8 weeks total.</p>
+      </div>
+      <div>
+        <p style="font-weight: 600; color: var(--navy600); margin-bottom: 0.25rem;">What if you find something unexpected during excavation?</p>
+        <p>Any work outside the original scope is documented in a written change order with pricing you approve before we proceed. No surprise charges, ever.</p>
+      </div>
+    </section>
+
+    <!-- Secondary CTA -->
+    <section class="lp-wf-section" style="text-align: center;">
+      <h2>Let's See If a Walkout Makes Sense for Your Home</h2>
+      <p style="max-width: 320px; margin: 0 auto;">The first step is a free 15-minute site visit. We'll evaluate your property and show you the numbers &mdash; no obligation.</p>
+      <button class="lp-wf-cta lp-wf-cta--primary" style="max-width: 320px; margin: 1rem auto 0;">Get My Custom Walkout Plan</button>
+      <p style="font-size: 0.6875rem; color: var(--slate500); margin-top: 0.5rem;">Takes 30 seconds. We'll call to schedule your visit.</p>
+    </section>
+
+    <!-- Offer Terms -->
+    <div class="lp-wf-terms ann" data-field="offer.terms">
+      Offer valid for Wasatch Front service area. Free estimates with no obligation. Project pricing is fixed upon signed agreement and does not change. Utah contractor license #14082066-5501 (B100). Fully insured and bonded.
+    </div>
+
+    <!-- Phone CTA -->
+    <div class="lp-wf-phone-cta">
+      <p>Prefer to talk? Call us directly:</p>
+      <a href="tel:+18884140007">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.88.37 1.74.7 2.56a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.82.33 1.68.57 2.56.7A2 2 0 0 1 22 16.92z"/></svg>
+        (888) 414-0007
+      </a>
+    </div>
+
+    <!-- Mobile Bottom Bar -->
+    <div class="lp-wf-mobile-bar">
+      <a href="#">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Get My Plan
+      </a>
+      <a href="tel:+18884140007">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.88.37 1.74.7 2.56a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.82.33 1.68.57 2.56.7A2 2 0 0 1 22 16.92z"/></svg>
+        Call Now
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Dev Notes -->
+  <div class="design-note design-note--warn">
+    <strong>Implementation Gap: Form not in LandingLayout</strong>
+    The CMS has a <code>formType</code> field (multi-step / quick-callback) but <code>LandingLayout.astro</code> doesn't render either form. Need to add conditional form rendering based on <code>page.formType</code> and pass <code>page.targetService</code> to pre-select the service dropdown.
+  </div>
+
+  <div class="design-note design-note--info">
+    <strong>CRO Revision Notes (v2)</strong>
+    Headline leads with the money number ($1,500/mo), not generic "revenue-generating asset." ROI section leads with gain ($14K-24K/yr) not cost ($35-55K). "What's Included" reframed as anxiety resolution. Process steps use "We/You" language. FAQ handles top 4 objections. Bottom CTA is low-commitment ("see if it makes sense") not aspirational ("unlock potential"). Urgency added via scheduling scarcity.
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       WIREFRAME 2: RETAINING WALLS
+       /lp/retaining-walls
+       ══════════════════════════════════════════════════════════════ -->
+
+  <div class="wf-divider"><hr><h3>Next Wireframe</h3></div>
+
+  <div id="retaining" class="wf-page-label">
+    <h2>Retaining Walls Landing Page</h2>
+    <p>Structural safety narrative &mdash; code compliance &mdash; slope management</p>
+    <div class="wf-slug">/lp/retaining-walls</div>
+  </div>
+
+  <div class="wf-page">
+
+    <!-- Header -->
+    <header class="lp-wf-header">
+      <a class="lp-wf-logo">Base<span>Scape</span></a>
+      <a class="lp-wf-phone">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.88.37 1.74.7 2.56a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.82.33 1.68.57 2.56.7A2 2 0 0 1 22 16.92z"/></svg>
+        (888) 414-0007
+      </a>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="lp-wf-hero">
+      <div class="lp-wf-hero__overline">Wasatch Front &bull; Licensed B100 General Contractor</div>
+      <h1>Retaining Walls That Actually Last on Wasatch Front Soil</h1>
+      <p class="lp-wf-hero__sub">
+        Engineered retaining walls that stop erosion, redirect water, and add usable yard space. Structural engineering included. Fixed pricing &mdash; no surprises.
+      </p>
+
+      <div class="lp-wf-badges">
+        <span class="lp-wf-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          Licensed
+        </span>
+        <span class="lp-wf-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          Insured
+        </span>
+        <span class="lp-wf-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          Bonded
+        </span>
+        <span class="lp-wf-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          Free Estimates
+        </span>
+      </div>
+
+      <div class="lp-wf-hero__img">
+        <div class="lp-wf-hero__img-placeholder retaining">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Engineered retaining wall &mdash; terraced, with drainage, landscaped above
+        </div>
+      </div>
+    </section>
+
+    <!-- Form Section -->
+    <section class="lp-wf-section">
+      <div class="lp-wf-form">
+        <div class="lp-wf-form__title">Get a Free Retaining Wall Assessment</div>
+        <div class="lp-wf-form__note">QuickCallback form &mdash; faster conversion for urgent/safety-motivated leads</div>
+
+        <div class="lp-wf-form__fields">
+          <div class="lp-wf-form__field">
+            <label>Your Name</label>
+            <div class="mock-input">Full name</div>
+          </div>
+          <div class="lp-wf-form__field">
+            <label>Phone Number</label>
+            <div class="mock-input">(801) 555-0000</div>
+          </div>
+          <div class="lp-wf-form__field">
+            <label>Zip Code</label>
+            <div class="mock-input">84XXX</div>
+          </div>
+          <button class="lp-wf-cta lp-wf-cta--primary" style="margin-top: 0.5rem;">Get My Free Assessment &rarr;</button>
+        </div>
+        <p style="font-size: 0.6875rem; color: var(--slate500); margin-top: 0.75rem;">We'll call you within 24 hours to schedule your on-site assessment.</p>
+      </div>
+    </section>
+
+    <!-- Safety Narrative -->
+    <section class="lp-wf-section">
+      <h2>Why Retaining Walls Can't Wait</h2>
+      <p>Wasatch Front soils shift. Spring runoff, clay expansion, and freeze-thaw cycles put pressure on slopes every year. A failing hillside doesn't fix itself &mdash; it gets worse and more expensive.</p>
+
+      <div class="lp-wf-safety">
+        <div class="lp-wf-safety__title">Sound familiar? If you're seeing any of these, your slope is moving:</div>
+        <ul class="lp-wf-checklist" style="margin: 0.5rem 0 0;">
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber500)" stroke-width="2.5"><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+            Fence or existing wall starting to lean
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber500)" stroke-width="2.5"><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+            Cracks in your foundation, driveway, or patio
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber500)" stroke-width="2.5"><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+            Water pooling against the house after rain
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber500)" stroke-width="2.5"><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+            Soil creeping downhill or visible erosion channels
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber500)" stroke-width="2.5"><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+            Doors or windows that stick (sign of settling)
+          </li>
+        </ul>
+      </div>
+      <p><strong style="color: var(--navy600);">Even one of these means your slope is actively moving.</strong> The cost to fix it only goes up.</p>
+    </section>
+
+    <!-- What We Build -->
+    <section class="lp-wf-section">
+      <h2>We'll Recommend the Right Wall for Your Site</h2>
+      <p>Every slope is different. During your free site assessment, we evaluate soil type, grade, and drainage to recommend the best solution &mdash; not a one-size-fits-all answer.</p>
+      <ul class="lp-wf-checklist">
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <div><strong style="color: var(--navy600);">Segmental block walls</strong> &mdash; versatile, cost-effective, great for 2&ndash;6 ft heights</div>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <div><strong style="color: var(--navy600);">Poured concrete walls</strong> &mdash; maximum strength for tall or load-bearing applications</div>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <div><strong style="color: var(--navy600);">Natural stone walls</strong> &mdash; premium look with structural engineering behind it</div>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <div><strong style="color: var(--navy600);">Terraced systems</strong> &mdash; multi-tier solutions that turn steep slopes into usable yard</div>
+        </li>
+      </ul>
+      <p style="font-size: 0.8125rem; color: var(--slate500); margin-top: 0.5rem;">
+        All walls over 4 feet include structural engineering stamp. Drainage systems included in every project.
+      </p>
+    </section>
+
+    <!-- Process -->
+    <section class="lp-wf-section">
+      <h2>How Your Wall Gets Built</h2>
+      <div class="lp-wf-steps">
+        <div class="lp-wf-step">
+          <div class="lp-wf-step__num">1</div>
+          <div class="lp-wf-step__title">We Assess Your Site</div>
+          <div class="lp-wf-step__sub">Soil, grade, drainage &mdash; free</div>
+        </div>
+        <div class="lp-wf-step">
+          <div class="lp-wf-step__num">2</div>
+          <div class="lp-wf-step__title">You Get a Fixed Price</div>
+          <div class="lp-wf-step__sub">Engineered plans included</div>
+        </div>
+        <div class="lp-wf-step">
+          <div class="lp-wf-step__num">3</div>
+          <div class="lp-wf-step__title">We Build the Wall</div>
+          <div class="lp-wf-step__sub">Proper base, drainage, backfill</div>
+        </div>
+        <div class="lp-wf-step">
+          <div class="lp-wf-step__num">4</div>
+          <div class="lp-wf-step__title">You Get Your Yard Back</div>
+          <div class="lp-wf-step__sub">Inspected, cleaned up, done</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="lp-wf-section">
+      <h2>From Our Clients</h2>
+      <div class="lp-wf-proof">
+        <div>
+          <div class="lp-wf-proof__stars">&starf;&starf;&starf;&starf;&starf;</div>
+        </div>
+        <div>
+          <div class="lp-wf-proof__text">
+            "Our backyard was sliding toward the neighbor's property. They built a terraced wall that solved the drainage and gave us 400 sq ft of usable patio space."
+            <div class="lp-wf-proof__attr">&mdash; Review placeholder, Sandy UT</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="lp-wf-section">
+      <h2>Common Questions</h2>
+      <div style="margin-bottom: 1rem;">
+        <p style="font-weight: 600; color: var(--navy600); margin-bottom: 0.25rem;">How much does a retaining wall cost?</p>
+        <p>It depends on height, length, material, and site conditions. A short segmental block wall runs less than a tall engineered concrete wall. You'll get a fixed price after our free site visit &mdash; no vague ranges.</p>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <p style="font-weight: 600; color: var(--navy600); margin-bottom: 0.25rem;">Do retaining walls need permits?</p>
+        <p>In most Wasatch Front cities, walls over 4 feet require a permit and structural engineering. We handle both. Even shorter walls get proper engineering when the soil or grade warrants it.</p>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <p style="font-weight: 600; color: var(--navy600); margin-bottom: 0.25rem;">How long does construction take?</p>
+        <p>Most retaining wall projects take 1&ndash;3 weeks of on-site work, depending on length and complexity. Terraced or multi-wall systems may take longer.</p>
+      </div>
+      <div>
+        <p style="font-weight: 600; color: var(--navy600); margin-bottom: 0.25rem;">What happens if I wait?</p>
+        <p>Slope erosion is progressive &mdash; every rain cycle makes it worse. A wall that costs $X today may cost 2&ndash;3X next year if the hillside reaches your foundation. The assessment is free. At minimum, you'll know what you're dealing with.</p>
+      </div>
+    </section>
+
+    <!-- Secondary CTA -->
+    <section class="lp-wf-section" style="text-align: center;">
+      <h2>The Assessment Is Free. The Peace of Mind Is Immediate.</h2>
+      <p style="max-width: 320px; margin: 0 auto;">We'll evaluate your slope, explain your options, and give you a fixed price. No obligation, no pressure.</p>
+      <button class="lp-wf-cta lp-wf-cta--primary" style="max-width: 320px; margin: 1rem auto 0;">Schedule My Free Assessment</button>
+      <p style="font-size: 0.6875rem; color: var(--slate500); margin-top: 0.5rem;">We'll call within 24 hours to set up your site visit.</p>
+    </section>
+
+    <!-- Offer Terms -->
+    <div class="lp-wf-terms">
+      Free on-site assessment for Wasatch Front properties. Project pricing is fixed upon signed agreement. Walls over 4 ft include structural engineering. Utah contractor license #14082066-5501 (B100). Fully insured and bonded.
+    </div>
+
+    <!-- Phone CTA -->
+    <div class="lp-wf-phone-cta">
+      <p>Prefer to talk? Call us directly:</p>
+      <a href="tel:+18884140007">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.88.37 1.74.7 2.56a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.82.33 1.68.57 2.56.7A2 2 0 0 1 22 16.92z"/></svg>
+        (888) 414-0007
+      </a>
+    </div>
+
+    <!-- Mobile Bottom Bar -->
+    <div class="lp-wf-mobile-bar">
+      <a href="#">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Free Assessment
+      </a>
+      <a href="tel:+18884140007">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.88.37 1.74.7 2.56a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.82.33 1.68.57 2.56.7A2 2 0 0 1 22 16.92z"/></svg>
+        Call Now
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Dev Notes -->
+  <div class="design-note design-note--info">
+    <strong>CRO Revision Notes (v2)</strong>
+    Headline differentiates on local soil expertise, not generic "protect property." Warning signs now scannable checklist with amber warning icons &mdash; visitors scan for their symptom. Solutions reframed as "we recommend the right one" (drives form fill) instead of product catalog. FAQ "What happens if I wait?" creates cost-of-inaction urgency. Bottom CTA leads with "peace of mind" (emotional) not "don't let it get worse" (negative).
+  </div>
+
+  <div class="design-note design-note--warn">
+    <strong>Key Differences Between the Two Pages</strong>
+    <strong>Walkout:</strong> Financial ROI narrative, multi-step form (longer consideration, higher ticket), leads with gain not cost, FAQ anchors pricing.<br>
+    <strong>Retaining:</strong> Safety/urgency narrative, quick-callback form (shorter cycle, more urgent), scannable warning signs checklist, FAQ creates cost-of-inaction urgency.
+  </div>
+
+  <div style="padding: 3rem; text-align: center; font-size: 0.75rem; color: var(--slate500);">
+    BaseScape Landing Page Wireframes &mdash; April 2026
+  </div>
+
+</body>
+</html>

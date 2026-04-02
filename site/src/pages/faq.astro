@@ -6,6 +6,7 @@ import CTABlock from '../components/content/CTABlock.astro'
 import JsonLd from '../components/seo/JsonLd.astro'
 import { generateFAQPageSchema } from '../lib/schema'
 import { fetchFAQs, fetchSiteSettings } from '../lib/payload'
+import { serializeLexical } from '../lib/serialize-lexical'
 
 let settings: any = {
   businessName: 'BaseScape',
@@ -64,13 +65,8 @@ const categoryLabels: Record<string, string> = {
 
 const categoryOrder = Object.keys(categoryLabels)
 
-function richTextToString(answer: any): string {
-  if (typeof answer === 'string') return answer
-  return (
-    answer?.root?.children
-      ?.map((c: any) => c.children?.map((t: any) => t.text).join(''))
-      .join('<br>') || ''
-  )
+function richTextToHtml(answer: any): string {
+  return serializeLexical(answer)
 }
 
 /* Group by category, preserving sortOrder within each group */
@@ -80,7 +76,7 @@ for (const faq of rawFaqs) {
   const cat = faq.category || 'general'
   const item = {
     question: faq.question,
-    answer: richTextToString(faq.answer),
+    answer: richTextToHtml(faq.answer),
   }
   if (!grouped[cat]) grouped[cat] = []
   grouped[cat].push(item)

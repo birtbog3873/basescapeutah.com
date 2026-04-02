@@ -102,8 +102,11 @@ export async function createLead(data: Record<string, any>) {
     body: JSON.stringify(data),
   })
   if (!res.ok) {
-    const error = await res.json().catch(() => ({ errors: [{ message: res.statusText }] }))
-    throw new Error(error.errors?.[0]?.message || 'Failed to create lead')
+    const rawBody = await res.text().catch(() => '')
+    let parsed: any = {}
+    try { parsed = JSON.parse(rawBody) } catch {}
+    const msg = parsed?.errors?.[0]?.message || `HTTP ${res.status}: ${rawBody.slice(0, 300)}`
+    throw new Error(msg)
   }
   return res.json()
 }
@@ -119,8 +122,11 @@ export async function updateLead(id: string, data: Record<string, any>) {
     body: JSON.stringify(data),
   })
   if (!res.ok) {
-    const error = await res.json().catch(() => ({ errors: [{ message: res.statusText }] }))
-    throw new Error(error.errors?.[0]?.message || 'Failed to update lead')
+    const rawBody = await res.text().catch(() => '')
+    let parsed: any = {}
+    try { parsed = JSON.parse(rawBody) } catch {}
+    const msg = parsed?.errors?.[0]?.message || `HTTP ${res.status}: ${rawBody.slice(0, 300)}`
+    throw new Error(msg)
   }
   return res.json()
 }
@@ -128,7 +134,7 @@ export async function updateLead(id: string, data: Record<string, any>) {
 export async function findLeadBySessionId(sessionId: string) {
   const result = await fetchPayload<any>(
     'leads',
-    `where[sessionId][equals]=${sessionId}&limit=1`,
+    `where[sessionId][equals]=${encodeURIComponent(sessionId)}&limit=1`,
     true,
   )
   return result.docs[0] || null

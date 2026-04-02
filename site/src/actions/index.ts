@@ -31,9 +31,9 @@ export const server = {
       leadStepThreeSchema,
     ]),
     handler: async (input) => {
-      // Honeypot check — silent fake success
+      // Honeypot check — silent fake success with realistic response
       if (input.honeypot) {
-        return { success: true, leadId: 'ok', step: input.step }
+        return { success: true, leadId: crypto.randomUUID(), step: input.step }
       }
 
       if (input.step === 1) {
@@ -50,8 +50,13 @@ export const server = {
         return { success: true, leadId: result.doc?.id, step: 1 }
       }
 
-      // Steps 2-3: Find and update existing lead
-      const existing = await findLeadBySessionId(input.sessionId)
+      // Steps 2-3: Find existing lead (may fail if API key missing or CMS unreachable)
+      let existing: any = null
+      try {
+        existing = await findLeadBySessionId(input.sessionId)
+      } catch {
+        // Read access requires auth — if API key is missing, fall through gracefully
+      }
 
       if (input.step === 2) {
         if (!existing) {
@@ -61,37 +66,46 @@ export const server = {
         const result = await withRetry(() => updateLead(existing.id, {
           currentStep: 2,
           preferredDate: input.preferredDate,
-          timeline: input.timePreference,
+          timePreference: input.timePreference,
         }))
         return { success: true, leadId: result.doc?.id, step: 2 }
       }
 
       if (input.step === 3) {
-        if (existing) {
-          const result = await withRetry(() => updateLead(existing.id, {
-            currentStep: 3,
-            status: 'complete',
-            name: `${input.firstName} ${input.lastName}`,
-            phone: input.phone,
-            email: input.email,
-            address: input.address,
-            additionalNotes: input.comments,
-          }))
-          return { success: true, leadId: result.doc?.id, step: 3 }
-        }
-        // No partial lead found — create complete lead with all data
-        const result = await withRetry(() => createLead({
-          sessionId: input.sessionId,
-          status: 'complete',
+        const step3Data = {
           currentStep: 3,
+          status: 'complete' as const,
+          serviceType: input.serviceType,
+          zipCode: input.zipCode,
+          preferredDate: input.preferredDate,
+          timePreference: input.timePreference,
           name: `${input.firstName} ${input.lastName}`,
           phone: input.phone,
           email: input.email,
           address: input.address,
           additionalNotes: input.comments,
-          formType: 'multi-step',
-        }))
-        return { success: true, leadId: result.doc?.id, step: 3 }
+        }
+        try {
+          if (existing) {
+            try {
+              const result = await withRetry(() => updateLead(existing.id, step3Data))
+              return { success: true, leadId: result.doc?.id, step: 3 }
+            } catch {
+              // Update failed — fall through to create a new complete lead
+            }
+          }
+          // No partial lead found or update failed — create complete lead with all data
+          const result = await withRetry(() => createLead({
+            ...step3Data,
+            sessionId: input.sessionId,
+            formType: 'multi-step',
+            source: input.source,
+          }))
+          return { success: true, leadId: result.doc?.id, step: 3 }
+        } catch (err: any) {
+          // DEBUG: Return the actual CMS error so we can see it in the UI
+          return { success: false, leadId: null, step: 3, debugError: err?.message || String(err) }
+        }
       }
 
       return { success: false, leadId: null, step: input.step }
@@ -102,9 +116,9 @@ export const server = {
     accept: 'json',
     input: quickCallbackSchema,
     handler: async (input) => {
-      // Honeypot check
+      // Honeypot check — silent fake success with realistic response
       if (input.honeypot) {
-        return { success: true, leadId: 'ok' }
+        return { success: true, leadId: crypto.randomUUID() }
       }
 
       const result = await withRetry(() => createLead({
@@ -126,9 +140,9 @@ export const server = {
     accept: 'json',
     input: leadMagnetSchema,
     handler: async (input) => {
-      // Honeypot check
+      // Honeypot check — silent fake success with realistic response
       if (input.honeypot) {
-        return { success: true, leadId: 'ok', downloadUrl: '#' }
+        return { success: true, leadId: crypto.randomUUID(), downloadUrl: '#' }
       }
 
       // Create lead with formType lead-magnet (with retry on CMS 500)
