@@ -1,3 +1,5 @@
+import { readFileSync, existsSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { getPayload } from 'payload'
 import { loadEnv } from 'payload/node'
 import config from './dev-config.js'
@@ -141,8 +143,12 @@ async function seed() {
 
   console.log('Seeding BaseScape CMS...')
 
-  // 0. Clear existing media to prevent auto-incremented filenames on re-seed
-  console.log('Clearing existing media...')
+  // 0. Clear existing data to prevent duplicates on re-seed
+  console.log('Clearing existing media and lead magnets...')
+  const existingLeadMagnets = await payload.find({ collection: 'lead-magnets', limit: 100 })
+  for (const doc of existingLeadMagnets.docs) {
+    await payload.delete({ collection: 'lead-magnets', id: doc.id })
+  }
   const existingMedia = await payload.find({ collection: 'media', limit: 100 })
   for (const doc of existingMedia.docs) {
     await payload.delete({ collection: 'media', id: doc.id })
@@ -376,7 +382,7 @@ async function seed() {
       },
       seo: {
         metaTitle: 'Basement Remodeling & Finishing | BaseScape Utah',
-        metaDescription: 'Transform your unfinished basement into beautiful living space. Full-service remodeling with framing, electrical, plumbing, and premium finishes. Free estimates in Utah.',
+        metaDescription: 'Transform your unfinished basement into beautiful living space. Full-service remodeling with premium finishes. Free estimates in Utah.',
       },
       status: 'published',
     } as any,
@@ -402,7 +408,7 @@ async function seed() {
       },
       seo: {
         metaTitle: 'Retaining Walls | BaseScape Utah',
-        metaDescription: 'Engineered retaining walls for Utah hillside properties. Segmental block, natural stone, and poured concrete. Permitted, inspected, built to last. Free estimates.',
+        metaDescription: 'Engineered retaining walls for Utah hillside properties. Segmental block, natural stone, poured concrete. Built to last. Free estimates.',
       },
       status: 'published',
     } as any,
@@ -646,6 +652,65 @@ async function seed() {
         metaDescription: 'Engineered retaining walls that stop erosion and add usable yard space. Structural engineering included. Fixed pricing. Free site assessment.',
         noindex: true,
       },
+      status: 'published',
+    } as any,
+  })
+
+  // 9. Lead Magnets
+  console.log('Creating Lead Magnets...')
+
+  const pdfDir = existsSync(resolve('docs/lead-magnets'))
+    ? resolve('docs/lead-magnets')
+    : resolve('..', 'docs', 'lead-magnets')
+
+  const rwPdfPath = resolve(pdfDir, 'retaining-walls-guide.pdf')
+  const rwPdfBuffer = readFileSync(rwPdfPath)
+  const rwPdfMedia = await payload.create({
+    collection: 'media',
+    data: { alt: 'The Utah Homeowner\'s Guide to Retaining Walls PDF' },
+    file: {
+      data: rwPdfBuffer,
+      mimetype: 'application/pdf',
+      name: 'retaining-walls-guide.pdf',
+      size: rwPdfBuffer.length,
+    },
+  })
+
+  await payload.create({
+    collection: 'lead-magnets',
+    data: {
+      title: 'The Utah Homeowner\'s Guide to Retaining Walls',
+      slug: 'retaining-walls-guide',
+      description: 'Costs, materials, common problems, and questions to ask any contractor — so you can make an informed decision.',
+      file: rwPdfMedia.id,
+      ctaText: 'Download Free Guide',
+      requiredFields: ['email'],
+      status: 'published',
+    } as any,
+  })
+
+  const wbPdfPath = resolve(pdfDir, 'walkout-basements-guide.pdf')
+  const wbPdfBuffer = readFileSync(wbPdfPath)
+  const wbPdfMedia = await payload.create({
+    collection: 'media',
+    data: { alt: 'The Utah Homeowner\'s Guide to Walkout Basements PDF' },
+    file: {
+      data: wbPdfBuffer,
+      mimetype: 'application/pdf',
+      name: 'walkout-basements-guide.pdf',
+      size: wbPdfBuffer.length,
+    },
+  })
+
+  await payload.create({
+    collection: 'lead-magnets',
+    data: {
+      title: 'The Utah Homeowner\'s Guide to Walkout Basements',
+      slug: 'walkout-basements-guide',
+      description: 'Costs, ROI, ADU potential, common problems, and questions to ask any contractor — so you can move forward with confidence.',
+      file: wbPdfMedia.id,
+      ctaText: 'Download Free Guide',
+      requiredFields: ['email'],
       status: 'published',
     } as any,
   })

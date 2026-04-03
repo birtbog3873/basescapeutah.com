@@ -156,20 +156,22 @@ export const server = {
         source: input.source,
       }))
 
-      // Fetch lead magnet file URL from Payload
+      // Fetch lead magnet file URL from Payload (query by slug)
       const PAYLOAD_URL = import.meta.env.PAYLOAD_URL || 'http://localhost:3000'
-      let downloadUrl = '#'
+      let downloadUrl = `/downloads/${input.leadMagnetId}.pdf`
       try {
+        const slug = encodeURIComponent(input.leadMagnetId)
         const res = await fetch(
-          `${PAYLOAD_URL}/api/lead-magnets/${input.leadMagnetId}?depth=1`,
+          `${PAYLOAD_URL}/api/lead-magnets?where[slug][equals]=${slug}&depth=1`,
           { headers: { 'Content-Type': 'application/json' } },
         )
         if (res.ok) {
-          const leadMagnet = await res.json()
-          downloadUrl = leadMagnet.file?.url || '#'
+          const data = await res.json()
+          const fileUrl = data.docs?.[0]?.file?.url
+          if (fileUrl) downloadUrl = fileUrl
         }
       } catch {
-        // Lead still created; download URL may not resolve
+        // CMS unavailable — falls back to static download URL
       }
 
       return { success: true, leadId: result.doc?.id, downloadUrl }
