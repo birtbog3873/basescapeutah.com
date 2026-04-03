@@ -51,6 +51,14 @@ if (!service) {
       { question: 'Does a walkout basement increase home value?', answer: 'Yes. A walkout basement conversion typically adds $50,000-$100,000+ to home value. The added square footage, natural light, and potential rental income make walkouts one of the highest-ROI home improvements.' },
       { question: 'Can any basement be converted to a walkout?', answer: "Most basements can be converted, but feasibility depends on your lot's topography, soil conditions, and foundation type. Homes on sloped lots are ideal candidates. BaseScape provides a free structural assessment to determine if your home is a good candidate." },
       { question: 'What happens to my landscaping during a walkout conversion?', answer: 'Excavation will disturb the area around the new walkout entry. We protect existing landscaping where possible and include landscape restoration in our scope.' },
+      { question: 'Can I add a walkout basement to a home built on a flat lot?', answer: 'Flat lots are challenging for walkout conversions because there isn\'t enough grade change to create a ground-level exit. In most cases, a flat lot is better suited for an egress window installation instead. However, if your lot has even a 4-6 foot elevation change from front to back, a partial walkout may be possible. BaseScape provides a free site assessment to evaluate your specific lot topography and recommend the best option.' },
+      { question: 'Does Utah clay soil affect walkout basement construction?', answer: 'Yes — Utah\'s Wasatch Front has expansive clay soils that swell when wet and shrink when dry, creating significant lateral pressure on foundation walls. BaseScape accounts for this in every walkout design by specifying steel or LVL headers rated for local soil conditions, installing proper drainage to manage clay moisture, and engineering the new opening to handle the additional load transfer. Ignoring clay soil conditions is the most common cause of walkout conversion failures by general contractors.' },
+      { question: 'What happens to my sprinkler system during a walkout conversion?', answer: 'Sprinkler lines in the excavation zone are temporarily capped and rerouted during construction. BaseScape coordinates with your irrigation system before excavation begins, marks all existing lines, and restores or reroutes them as part of the landscape restoration phase. Most homeowners see 1-2 zones temporarily offline for 2-3 weeks during the exterior work phase.' },
+      { question: 'Is a walkout basement or egress window better for adding rental income?', answer: 'A walkout basement entry is significantly better for rental income because it provides a separate ground-level entrance — the key requirement for a comfortable, independent living space. Under Utah\'s ADU laws (HB 398, SB 174), a walkout with a full kitchen can qualify as an Accessory Dwelling Unit generating $1,200-$2,000+/month in rental income on the Wasatch Front. An egress window adds a legal bedroom but doesn\'t provide separate access.' },
+      { question: 'Do walkout basements need separate utility metering under Utah ADU law?', answer: 'It depends on whether you add a full kitchen with a stove. Under Utah\'s HB 398 and SB 174, adding a stove reclassifies the space as an ADU, which triggers additional requirements in most Wasatch Front cities — including separate utility metering, fire separation, and sometimes additional parking. A kitchenette without a stove avoids reclassification. BaseScape explains these trade-offs during the design phase so you can make an informed decision.' },
+      { question: 'Can I convert my basement to a walkout if my lot has a 10% grade?', answer: 'Yes — a 10% grade is generally sufficient for a walkout conversion. For a standard 8-foot basement wall, you need approximately 6-7 feet of grade change from the interior floor level to the exterior grade. A 10% slope over a 60-70 foot lot depth provides that. BaseScape evaluates your exact grade, soil conditions, and foundation type during a free structural assessment to confirm feasibility.' },
+      { question: 'How does BaseScape handle dust during foundation cutting?', answer: 'BaseScape uses a sealed dust containment system with negative air pressure and HEPA filtration. Poly barriers are installed between the work area and your living space, and a commercial HEPA air scrubber maintains negative pressure in the construction zone — pulling dust toward the filters rather than into your home. Most families stay in their homes throughout the project with minimal disruption to daily life.' },
+      { question: 'What structural engineering is required for a walkout basement in Utah?', answer: 'Every walkout conversion requires a licensed structural engineer to design the opening. This includes calculating the load path through the foundation, specifying the steel or LVL header size and bearing requirements, determining temporary shoring needs during construction, and verifying the modified foundation meets seismic requirements for Utah\'s Zone 3 classification. BaseScape works with licensed Utah structural engineers and includes the engineering plans in every project scope.' },
     ],
     projects: [],
     reviews: [],
@@ -58,7 +66,25 @@ if (!service) {
       metaTitle: 'Walkout Basement Conversions | Utah Wasatch Front | BaseScape',
       metaDescription: 'Transform your basement with a walkout entry. Structural engineering expertise, full code compliance, and financing options. Free estimates across Utah\'s Wasatch Front.',
     },
+    comparisonTable: {
+      heading: 'Walkout Entry vs. Egress Window vs. Patio Door',
+      caption: 'BaseScape specializes in walkout basement conversions and egress windows. A walkout entry delivers the highest ROI through rental income potential and maximum light gain, but an egress window is the right choice when your lot or budget doesn\'t support a full walkout.',
+      columns: ['Option', 'Cost Range', 'Light Gain', 'Code Requirements', 'Rental Income Potential', 'Best For'],
+      rows: [
+        ['Walkout Entry', '$50K–$100K', 'Maximum — full door opening', 'Structural engineering, city permits, IRC egress compliance', 'High — enables full ADU with separate entrance', 'Sloped lots, rental income goals, maximum basement transformation'],
+        ['Egress Window', '$5K–$12K per window', 'Significant — large window opening', 'IRC Section R310 (5.7 sq ft min opening), city permit', 'Moderate — adds legal bedroom count', 'Flat lots, adding legal bedrooms, budget-conscious safety upgrades'],
+        ['Patio Door (above grade)', '$3K–$8K', 'Moderate — standard door size', 'Standard building permit, no structural engineering', 'Low — no basement access improvement', 'Above-grade rooms with existing openings, not a basement solution'],
+      ],
+    },
   }
+}
+
+// Lead magnet data (hardcoded until CMS records + PDFs are uploaded)
+service.leadMagnet = {
+  id: 'walkout-basements-guide',
+  title: 'The Utah Homeowner\'s Guide to Walkout Basements',
+  description: 'Costs, ROI, ADU potential, common problems, and questions to ask any contractor — so you can move forward with confidence.',
+  ctaText: 'Download Free Guide',
 }
 ---
 <ServiceLayout service={service} settings={settings} />
