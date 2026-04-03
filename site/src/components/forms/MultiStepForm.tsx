@@ -4,9 +4,9 @@ import './form-styles.css'
 
 const SERVICE_OPTIONS = [
   { value: 'walkout-basement', label: 'Walkout Basement' },
+  { value: 'retaining-walls', label: 'Retaining Walls' },
   { value: 'basement-remodeling', label: 'Basement Remodeling' },
   { value: 'pavers-hardscapes', label: 'Pavers & Hardscapes' },
-  { value: 'retaining-walls', label: 'Retaining Walls' },
   { value: 'artificial-turf', label: 'Artificial Turf' },
   { value: 'egress-windows', label: 'Egress Windows' },
 ]
@@ -145,8 +145,7 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(888) 414-000
       // CMS save failed — continue anyway, final submit will capture all data
     }
     setStep(2)
-    ;(window as any).plausible?.('Form Step 1', { props: { service: serviceType } })
-    ;(window as any).gtag?.('event', 'form_step_1', { service: serviceType })
+    ;(window as any).dataLayer?.push({ event: 'form_step_1', service: serviceType })
     setLoading(false)
   }
 
@@ -167,8 +166,7 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(888) 414-000
       // CMS save failed — continue anyway
     }
     setStep(3)
-    ;(window as any).plausible?.('Form Step 2', { props: { service: serviceType } })
-    ;(window as any).gtag?.('event', 'form_step_2', { service: serviceType })
+    ;(window as any).dataLayer?.push({ event: 'form_step_2', service: serviceType })
     setLoading(false)
   }
 
@@ -216,8 +214,7 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(888) 414-000
         const scrollArea = document.querySelector('.page-scroll') as HTMLElement
         if (scrollArea) scrollArea.scrollTop = 0
         else window.scrollTo({ top: 0 })
-        ;(window as any).plausible?.('Form Complete', { props: { service: serviceType } })
-        ;(window as any).gtag?.('event', 'form_complete', { service: serviceType })
+        ;(window as any).dataLayer?.push({ event: 'form_complete', service: serviceType })
       }
     } catch (err: any) {
       console.error('[Form Step 3] Catch error:', err)
@@ -304,7 +301,7 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(888) 414-000
 
   const renderFooter = () => (
     <div className="multi-form__footer">
-      <a href={`tel:${phoneClean}`} className="multi-form__footer-call">
+      <a href={`tel:${phoneClean}`} className="multi-form__footer-call" onClick={() => (window as any).dataLayer?.push({ event: 'phone_click', location: 'form_footer_rush' })}>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
         </svg>
@@ -314,7 +311,7 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(888) 414-000
         <p className="multi-form__footer-alt-text">
           Not ready to schedule an appointment yet, but have questions or need assistance?
         </p>
-        <a href={`tel:${phoneClean}`} className="multi-form__footer-alt-btn">
+        <a href={`tel:${phoneClean}`} className="multi-form__footer-alt-btn" onClick={() => (window as any).dataLayer?.push({ event: 'phone_click', location: 'form_footer_contact' })}>
           Contact Our Team
         </a>
       </div>
@@ -499,7 +496,10 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(888) 414-000
           <a
             href={`tel:${phoneClean}`}
             className="multi-form__not-sure-link"
-            onClick={() => setTimePreference('not-sure')}
+            onClick={() => {
+              setTimePreference('not-sure')
+              ;(window as any).dataLayer?.push({ event: 'phone_click', location: 'form_not_sure' })
+            }}
           >
             Not sure yet?
           </a>
@@ -629,12 +629,12 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(888) 414-000
             </p>
           </div>
 
-          <button type="button" onClick={handleStep3} disabled={loading} className="multi-form__submit">
+          <button type="button" onClick={handleStep3} disabled={loading} className="multi-form__submit multi-form__submit--final">
             {loading ? 'Submitting...' : 'Submit'}
           </button>
 
           <div className="multi-form__footer">
-            <a href={`tel:${phoneClean}`} className="multi-form__footer-call">
+            <a href={`tel:${phoneClean}`} className="multi-form__footer-call" onClick={() => (window as any).dataLayer?.push({ event: 'phone_click', location: 'form_step3_rush' })}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
               </svg>
