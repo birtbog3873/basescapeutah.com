@@ -1,0 +1,99 @@
+---
+interface Props {
+  caption: string
+  columns: string[]
+  rows: string[][]
+}
+
+const { caption, columns, rows } = Astro.props
+---
+<div class="comparison-table-wrapper">
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        {columns.map((col) => (
+          <th scope="col">{col}</th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((row) => (
+        <tr>
+          {row.map((cell, i) => (
+            i === 0
+              ? <th scope="row">{cell}</th>
+              : <td>{cell}</td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+    <caption>{caption}</caption>
+  </table>
+</div>
+
+<style>
+  .comparison-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: var(--size-4) 0;
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    caption-side: bottom;
+    min-width: 600px;
+  }
+
+  .comparison-table caption {
+    padding: var(--size-3) var(--size-2);
+    font-size: 0.875rem;
+    color: var(--color-textMuted);
+    text-align: left;
+    line-height: 1.5;
+  }
+
+  .comparison-table thead th {
+    background: var(--color-navy600);
+    color: white;
+    font-weight: 600;
+    padding: var(--size-3) var(--size-4);
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .comparison-table thead th:first-child {
+    border-radius: var(--radius-md) 0 0 0;
+  }
+
+  .comparison-table thead th:last-child {
+    border-radius: 0 var(--radius-md) 0 0;
+  }
+
+  .comparison-table tbody th {
+    font-weight: 600;
+    color: var(--color-textPrimary);
+    background: var(--color-bgSurface);
+    padding: var(--size-3) var(--size-4);
+    text-align: left;
+  }
+
+  .comparison-table tbody td {
+    padding: var(--size-3) var(--size-4);
+    color: var(--color-textBody);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .comparison-table tbody tr:nth-child(even) td,
+  .comparison-table tbody tr:nth-child(even) th {
+    background: var(--color-bgAlt);
+  }
+
+  .comparison-table tbody tr:last-child td,
+  .comparison-table tbody tr:last-child th {
+    border-bottom: none;
+  }
+</style>
