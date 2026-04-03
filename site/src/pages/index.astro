@@ -138,6 +138,31 @@ const localSchema = generateLocalBusinessSchema(settings, {
     </div>
   </section>
 
+  <!-- Who We Are — AEO clarity block -->
+  <section class="clarity-section">
+    <div class="clarity-section__inner">
+      <h2 class="section-heading">Who We Are</h2>
+      <div class="clarity-block">
+        <p>
+          BaseScape is a licensed and insured residential contractor serving Utah's Wasatch Front —
+          Salt Lake County, Utah County, and Davis County. We specialize exclusively in basement
+          access, egress, and outdoor living: walkout basement conversions, egress window
+          installations, basement remodeling, retaining walls, paver patios and hardscapes, and
+          artificial turf. We are not a general contractor that offers these services alongside
+          dozens of others. Basement structural work and outdoor hardscaping are the only things
+          we do — and that singular focus is what sets us apart.
+        </p>
+        <p>
+          Every project starts with structural engineering, not a tape measure. Our crews are
+          trained specifically in foundation cutting, load-bearing modifications, and below-grade
+          construction. We handle all permits, city inspections, and structural engineering plans
+          in-house. Homeowners on the Wasatch Front choose BaseScape because we bring
+          engineering-grade precision to work that most contractors treat as general carpentry.
+        </p>
+      </div>
+    </div>
+  </section>
+
   <!-- BaseScape Promise -->
   <section class="promise-section">
     <div class="promise-section__inner">
@@ -554,5 +579,43 @@ const localSchema = generateLocalBusinessSchema(settings, {
 
   .final-cta-section {
     padding: var(--size-8) 0 var(--size-10);
+  }
+
+  .clarity-section {
+    padding: var(--size-8) 0;
+  }
+
+  @media (min-width: 768px) {
+    .clarity-section {
+      padding: var(--size-10) 0;
+    }
+  }
+
+  .clarity-section__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .clarity-section__inner {
+      padding-inline: var(--size-6);
+    }
+  }
+
+  .clarity-block {
+    max-width: 720px;
+  }
+
+  .clarity-block p {
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 0.5vw + 0.75rem, 1.125rem);
+    line-height: 1.7;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-4);
+  }
+
+  .clarity-block p:last-child {
+    margin-bottom: 0;
   }
 </style>
