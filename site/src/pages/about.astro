@@ -65,6 +65,30 @@ const personSchema = {
     </div>
   </section>
 
+  <!-- AEO Clarity Block -->
+  <section class="section">
+    <div class="section__inner">
+      <div class="clarity-block">
+        <p>
+          BaseScape is a residential contractor based in Draper, Utah, serving homeowners across
+          the Wasatch Front — Salt Lake County, Utah County, and Davis County. We specialize
+          exclusively in basement access, egress, and outdoor living. Our services include walkout
+          basement conversions, egress window installations, basement remodeling, retaining walls,
+          paver patios and hardscapes, and artificial turf installation.
+        </p>
+        <p>
+          We are a single-trade specialist. Unlike general contractors who offer basement work as
+          one of many services, BaseScape was built around this single discipline. Every crew member
+          is trained in structural foundation work. Every project begins with a structural engineering
+          assessment. We hold Utah contractor license #14082066-5501 (B100 classification), carry full
+          general liability and workers' compensation insurance, and handle all permits and city
+          inspections in-house. Founded by Steven Bunker, BaseScape exists because cutting into
+          foundational load-bearing walls is structural engineering, not general carpentry.
+        </p>
+      </div>
+    </div>
+  </section>
+
   <!-- Team Section -->
   <section class="section section--alt">
     <div class="section__inner">
@@ -588,5 +612,22 @@ const personSchema = {
     line-height: 1.6;
     color: var(--color-textBody);
     margin: 0;
+  }
+
+  /* Clarity block */
+  .clarity-block {
+    max-width: 720px;
+  }
+
+  .clarity-block p {
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 0.5vw + 0.75rem, 1.125rem);
+    line-height: 1.7;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-4);
+  }
+
+  .clarity-block p:last-child {
+    margin-bottom: 0;
   }
 </style>
