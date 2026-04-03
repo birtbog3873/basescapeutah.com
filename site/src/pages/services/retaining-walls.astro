@@ -51,6 +51,14 @@ if (!service) {
       { question: 'Can a retaining wall help with yard drainage?', answer: 'Yes. Retaining walls are often part of a comprehensive drainage solution. By reshaping terrain and incorporating French drains, gravel backfill, and proper grading, a retaining wall can redirect water away from foundations, eliminate standing water, and prevent soil erosion.' },
       { question: 'How tall can a retaining wall be without engineering?', answer: 'In most Utah jurisdictions, retaining walls under 4 feet do not require a building permit or structural engineering. However, even shorter walls benefit from proper drainage and base preparation. For walls over 4 feet, engineering is required by code — and it protects your investment.' },
       { question: 'Does a retaining wall increase property value?', answer: 'Yes. A well-built retaining wall increases usable yard space, improves curb appeal, and prevents erosion damage — all of which add value. Retaining walls are especially valuable on sloped Wasatch Front lots where they can create flat areas for patios, gardens, or play areas.' },
+      { question: 'Do I need a retaining wall permit in Lehi, Utah?', answer: 'Yes, if the wall exceeds 4 feet in height (measured from the bottom of the footing to the top of the wall). This applies to Lehi and virtually all Wasatch Front cities. Walls over 4 feet require structural engineering plans stamped by a licensed Utah engineer. BaseScape handles the full permit process — engineering, application, and inspection scheduling — for every wall we build.' },
+      { question: 'What causes retaining walls to fail on the Wasatch Front?', answer: 'The #1 cause of retaining wall failure in Utah is hydrostatic pressure from poor drainage — water saturates the clay soil behind the wall, creating enormous lateral pressure that pushes the wall forward. The second most common cause is inadequate footings that can\'t handle the load. BaseScape prevents both by engineering French drain systems and properly sized footings for every wall, regardless of height.' },
+      { question: 'Can I build a retaining wall on a slope with Utah clay soil?', answer: 'Yes — but clay soil requires more engineering than sandy or gravelly soil. Utah\'s expansive clay swells significantly when wet, generating high lateral pressure against retaining walls. BaseScape designs walls for local clay conditions using deeper footings, geogrid reinforcement for walls over 4 feet, and oversized French drain systems with clean gravel backfill to manage moisture and prevent clay from contacting the wall face directly.' },
+      { question: 'How close to my property line can I build a retaining wall?', answer: 'Setback requirements vary by city on the Wasatch Front. Most cities require a minimum of 1-3 feet from the property line for retaining walls, but some allow walls on the property line with neighbor consent. Walls that also function as fences may have different height limits. BaseScape verifies your specific city\'s setback requirements during the design phase and applies for any necessary variances.' },
+      { question: 'Should I use geogrid reinforcement in my retaining wall?', answer: 'Geogrid is required for segmental retaining walls over 4 feet tall and strongly recommended for any wall in Utah\'s clay soils. Geogrid layers extend horizontally into the soil behind the wall, creating a reinforced earth mass that resists the lateral pressure trying to push the wall forward. Without geogrid, tall walls rely solely on their own weight — which is insufficient for Utah\'s expansive clay conditions.' },
+      { question: 'Can a retaining wall fix standing water in my yard?', answer: 'Yes — retaining walls are often part of a comprehensive drainage solution for sloped Wasatch Front lots. By reshaping terrain into level terraces, the wall redirects surface water flow. Combined with French drains, gravel backfill, and proper grading, a retaining wall system can eliminate standing water, redirect runoff away from your foundation, and create usable yard space where water previously pooled.' },
+      { question: 'What is the cheapest retaining wall option in Utah?', answer: 'Pressure-treated timber walls are the lowest upfront cost at $30-$80 per linear foot, but they last only 15-25 years in Utah\'s climate and are not suitable for walls over 3-4 feet. Segmental concrete block starts at $50-$150 per linear foot and lasts 50-75+ years — making it significantly cheaper over a 50-year period. BaseScape recommends concrete block for most residential projects based on long-term value.' },
+      { question: 'How deep do retaining wall footings need to be in Utah?', answer: 'Retaining wall footings in Utah must extend below the frost line, which is 30-36 inches on the Wasatch Front depending on elevation. A typical footing is 12-24 inches deep below grade with a compacted gravel base of 6-12 inches underneath. Taller walls and walls in clay soils require deeper, wider footings. BaseScape\'s structural engineers specify exact footing dimensions for every wall based on soil conditions and wall height.' },
     ],
     projects: [],
     reviews: [],
@@ -58,7 +66,25 @@ if (!service) {
       metaTitle: 'Retaining Walls | Utah Wasatch Front | BaseScape',
       metaDescription: 'Transform your landscape with engineered retaining walls. Structural expertise, full permits, and quality materials. Free estimates across Utah\'s Wasatch Front.',
     },
+    comparisonTable: {
+      heading: 'Retaining Wall Materials Compared',
+      caption: 'BaseScape builds retaining walls in all three materials. Concrete block offers the best combination of durability, cost, and design options for most Wasatch Front projects. Natural stone is the premium choice for visible, high-profile walls.',
+      columns: ['Material', 'Cost per Linear Foot', 'Lifespan', 'Utah Soil Suitability', 'Maintenance', 'Best For'],
+      rows: [
+        ['Concrete Block (Segmental)', '$50–$150/LF', '50–75+ years', 'Excellent — engineered for expansive clay, geogrid-compatible', 'Very low — no mortar joints to repoint', 'Most residential projects, walls over 4 feet, curved or tiered designs'],
+        ['Natural Stone', '$100–$300/LF', '75–100+ years', 'Good — requires proper drainage engineering for clay soils', 'Low — occasional re-pointing of mortar joints', 'High-visibility walls, premium landscaping, architectural focal points'],
+        ['Timber (Pressure-Treated)', '$30–$80/LF', '15–25 years', 'Poor — wood deteriorates faster in Utah\'s wet clay', 'High — requires replacement every 15-25 years', 'Short-term retaining under 3 feet, garden borders, budget projects'],
+      ],
+    },
   }
+}
+
+// Lead magnet data (hardcoded until CMS records + PDFs are uploaded)
+service.leadMagnet = {
+  id: 'retaining-walls-guide',
+  title: 'The Utah Homeowner\'s Guide to Retaining Walls',
+  description: 'Costs, materials, common problems, and questions to ask any contractor — so you can make an informed decision.',
+  ctaText: 'Download Free Guide',
 }
 ---
 <ServiceLayout service={service} settings={settings} />
