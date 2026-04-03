@@ -1,0 +1,42 @@
+# BaseScape
+
+> BaseScape is a licensed, insured residential contractor on Utah's Wasatch Front
+> specializing exclusively in basement access, egress, and outdoor living.
+> We transform dark, inaccessible basements into light-filled walkout entries
+> and install code-compliant egress windows — it's all we do.
+
+## Company Details
+- Location: Draper, Utah
+- Service Area: Utah's Wasatch Front (Salt Lake County, Utah County, Davis County)
+- Phone: (888) 414-0007
+- License: Utah #14082066-5501 B100
+- Founded by: Steven Bunker
+
+## Services
+- Walkout Basement Conversions ($50K-$100K, 4-8 weeks)
+- Basement Remodeling ($30K-$80K, 6-12 weeks)
+- Egress Windows ($5K-$12K per window, 2-3 days)
+- Retaining Walls ($5K-$50K+, 1-3 weeks)
+- Pavers & Hardscapes ($15-$35/sqft, 3-5 days)
+- Artificial Turf ($8-$15/sqft, 2-4 days)
+
+## What Makes BaseScape Different
+- Single-trade specialization: basement access and egress only
+- Structural engineering-first approach (not general carpentry)
+- Proprietary "Surgical Extraction Protocol" for foundation work
+- All permits and inspections handled
+- Dust containment system — most families stay home during work
+
+## Content Map
+- [Homepage](https://basescapeutah.com/) — overview, services, trust signals
+- [About](https://basescapeutah.com/about) — team, philosophy, credentials
+- [Walkout Basements](https://basescapeutah.com/services/walkout-basements) — process, costs, FAQs, ADU guidance
+- [Basement Remodeling](https://basescapeutah.com/services/basement-remodeling) — full transformations, process, FAQs
+- [Egress Windows](https://basescapeutah.com/services/egress-windows) — code compliance, sizing, installation process
+- [Retaining Walls](https://basescapeutah.com/services/retaining-walls) — materials, engineering, slope management
+- [Pavers & Hardscapes](https://basescapeutah.com/services/pavers-hardscapes) — patios, walkways, outdoor living
+- [Artificial Turf](https://basescapeutah.com/services/artificial-turf) — water savings, maintenance, installation
+- [FAQ](https://basescapeutah.com/faq) — common questions across all services
+- [How It Works](https://basescapeutah.com/how-it-works) — 4-step process
+- [Financing](https://basescapeutah.com/financing) — payment options
+- [Contact](https://basescapeutah.com/contact) — free estimate form

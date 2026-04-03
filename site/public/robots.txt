@@ -3,6 +3,10 @@ Allow: /
 
 Sitemap: https://basescapeutah.com/sitemap-index.xml
 
+# AI search — structured business summary
+# See https://llmstxt.org for spec
+Llms-txt: https://basescapeutah.com/llms.txt
+
 # Disallow admin and API paths
 Disallow: /admin/
 Disallow: /api/
