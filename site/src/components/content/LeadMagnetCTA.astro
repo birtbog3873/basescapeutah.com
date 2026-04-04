@@ -5,6 +5,7 @@ interface Props {
   ctaText?: string
   thumbnailUrl?: string
   leadMagnetId: string
+  landingPageUrl?: string
 }
 
 const {
@@ -13,7 +14,10 @@ const {
   ctaText = 'Download Free Guide',
   thumbnailUrl,
   leadMagnetId,
+  landingPageUrl,
 } = Astro.props
+
+const href = landingPageUrl || `#lead-magnet-${leadMagnetId}`
 ---
 <div class="lead-magnet-cta">
   {thumbnailUrl && (
@@ -25,7 +29,7 @@ const {
     <span class="lead-magnet-cta__overline">Free Resource</span>
     <h3 class="lead-magnet-cta__title">{title}</h3>
     <p class="lead-magnet-cta__desc">{description}</p>
-    <a href={`#lead-magnet-${leadMagnetId}`} class="lead-magnet-cta__btn" data-lead-magnet-id={leadMagnetId}>
+    <a href={href} class="lead-magnet-cta__btn" data-lead-magnet-id={leadMagnetId}>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
         <polyline points="7 10 12 15 17 10"/>

@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 
 export const LeadMagnets: CollectionConfig = {
   slug: 'lead-magnets',
@@ -45,6 +46,28 @@ export const LeadMagnets: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
       admin: { description: 'Preview image for CTA' },
+    },
+    {
+      type: 'group',
+      name: 'landingPage',
+      label: 'Landing Page Content',
+      admin: {
+        description: 'Content displayed on the dedicated guide landing page at /guides/[slug]',
+      },
+      fields: [
+        {
+          name: 'coverImage',
+          type: 'upload',
+          relationTo: 'media',
+          admin: { description: 'Front cover image of the PDF guide for the landing page' },
+        },
+        {
+          name: 'benefits',
+          type: 'richText',
+          editor: lexicalEditor({}),
+          admin: { description: 'Benefits/highlights shown on the landing page' },
+        },
+      ],
     },
     {
       name: 'ctaText',

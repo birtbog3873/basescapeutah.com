@@ -108,6 +108,7 @@ const leadMagnet = post.leadMagnetCTA
           ctaText={leadMagnet.ctaText}
           thumbnailUrl={leadMagnet.thumbnailImage?.url}
           leadMagnetId={leadMagnet.id}
+          landingPageUrl={leadMagnet.slug ? `/guides/${leadMagnet.slug}` : undefined}
         />
       )}
 

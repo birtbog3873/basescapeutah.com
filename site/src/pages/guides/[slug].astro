@@ -1,0 +1,40 @@
+---
+import GuideLayout from '../../layouts/GuideLayout.astro'
+import JsonLd from '../../components/seo/JsonLd.astro'
+import { fetchLeadMagnets } from '../../lib/payload'
+
+export async function getStaticPaths() {
+  try {
+    const result = await fetchLeadMagnets()
+    return (result.docs || []).map((magnet: any) => ({
+      params: { slug: magnet.slug },
+      props: { leadMagnet: magnet },
+    }))
+  } catch {
+    return []
+  }
+}
+
+const { leadMagnet } = Astro.props
+
+const guideSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'DigitalDocument',
+  name: leadMagnet.title,
+  description: leadMagnet.description,
+  url: `https://basescapeutah.com/guides/${leadMagnet.slug}`,
+  publisher: {
+    '@type': 'Organization',
+    name: 'BaseScape',
+    url: 'https://basescapeutah.com',
+  },
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+}
+---
+<GuideLayout leadMagnet={leadMagnet}>
+  <JsonLd slot="head" schema={[guideSchema]} />
+</GuideLayout>

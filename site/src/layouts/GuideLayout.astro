@@ -1,0 +1,92 @@
+---
+import BaseLayout from './BaseLayout.astro'
+import LeadMagnetForm from '../components/forms/LeadMagnetForm.tsx'
+import '../components/forms/form-styles.css'
+import { serializeLexical } from '../lib/serialize-lexical'
+import {
+  guideHero,
+  guideHeroInner,
+  guideOverline,
+  guideTitle,
+  guideDescription,
+  guideBody,
+  guideCoverWrap,
+  guideCoverImage,
+  guideContent,
+  guideBenefitsWrap,
+  guideFormWrap,
+  guideBodyFull,
+} from '../styles/guide.css'
+
+interface Props {
+  leadMagnet: any
+}
+
+const { leadMagnet } = Astro.props
+
+const title = leadMagnet.title
+const description = leadMagnet.description
+const coverImage = leadMagnet.landingPage?.coverImage
+const benefits = leadMagnet.landingPage?.benefits
+const hasCoverImage = coverImage?.url
+const hasBenefits = benefits?.root?.children?.length > 0
+const benefitsHtml = hasBenefits ? serializeLexical(benefits) : ''
+---
+<BaseLayout
+  title={title}
+  description={description}
+  ogImage={hasCoverImage ? coverImage.url : undefined}
+>
+  <slot name="head" slot="head" />
+
+  <!-- Hero -->
+  <section class={guideHero}>
+    <div class={guideHeroInner}>
+      <p class={guideOverline}>Free Resource</p>
+      <h1 class={guideTitle}>{title}</h1>
+      <p class={guideDescription}>{description}</p>
+    </div>
+  </section>
+
+  <!-- Body -->
+  {hasCoverImage ? (
+    <section class={guideBody}>
+      <div class={guideCoverWrap}>
+        <img
+          src={coverImage.url}
+          alt={coverImage.alt || `${title} guide cover`}
+          width="320"
+          height="414"
+          class={guideCoverImage}
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+      <div class={guideContent}>
+        {benefitsHtml && (
+          <div class={guideBenefitsWrap} set:html={benefitsHtml} />
+        )}
+        <div class={guideFormWrap}>
+          <LeadMagnetForm
+            client:idle
+            leadMagnetId={leadMagnet.slug}
+            ctaText={leadMagnet.ctaText || 'Download Free Guide'}
+          />
+        </div>
+      </div>
+    </section>
+  ) : (
+    <section class={guideBodyFull}>
+      {benefitsHtml && (
+        <div class={guideBenefitsWrap} set:html={benefitsHtml} />
+      )}
+      <div class={guideFormWrap} style="margin-inline: auto;">
+        <LeadMagnetForm
+          client:idle
+          leadMagnetId={leadMagnet.slug}
+          ctaText={leadMagnet.ctaText || 'Download Free Guide'}
+        />
+      </div>
+    </section>
+  )}
+</BaseLayout>

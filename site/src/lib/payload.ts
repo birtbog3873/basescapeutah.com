@@ -68,7 +68,19 @@ export async function fetchBlogPosts() {
 }
 
 export async function fetchLeadMagnets() {
-  return fetchPayload<any>('lead-magnets', 'where[status][equals]=published')
+  return fetchPayload<any>('lead-magnets', 'where[status][equals]=published&depth=1')
+}
+
+export async function fetchLeadMagnet(slug: string) {
+  try {
+    const result = await fetchPayload<any>(
+      'lead-magnets',
+      `where[slug][equals]=${encodeURIComponent(slug)}&where[status][equals]=published&depth=1&limit=1`,
+    )
+    return result.docs[0] || null
+  } catch {
+    return null
+  }
 }
 
 export async function fetchOffers() {
