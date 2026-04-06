@@ -114,11 +114,7 @@ export async function createLead(data: Record<string, any>) {
     body: JSON.stringify(data),
   })
   if (!res.ok) {
-    const rawBody = await res.text().catch(() => '')
-    let parsed: any = {}
-    try { parsed = JSON.parse(rawBody) } catch {}
-    const msg = parsed?.errors?.[0]?.message || `HTTP ${res.status}: ${rawBody.slice(0, 300)}`
-    throw new Error(msg)
+    throw new Error(`Payload API error: ${res.status} ${res.statusText}`)
   }
   return res.json()
 }
@@ -134,11 +130,7 @@ export async function updateLead(id: string, data: Record<string, any>) {
     body: JSON.stringify(data),
   })
   if (!res.ok) {
-    const rawBody = await res.text().catch(() => '')
-    let parsed: any = {}
-    try { parsed = JSON.parse(rawBody) } catch {}
-    const msg = parsed?.errors?.[0]?.message || `HTTP ${res.status}: ${rawBody.slice(0, 300)}`
-    throw new Error(msg)
+    throw new Error(`Payload API error: ${res.status} ${res.statusText}`)
   }
   return res.json()
 }
