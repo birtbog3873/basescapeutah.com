@@ -26,7 +26,8 @@ import { deployHookCollection, deployHookGlobal } from './src/hooks/deployHook'
 import { afterLeadCreate } from './src/hooks/afterLeadCreate'
 
 export default buildConfig({
-  secret: process.env.PAYLOAD_SECRET || 'dev-secret-change-me',
+  cors: ['https://basescapeutah.com'],
+  secret: process.env.PAYLOAD_SECRET ?? (() => { throw new Error('PAYLOAD_SECRET env var required') })(),
   editor: lexicalEditor(),
   db: sqliteAdapter({
     client: {

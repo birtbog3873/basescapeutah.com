@@ -4,14 +4,14 @@ const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4}$/
 
 export const sourceSchema = z.object({
   page: z.string().max(2048, 'Page URL too long'),
-  utmSource: z.string().optional(),
-  utmMedium: z.string().optional(),
-  utmCampaign: z.string().optional(),
-  utmContent: z.string().optional(),
-  utmTerm: z.string().optional(),
-  referrer: z.string().optional(),
-  gaClientId: z.string().optional(),
-  gclid: z.string().optional(),
+  utmSource: z.string().max(500).optional(),
+  utmMedium: z.string().max(500).optional(),
+  utmCampaign: z.string().max(500).optional(),
+  utmContent: z.string().max(500).optional(),
+  utmTerm: z.string().max(500).optional(),
+  referrer: z.string().max(2048).optional(),
+  gaClientId: z.string().max(500).optional(),
+  gclid: z.string().max(500).optional(),
 })
 
 export const honeypotSchema = z.string().max(0, 'Invalid submission')

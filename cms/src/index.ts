@@ -49,6 +49,7 @@ async function getConfig(env: Env) {
   }
 
   cachedConfig = buildConfig({
+    cors: ['https://basescapeutah.com'],
     secret: process.env.PAYLOAD_SECRET,
     editor: lexicalEditor(),
     db: sqliteD1Adapter({

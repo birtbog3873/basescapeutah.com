@@ -17,6 +17,13 @@ build/
 .wrangler/
 .mf/
 
+# Databases
+*.db
+!*.db.example
+
+# SQL exports (may contain password hashes)
+d1-export*.sql
+
 # OS
 .DS_Store
 Thumbs.db

@@ -44,7 +44,8 @@ function serializeNode(node: any): string {
       return `<p>${serializeChildren(node.children)}</p>`
 
     case 'heading': {
-      const tag = node.tag || 'h2'
+      const allowedTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+      const tag = allowedTags.includes(node.tag) ? node.tag : 'h2'
       return `<${tag}>${serializeChildren(node.children)}</${tag}>`
     }
 
