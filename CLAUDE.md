@@ -9,6 +9,15 @@ This repo contains two distinct workstreams:
 1. **Trade Evaluation Pipeline** — A 4-phase research pipeline to evaluate contractor trades for a direct-to-residential, in-home-selling startup on Utah's Wasatch Front.
 2. **BaseScape Website** — A pnpm monorepo (`site/`, `cms/`, `admin/`) for the business website, built with Astro + Payload CMS, deployed to Cloudflare.
 
+## Deployment
+
+See **[docs/deployment.md](docs/deployment.md)** for full deployment instructions. Key points:
+
+- **Site** → Cloudflare Pages: `pnpm --filter site build && npx wrangler pages deploy site/dist --project-name basescape-site`
+- **Admin CMS** → Vercel (production backend): `cd admin && npx vercel --prod`
+- **Both `cms/` and `admin/` have backend code** — production uses `admin/`. Always sync changes between them.
+- No GitHub remote. All deploys are manual CLI.
+
 ## Commands
 
 ```bash
