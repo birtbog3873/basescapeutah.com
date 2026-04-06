@@ -32,7 +32,7 @@ describe('leadStepOneSchema', () => {
   })
 
   it('accepts all valid serviceType enum values', () => {
-    const types = ['walkout-basement', 'egress-window', 'window-well-upgrade', 'not-sure'] as const
+    const types = ['walkout-basement', 'basement-remodeling', 'pavers-hardscapes', 'retaining-walls', 'artificial-turf', 'egress-windows'] as const
     for (const serviceType of types) {
       const result = leadStepOneSchema.safeParse({ ...validData, serviceType })
       expect(result.success).toBe(true)
@@ -101,8 +101,8 @@ describe('leadStepTwoSchema', () => {
   const validData = {
     step: 2 as const,
     sessionId: validUUID,
-    projectPurpose: 'rental-unit' as const,
-    timeline: 'asap' as const,
+    preferredDate: '2026-05-15',
+    timePreference: 'morning' as const,
     honeypot: '',
   }
 
@@ -111,30 +111,27 @@ describe('leadStepTwoSchema', () => {
     expect(result.success).toBe(true)
   })
 
-  it('accepts all valid projectPurpose enum values', () => {
-    const purposes = ['rental-unit', 'family-space', 'home-office', 'safety-compliance', 'other'] as const
-    for (const projectPurpose of purposes) {
-      const result = leadStepTwoSchema.safeParse({ ...validData, projectPurpose })
+  it('accepts all valid timePreference enum values', () => {
+    const timePrefs = ['morning', 'afternoon', 'evening', 'not-sure'] as const
+    for (const timePreference of timePrefs) {
+      const result = leadStepTwoSchema.safeParse({ ...validData, timePreference })
       expect(result.success).toBe(true)
     }
   })
 
-  it('accepts all valid timeline enum values', () => {
-    const timelines = ['asap', '1-3-months', '3-6-months', '6-plus-months', 'just-researching'] as const
-    for (const timeline of timelines) {
-      const result = leadStepTwoSchema.safeParse({ ...validData, timeline })
-      expect(result.success).toBe(true)
-    }
-  })
-
-  it('rejects invalid projectPurpose', () => {
-    const result = leadStepTwoSchema.safeParse({ ...validData, projectPurpose: 'swimming-pool' })
+  it('rejects invalid timePreference', () => {
+    const result = leadStepTwoSchema.safeParse({ ...validData, timePreference: 'midnight' })
     expect(result.success).toBe(false)
   })
 
-  it('rejects invalid timeline', () => {
-    const result = leadStepTwoSchema.safeParse({ ...validData, timeline: 'next-year' })
+  it('rejects invalid preferredDate format', () => {
+    const result = leadStepTwoSchema.safeParse({ ...validData, preferredDate: '05/15/2026' })
     expect(result.success).toBe(false)
+  })
+
+  it('accepts valid ISO date format', () => {
+    const result = leadStepTwoSchema.safeParse({ ...validData, preferredDate: '2026-12-31' })
+    expect(result.success).toBe(true)
   })
 
   it('rejects wrong step literal', () => {
@@ -153,7 +150,7 @@ describe('leadStepTwoSchema', () => {
   })
 
   it('rejects missing required fields', () => {
-    const requiredFields = ['step', 'sessionId', 'projectPurpose', 'timeline', 'honeypot'] as const
+    const requiredFields = ['step', 'sessionId', 'preferredDate', 'timePreference', 'honeypot'] as const
     for (const field of requiredFields) {
       const data = { ...validData }
       delete (data as Record<string, unknown>)[field]
@@ -170,10 +167,15 @@ describe('leadStepThreeSchema', () => {
   const validData = {
     step: 3 as const,
     sessionId: validUUID,
-    name: 'Jane Doe',
+    serviceType: 'walkout-basement' as const,
+    zipCode: '84020',
+    firstName: 'Jane',
+    lastName: 'Doe',
     phone: '(801) 555-1234',
     email: 'jane@example.com',
+    smsConsent: true,
     honeypot: '',
+    source: validSource,
   }
 
   it('accepts valid data without optional address', () => {
@@ -194,26 +196,34 @@ describe('leadStepThreeSchema', () => {
     expect(result.success).toBe(false)
   })
 
-  it('rejects empty name', () => {
-    const result = leadStepThreeSchema.safeParse({ ...validData, name: '' })
+  it('rejects empty firstName', () => {
+    const result = leadStepThreeSchema.safeParse({ ...validData, firstName: '' })
     expect(result.success).toBe(false)
   })
 
-  it('rejects name exceeding 100 characters', () => {
-    const result = leadStepThreeSchema.safeParse({ ...validData, name: 'A'.repeat(101) })
+  it('rejects firstName exceeding 50 characters', () => {
+    const result = leadStepThreeSchema.safeParse({ ...validData, firstName: 'A'.repeat(51) })
     expect(result.success).toBe(false)
   })
 
-  it('accepts name at max length boundary (100 chars)', () => {
-    const result = leadStepThreeSchema.safeParse({ ...validData, name: 'A'.repeat(100) })
+  it('accepts firstName at max length boundary (50 chars)', () => {
+    const result = leadStepThreeSchema.safeParse({ ...validData, firstName: 'A'.repeat(50) })
     expect(result.success).toBe(true)
   })
 
   it('accepts valid US phone formats', () => {
-    const validPhones = ['(801) 555-1234', '801-555-1234', '8015551234', '801.555.1234', '+18015551234']
+    const validPhones = ['(801) 555-1234', '801-555-1234', '8015551234', '801.555.1234']
     for (const phone of validPhones) {
       const result = leadStepThreeSchema.safeParse({ ...validData, phone })
       expect(result.success).toBe(true)
+    }
+  })
+
+  it('rejects phone with trailing 5+ digits', () => {
+    const badPhones = ['801-555-12345', '801-555-123456']
+    for (const phone of badPhones) {
+      const result = leadStepThreeSchema.safeParse({ ...validData, phone })
+      expect(result.success).toBe(false)
     }
   })
 
@@ -254,7 +264,7 @@ describe('leadStepThreeSchema', () => {
   })
 
   it('rejects missing required fields', () => {
-    const requiredFields = ['step', 'sessionId', 'name', 'phone', 'email', 'honeypot'] as const
+    const requiredFields = ['step', 'sessionId', 'serviceType', 'zipCode', 'firstName', 'lastName', 'phone', 'email', 'smsConsent', 'honeypot', 'source'] as const
     for (const field of requiredFields) {
       const data = { ...validData }
       delete (data as Record<string, unknown>)[field]

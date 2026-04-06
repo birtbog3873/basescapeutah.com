@@ -1,15 +1,17 @@
 import { z } from 'zod'
 
-const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/
+const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4}$/
 
 export const sourceSchema = z.object({
-  page: z.string(),
+  page: z.string().max(2048, 'Page URL too long'),
   utmSource: z.string().optional(),
   utmMedium: z.string().optional(),
   utmCampaign: z.string().optional(),
   utmContent: z.string().optional(),
   utmTerm: z.string().optional(),
   referrer: z.string().optional(),
+  gaClientId: z.string().optional(),
+  gclid: z.string().optional(),
 })
 
 export const honeypotSchema = z.string().max(0, 'Invalid submission')
@@ -33,7 +35,7 @@ export const leadStepOneSchema = z.object({
 export const leadStepTwoSchema = z.object({
   step: z.literal(2),
   sessionId: z.string().uuid('Invalid session'),
-  preferredDate: z.string().min(1, 'Please select a date'),
+  preferredDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
   timePreference: z.enum(['morning', 'afternoon', 'evening', 'not-sure']),
   honeypot: honeypotSchema,
 })
@@ -50,7 +52,7 @@ export const leadStepThreeSchema = z.object({
     'egress-windows',
   ]),
   zipCode: z.string().regex(/^\d{5}$/, 'Enter a valid 5-digit zip code'),
-  preferredDate: z.string().optional(),
+  preferredDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format').optional(),
   timePreference: z.enum(['morning', 'afternoon', 'evening', 'not-sure']).optional(),
   firstName: z.string().min(1, 'First name is required').max(50, 'First name too long'),
   lastName: z.string().min(1, 'Last name is required').max(50, 'Last name too long'),
@@ -76,7 +78,7 @@ export const leadMagnetSchema = z.object({
   sessionId: z.string().uuid('Invalid session'),
   name: z.string().max(100, 'Name too long').optional(),
   email: z.string().email('Enter a valid email address'),
-  leadMagnetId: z.string(),
+  leadMagnetId: z.string().regex(/^[a-z0-9][a-z0-9-]{0,98}[a-z0-9]$/, 'Invalid lead magnet ID'),
   honeypot: honeypotSchema,
   source: sourceSchema,
 })
