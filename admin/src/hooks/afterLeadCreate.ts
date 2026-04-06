@@ -2,17 +2,22 @@ import type { CollectionAfterChangeHook } from 'payload'
 import { generateConfirmationEmail } from '../email/lead-confirmation'
 import { generateTeamNotification } from '../email/team-notification'
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 export const afterLeadCreate: CollectionAfterChangeHook = async ({
   doc,
   previousDoc,
   req,
   operation,
 }) => {
+  console.log('[afterLeadCreate] hook fired', { operation, status: doc.status, id: doc.id })
+
   // Only trigger on status change to "complete"
   const statusChanged = operation === 'update'
     ? previousDoc?.status !== 'complete' && doc.status === 'complete'
     : operation === 'create' && doc.status === 'complete'
 
+  console.log('[afterLeadCreate] statusChanged:', statusChanged)
   if (!statusChanged) return doc
 
   let settings: any = {}
@@ -22,7 +27,7 @@ export const afterLeadCreate: CollectionAfterChangeHook = async ({
     // Continue with defaults
   }
 
-  const businessPhone = settings?.phone || '(888) 414-0007'
+  const businessPhone = settings?.phone || '(801) 919-8224'
   const businessName = settings?.businessName || 'BaseScape'
   const teamEmail = process.env.TEAM_NOTIFICATION_EMAIL || 'team@basescape.com'
   const payloadBaseUrl = process.env.PAYLOAD_BASE_URL || ''
@@ -54,7 +59,7 @@ export const afterLeadCreate: CollectionAfterChangeHook = async ({
       req.payload.logger.error({
         msg: 'Failed to send confirmation email',
         leadId: doc.id,
-        error,
+        error: error instanceof Error ? error.message : 'Unknown error',
       })
     }
   }
@@ -81,7 +86,7 @@ export const afterLeadCreate: CollectionAfterChangeHook = async ({
     await req.payload.sendEmail({
       to: teamEmail,
       from: `BaseScape Leads <leads@basescape.com>`,
-      replyTo: doc.email || undefined,
+      replyTo: doc.email && EMAIL_RE.test(doc.email) ? doc.email : undefined,
       subject: notification.subject,
       html: notification.html,
     })
@@ -95,7 +100,7 @@ export const afterLeadCreate: CollectionAfterChangeHook = async ({
     req.payload.logger.error({
       msg: 'Failed to send team notification',
       leadId: doc.id,
-      error,
+      error: error instanceof Error ? error.message : 'Unknown error',
     })
   }
 
@@ -104,11 +109,17 @@ export const afterLeadCreate: CollectionAfterChangeHook = async ({
   const webhookSecret = process.env.GOOGLE_SHEETS_WEBHOOK_SECRET
   if (webhookUrl && webhookSecret) {
     try {
+      // TODO: Google Apps Script doPost(e) does not expose HTTP request headers,
+      // so the Authorization header below is not yet read by the Apps Script side.
+      // Update lead-webhook.gs or migrate to a Cloud Function that supports
+      // header-based auth before this change is fully effective.
       await fetch(webhookUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${webhookSecret}`,
+        },
         body: JSON.stringify({
-          secret: webhookSecret,
           timestamp: doc.createdAt,
           name: doc.name,
           phone: doc.phone,
@@ -125,13 +136,15 @@ export const afterLeadCreate: CollectionAfterChangeHook = async ({
           utmSource: doc.source?.utmSource,
           utmMedium: doc.source?.utmMedium,
           utmCampaign: doc.source?.utmCampaign,
+          gaClientId: doc.source?.gaClientId,
+          gclid: doc.source?.gclid,
         }),
       })
     } catch (error) {
       req.payload.logger.error({
         msg: 'Failed to POST to Google Sheets webhook',
         leadId: doc.id,
-        error,
+        error: error instanceof Error ? error.message : 'Unknown error',
       })
     }
   }

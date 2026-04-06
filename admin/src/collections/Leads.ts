@@ -1,4 +1,6 @@
 import type { CollectionConfig } from 'payload'
+import { afterLeadCreate } from '../hooks/afterLeadCreate'
+import { sendOfflineConversion } from '../hooks/sendOfflineConversion'
 
 export const Leads: CollectionConfig = {
   slug: 'leads',
@@ -33,6 +35,65 @@ export const Leads: CollectionConfig = {
         return data
       },
     ],
+    afterChange: [
+      async ({ doc, previousDoc, req, operation }) => {
+        const statusChanged = operation === 'update'
+          ? previousDoc?.status !== 'complete' && doc.status === 'complete'
+          : operation === 'create' && doc.status === 'complete'
+        if (!statusChanged) return doc
+
+        // Google Sheets webhook (skip emails for now)
+        const webhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL
+        const webhookSecret = process.env.GOOGLE_SHEETS_WEBHOOK_SECRET
+        if (webhookUrl && webhookSecret) {
+          try {
+            // TODO: Apps Script doPost(e) cannot read HTTP headers — see afterLeadCreate.ts
+            await fetch(webhookUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${webhookSecret}`,
+              },
+              body: JSON.stringify({
+                timestamp: doc.createdAt,
+                name: doc.name,
+                phone: doc.phone,
+                email: doc.email,
+                zipCode: doc.zipCode,
+                serviceType: doc.serviceType,
+                preferredDate: doc.preferredDate,
+                timePreference: doc.timePreference,
+                address: doc.address,
+                additionalNotes: doc.additionalNotes,
+                formType: doc.formType,
+                isOutOfServiceArea: doc.isOutOfServiceArea,
+                source: doc.source?.page,
+                utmSource: doc.source?.utmSource,
+                utmMedium: doc.source?.utmMedium,
+                utmCampaign: doc.source?.utmCampaign,
+                gaClientId: doc.source?.gaClientId,
+                gclid: doc.source?.gclid,
+              }),
+            })
+            console.log('[LEADS] Webhook sent for lead', doc.id)
+          } catch (err: any) {
+            console.error('[LEADS] Webhook failed:', err?.message)
+          }
+        }
+
+        // Mark as processed
+        try {
+          await req.payload.update({
+            collection: 'leads',
+            id: doc.id,
+            data: { teamNotifiedAt: new Date().toISOString() },
+          })
+        } catch { /* ignore */ }
+
+        return doc
+      },
+      sendOfflineConversion,
+    ],
   },
   fields: [
     {
@@ -52,6 +113,8 @@ export const Leads: CollectionConfig = {
         { label: 'Abandoned', value: 'abandoned' },
         { label: 'Contacted', value: 'contacted' },
         { label: 'Qualified', value: 'qualified' },
+        { label: 'Closed Won', value: 'closed_won' },
+        { label: 'Closed Lost', value: 'closed_lost' },
       ],
     },
     {
@@ -103,7 +166,14 @@ export const Leads: CollectionConfig = {
         { name: 'utmContent', type: 'text' },
         { name: 'utmTerm', type: 'text' },
         { name: 'referrer', type: 'text' },
+        { name: 'gaClientId', type: 'text', admin: { description: 'GA4 client_id from _ga cookie' } },
+        { name: 'gclid', type: 'text', admin: { description: 'Google Ads click ID from URL' } },
       ],
+    },
+    {
+      name: 'closedValue',
+      type: 'number',
+      admin: { description: 'Revenue amount for closed deals (USD)' },
     },
     {
       name: 'isOutOfServiceArea',
