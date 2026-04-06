@@ -24,7 +24,7 @@ export const afterLeadCreate: CollectionAfterChangeHook = async ({
     // Continue with defaults
   }
 
-  const businessPhone = settings?.phone || '(888) 414-0007'
+  const businessPhone = settings?.phone || '(801) 919-8224'
   const businessName = settings?.businessName || 'BaseScape'
   const teamEmail = process.env.TEAM_NOTIFICATION_EMAIL || 'team@basescape.com'
   const payloadBaseUrl = process.env.PAYLOAD_BASE_URL || ''
@@ -106,11 +106,21 @@ export const afterLeadCreate: CollectionAfterChangeHook = async ({
   const webhookSecret = process.env.GOOGLE_SHEETS_WEBHOOK_SECRET
   if (webhookUrl && webhookSecret) {
     try {
+      // TODO: Google Apps Script doPost(e) does not expose HTTP request headers,
+      // so the Authorization header below is not yet read by the Apps Script side.
+      // To fully remove the secret from the request body, update lead-webhook.gs to
+      // read the secret from e.parameter or a query string, or migrate to a
+      // Cloud Function / other endpoint that supports header-based auth.
+      // Until then, the secret is transmitted only via the Authorization header
+      // (not the body), but the Apps Script will reject requests as Unauthorized
+      // until it is updated to validate the Authorization header via a different mechanism.
       await fetch(webhookUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${webhookSecret}`,
+        },
         body: JSON.stringify({
-          secret: webhookSecret,
           timestamp: doc.createdAt,
           name: doc.name,
           phone: doc.phone,
@@ -127,6 +137,8 @@ export const afterLeadCreate: CollectionAfterChangeHook = async ({
           utmSource: doc.source?.utmSource,
           utmMedium: doc.source?.utmMedium,
           utmCampaign: doc.source?.utmCampaign,
+          gaClientId: doc.source?.gaClientId,
+          gclid: doc.source?.gclid,
         }),
       })
     } catch (error) {
