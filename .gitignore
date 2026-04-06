@@ -39,3 +39,9 @@ playwright-report/
 # Payload CMS
 cms/media/
 .vercel
+
+# Admin build output
+admin/.next/
+
+# Google Apps Script working directory
+cms/google-apps-script/
