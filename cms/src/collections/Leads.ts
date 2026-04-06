@@ -1,4 +1,6 @@
 import type { CollectionConfig } from 'payload'
+import { afterLeadCreate } from '../hooks/afterLeadCreate'
+import { sendOfflineConversion } from '../hooks/sendOfflineConversion'
 
 export const Leads: CollectionConfig = {
   slug: 'leads',
@@ -33,6 +35,7 @@ export const Leads: CollectionConfig = {
         return data
       },
     ],
+    afterChange: [afterLeadCreate, sendOfflineConversion],
   },
   fields: [
     {
@@ -52,6 +55,8 @@ export const Leads: CollectionConfig = {
         { label: 'Abandoned', value: 'abandoned' },
         { label: 'Contacted', value: 'contacted' },
         { label: 'Qualified', value: 'qualified' },
+        { label: 'Closed Won', value: 'closed_won' },
+        { label: 'Closed Lost', value: 'closed_lost' },
       ],
     },
     {
@@ -103,7 +108,14 @@ export const Leads: CollectionConfig = {
         { name: 'utmContent', type: 'text' },
         { name: 'utmTerm', type: 'text' },
         { name: 'referrer', type: 'text' },
+        { name: 'gaClientId', type: 'text', admin: { description: 'GA4 client_id from _ga cookie' } },
+        { name: 'gclid', type: 'text', admin: { description: 'Google Ads click ID from URL' } },
       ],
+    },
+    {
+      name: 'closedValue',
+      type: 'number',
+      admin: { description: 'Revenue amount for closed deals (USD)' },
     },
     {
       name: 'isOutOfServiceArea',
