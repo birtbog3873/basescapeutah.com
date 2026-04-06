@@ -1,3 +1,12 @@
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
 const SERVICE_LABELS: Record<string, string> = {
   'walkout-basement': 'Walkout Basement',
   'basement-remodeling': 'Basement Remodeling',
@@ -21,11 +30,11 @@ export function generateConfirmationEmail(data: ConfirmationEmailData) {
     : 'estimate'
 
   return {
-    subject: `Thanks, ${data.name} — We received your ${serviceName} estimate request`,
+    subject: `Thanks, ${escapeHtml(data.name)} — We received your ${serviceName} estimate request`,
     html: `
       <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1B3B5E;">
         <h1 style="font-size: 24px; color: #1B3B5E; margin-bottom: 16px;">
-          Thanks, ${data.name}!
+          Thanks, ${escapeHtml(data.name)}!
         </h1>
         <p style="font-size: 16px; line-height: 1.6; color: #3E6B89;">
           We've received your ${serviceName} estimate request. Our team will review
@@ -51,7 +60,7 @@ export function generateConfirmationEmail(data: ConfirmationEmailData) {
           <strong>Licensed &middot; Bonded &middot; Insured</strong> — Utah Wasatch Front
         </p>
         <p style="font-size: 12px; color: #9AA5B4; margin-top: 8px;">
-          This is an automated confirmation from ${data.businessName}. Please do not reply to this email.
+          This is an automated confirmation from ${escapeHtml(data.businessName)}. Please do not reply to this email.
         </p>
       </div>
     `,
