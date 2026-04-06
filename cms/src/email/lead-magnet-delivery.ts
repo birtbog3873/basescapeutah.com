@@ -7,8 +7,17 @@ interface LeadMagnetDeliveryData {
   businessName: string
 }
 
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
 export function generateLeadMagnetDeliveryEmail(data: LeadMagnetDeliveryData): string {
-  const greeting = data.name ? `Hi ${data.name},` : 'Hi there,'
+  const greeting = data.name ? `Hi ${escapeHtml(data.name)},` : 'Hi there,'
 
   return `
 <!DOCTYPE html>
@@ -68,7 +77,7 @@ export function generateLeadMagnetDeliveryEmail(data: LeadMagnetDeliveryData): s
     <tr>
       <td style="padding:16px 24px;text-align:center;background:#1B3B5E;">
         <p style="font-size:12px;color:#8ba3be;margin:0;">
-          &copy; ${new Date().getFullYear()} ${data.businessName}. This email was sent because you requested a resource from our website.
+          &copy; ${new Date().getFullYear()} ${escapeHtml(data.businessName)}. This email was sent because you requested a resource from our website.
         </p>
       </td>
     </tr>
