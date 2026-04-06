@@ -102,9 +102,8 @@ export const server = {
             source: input.source,
           }))
           return { success: true, leadId: result.doc?.id, step: 3 }
-        } catch (err: any) {
-          // DEBUG: Return the actual CMS error so we can see it in the UI
-          return { success: false, leadId: null, step: 3, debugError: err?.message || String(err) }
+        } catch {
+          return { success: false, leadId: null, step: 3 }
         }
       }
 

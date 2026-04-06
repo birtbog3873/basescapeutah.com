@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { actions } from 'astro:actions'
+import { getGaClientId, getGclid } from '../../lib/analytics'
 import './form-styles.css'
 
 const SERVICE_OPTIONS = [
@@ -25,7 +26,7 @@ interface Props {
   preselectedService?: string
 }
 
-export default function MultiStepForm({ sourcePage = '/', phone = '(888) 414-0007', preselectedService }: Props) {
+export default function MultiStepForm({ sourcePage = '/', phone = '(801) 919-8224', preselectedService }: Props) {
   const [step, setStep] = useState(1)
   const [sessionId, setSessionId] = useState('')
   const [loading, setLoading] = useState(false)
@@ -121,6 +122,8 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(888) 414-000
       utmContent: params.get('utm_content') || undefined,
       utmTerm: params.get('utm_term') || undefined,
       referrer: document.referrer || undefined,
+      gaClientId: getGaClientId(),
+      gclid: getGclid(),
     }
   }
 
@@ -200,11 +203,7 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(888) 414-000
         source: getSource(),
       })
 
-      if (result.error) {
-        console.error('[Form Step 3] Action error:', JSON.stringify(result.error, null, 2))
-        setErrors({ form: 'Something went wrong. Please try again.' })
-      } else if (result.data && !result.data.success) {
-        console.error('[Form Step 3] CMS error:', (result.data as any).debugError)
+      if (result.error || (result.data && !result.data.success)) {
         setErrors({ form: 'Something went wrong. Please try again.' })
       } else {
         setSuccess(true)
@@ -216,9 +215,8 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(888) 414-000
         else window.scrollTo({ top: 0 })
         ;(window as any).dataLayer?.push({ event: 'form_complete', service: serviceType })
       }
-    } catch (err: any) {
-      console.error('[Form Step 3] Catch error:', err)
-      setErrors({ form: `Error: ${err?.message || 'Network error'}` })
+    } catch {
+      setErrors({ form: 'Something went wrong. Please try again or call us directly.' })
     }
     setLoading(false)
   }
