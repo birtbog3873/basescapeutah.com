@@ -588,7 +588,7 @@ export interface Lead {
    * Client-generated UUID linking partial form steps
    */
   sessionId: string;
-  status: 'partial' | 'complete' | 'abandoned' | 'contacted' | 'qualified';
+  status: 'partial' | 'complete' | 'abandoned' | 'contacted' | 'qualified' | 'closed_won' | 'closed_lost';
   currentStep: number;
   serviceType?:
     | (
@@ -597,13 +597,16 @@ export interface Lead {
         | 'pavers-hardscapes'
         | 'retaining-walls'
         | 'artificial-turf'
-        | 'egress-window'
+        | 'egress-windows'
         | 'not-sure'
       )
     | null;
   zipCode?: string | null;
-  projectPurpose?: ('rental-unit' | 'family-space' | 'home-office' | 'safety-compliance' | 'other') | null;
-  timeline?: ('asap' | '1-3-months' | '3-6-months' | '6-plus-months' | 'just-researching') | null;
+  /**
+   * ISO date string (YYYY-MM-DD)
+   */
+  preferredDate?: string | null;
+  timePreference?: ('morning' | 'afternoon' | 'evening' | 'not-sure') | null;
   name?: string | null;
   phone?: string | null;
   email?: string | null;
@@ -617,7 +620,19 @@ export interface Lead {
     utmContent?: string | null;
     utmTerm?: string | null;
     referrer?: string | null;
+    /**
+     * GA4 client_id from _ga cookie
+     */
+    gaClientId?: string | null;
+    /**
+     * Google Ads click ID from URL
+     */
+    gclid?: string | null;
   };
+  /**
+   * Revenue amount for closed deals (USD)
+   */
+  closedValue?: number | null;
   isOutOfServiceArea?: boolean | null;
   formType: 'multi-step' | 'quick-callback' | 'lead-magnet';
   confirmationSentAt?: string | null;
@@ -749,6 +764,33 @@ export interface LeadMagnet {
    * Preview image for CTA
    */
   thumbnailImage?: (number | null) | Media;
+  /**
+   * Content displayed on the dedicated guide landing page at /guides/[slug]
+   */
+  landingPage?: {
+    /**
+     * Front cover image of the PDF guide for the landing page
+     */
+    coverImage?: (number | null) | Media;
+    /**
+     * Benefits/highlights shown on the landing page
+     */
+    benefits?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+  };
   ctaText: string;
   requiredFields: ('name' | 'email' | 'phone')[];
   status: 'draft' | 'published';
@@ -1176,8 +1218,8 @@ export interface LeadsSelect<T extends boolean = true> {
   currentStep?: T;
   serviceType?: T;
   zipCode?: T;
-  projectPurpose?: T;
-  timeline?: T;
+  preferredDate?: T;
+  timePreference?: T;
   name?: T;
   phone?: T;
   email?: T;
@@ -1193,7 +1235,10 @@ export interface LeadsSelect<T extends boolean = true> {
         utmContent?: T;
         utmTerm?: T;
         referrer?: T;
+        gaClientId?: T;
+        gclid?: T;
       };
+  closedValue?: T;
   isOutOfServiceArea?: T;
   formType?: T;
   confirmationSentAt?: T;
@@ -1254,6 +1299,12 @@ export interface LeadMagnetsSelect<T extends boolean = true> {
   description?: T;
   file?: T;
   thumbnailImage?: T;
+  landingPage?:
+    | T
+    | {
+        coverImage?: T;
+        benefits?: T;
+      };
   ctaText?: T;
   requiredFields?: T;
   status?: T;

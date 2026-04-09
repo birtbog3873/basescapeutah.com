@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 import CTABlock from '../components/content/CTABlock.astro'
 import { fetchSiteSettings } from '../lib/payload'
 
-let settings: any = { phone: '(888) 414-0007', businessName: 'BaseScape', email: 'hello@basescapeutah.com' }
+let settings: any = { phone: '(801) 919-8224', businessName: 'BaseScape', email: 'hello@basescapeutah.com' }
 try { settings = { ...settings, ...(await fetchSiteSettings()) } } catch {}
 const phone = settings.phone
 

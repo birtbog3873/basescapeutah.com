@@ -96,6 +96,44 @@ function listItem(text: string) {
   }
 }
 
+function bulletList(items: string[]) {
+  return {
+    type: 'list',
+    listType: 'bullet',
+    children: items.map((text, i) => ({
+      type: 'listitem',
+      children: [{ type: 'text', text, format: 0, detail: 0, mode: 'normal', style: '', version: 1 }],
+      direction: 'ltr',
+      format: '',
+      indent: 0,
+      version: 1,
+      value: i + 1,
+    })),
+    direction: 'ltr',
+    format: '',
+    indent: 0,
+    start: 1,
+    tag: 'ul',
+    version: 1,
+  }
+}
+
+function benefitsContent(heading_text: string, items: string[]) {
+  return {
+    root: {
+      type: 'root',
+      children: [
+        heading(heading_text),
+        bulletList(items),
+      ],
+      direction: 'ltr',
+      format: '',
+      indent: 0,
+      version: 1,
+    },
+  }
+}
+
 const CITIES = [
   { cityName: 'Provo', county: 'utah', lat: 40.2338, lng: -111.6585 },
   { cityName: 'Orem', county: 'utah', lat: 40.2969, lng: -111.6946 },
@@ -167,7 +205,7 @@ async function seed() {
     slug: 'site-settings',
     data: {
       businessName: 'BaseScape',
-      phone: '(888) 414-0007',
+      phone: '(801) 919-8224',
       email: 'hello@basescape.com',
       address: {
         street: '123 Innovation Way',
@@ -676,6 +714,19 @@ async function seed() {
     },
   })
 
+  const rwCoverPath = resolve(pdfDir, 'images', 'retaining-cover.png')
+  const rwCoverBuffer = readFileSync(rwCoverPath)
+  const rwCoverMedia = await payload.create({
+    collection: 'media',
+    data: { alt: 'The Utah Homeowner\'s Guide to Retaining Walls — front cover' },
+    file: {
+      data: rwCoverBuffer,
+      mimetype: 'image/png',
+      name: 'retaining-walls-guide-cover.png',
+      size: rwCoverBuffer.length,
+    },
+  })
+
   await payload.create({
     collection: 'lead-magnets',
     data: {
@@ -686,6 +737,17 @@ async function seed() {
       ctaText: 'Download Free Guide',
       requiredFields: ['email'],
       status: 'published',
+      landingPage: {
+        coverImage: rwCoverMedia.id,
+        benefits: benefitsContent('What You\'ll Learn', [
+          'Real cost ranges for engineered retaining walls on the Wasatch Front',
+          'How to choose the right wall material for Utah\'s clay soils',
+          'Warning signs of retaining wall failure and when to act',
+          'Permit and engineering requirements for walls over 4 feet',
+          'Questions to ask any contractor before signing a contract',
+          'How proper drainage prevents 90% of retaining wall failures',
+        ]),
+      },
     } as any,
   })
 
@@ -702,6 +764,19 @@ async function seed() {
     },
   })
 
+  const wbCoverPath = resolve(pdfDir, 'images', 'walkout-cover.png')
+  const wbCoverBuffer = readFileSync(wbCoverPath)
+  const wbCoverMedia = await payload.create({
+    collection: 'media',
+    data: { alt: 'The Utah Homeowner\'s Guide to Walkout Basements — front cover' },
+    file: {
+      data: wbCoverBuffer,
+      mimetype: 'image/png',
+      name: 'walkout-basements-guide-cover.png',
+      size: wbCoverBuffer.length,
+    },
+  })
+
   await payload.create({
     collection: 'lead-magnets',
     data: {
@@ -712,6 +787,18 @@ async function seed() {
       ctaText: 'Download Free Guide',
       requiredFields: ['email'],
       status: 'published',
+      landingPage: {
+        coverImage: wbCoverMedia.id,
+        benefits: benefitsContent('What You\'ll Learn', [
+          'Realistic cost ranges for walkout basement conversions in Utah',
+          'How walkout basements unlock ADU rental income under Utah law',
+          'ROI analysis — when a walkout pays for itself through rental income',
+          'Structural engineering requirements for cutting into foundation walls',
+          'Utah clay soil challenges and how proper drainage prevents failures',
+          'The permit process and code requirements you need to know',
+          'Questions to ask any contractor before they touch your foundation',
+        ]),
+      },
     } as any,
   })
 

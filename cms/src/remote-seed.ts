@@ -2,13 +2,13 @@
  * Remote seed script for BaseScape CMS.
  * Seeds data via the REST API (no local DB access needed).
  *
- * Usage: tsx src/remote-seed.ts
+ * Usage: SEED_EMAIL=x SEED_PASSWORD=y SEED_API_BASE=https://... tsx src/remote-seed.ts
  */
 
-const API_BASE = 'https://basescape-cms.steven-a-bunker.workers.dev'
+const API_BASE = process.env.SEED_API_BASE || 'https://basescape-cms.steven-a-bunker.workers.dev'
 const CREDENTIALS = {
-  email: 'steven@basescape.com',
-  password: 'BaseScape2026!',
+  email: process.env.SEED_EMAIL ?? (() => { throw new Error('SEED_EMAIL env var required') })(),
+  password: process.env.SEED_PASSWORD ?? (() => { throw new Error('SEED_PASSWORD env var required') })(),
 }
 
 // ---------------------------------------------------------------------------
@@ -157,7 +157,7 @@ async function seedSiteSettings() {
   console.log('Updating Site Settings...')
   await apiRequest('POST', '/api/globals/site-settings', {
     businessName: 'BaseScape',
-    phone: '(888) 414-0007',
+    phone: '(801) 919-8224',
     email: 'hello@basescape.com',
     address: {
       street: '123 Innovation Way',

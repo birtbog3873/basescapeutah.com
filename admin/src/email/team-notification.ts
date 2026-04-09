@@ -1,3 +1,12 @@
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
 const SERVICE_LABELS: Record<string, string> = {
   'walkout-basement': 'Walkout Basement',
   'basement-remodeling': 'Basement Remodeling',
@@ -48,10 +57,10 @@ export function generateTeamNotification(data: TeamNotificationData) {
   const outOfAreaFlag = data.isOutOfServiceArea ? ' ⚠️ OUT OF SERVICE AREA' : ''
 
   return {
-    subject: `New ${formLabel} Lead: ${data.name || 'Unknown'} — ${serviceLabel} in ${data.zipCode || 'N/A'}${outOfAreaFlag}`,
+    subject: `New ${formLabel} Lead: ${escapeHtml(data.name || 'Unknown')} — ${serviceLabel} in ${escapeHtml(data.zipCode || 'N/A')}${outOfAreaFlag}`,
     html: `
       <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1B3B5E;">
-        ${data.isOutOfServiceArea ? '<div style="background: #FFF8EB; border: 2px solid #E8920A; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-weight: 600; color: #9A5D06;">⚠️ OUT OF SERVICE AREA — ZIP: ${data.zipCode}</div>' : ''}
+        ${data.isOutOfServiceArea ? `<div style="background: #FFF8EB; border: 2px solid #E8920A; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-weight: 600; color: #9A5D06;">⚠️ OUT OF SERVICE AREA — ZIP: ${escapeHtml(data.zipCode || '')}</div>` : ''}
 
         <h1 style="font-size: 20px; color: #1B3B5E; margin-bottom: 4px;">
           New ${formLabel} Lead
@@ -64,10 +73,10 @@ export function generateTeamNotification(data: TeamNotificationData) {
           Contact Information
         </h2>
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
-          <tr><td style="padding: 6px 0; color: #697686; width: 120px;">Name</td><td style="padding: 6px 0; font-weight: 600;">${data.name || '—'}</td></tr>
-          <tr><td style="padding: 6px 0; color: #697686;">Phone</td><td style="padding: 6px 0;"><a href="tel:${(data.phone || '').replace(/[^\d+]/g, '')}" style="color: #1B3B5E; font-weight: 600;">${data.phone || '—'}</a></td></tr>
-          <tr><td style="padding: 6px 0; color: #697686;">Email</td><td style="padding: 6px 0;"><a href="mailto:${data.email || ''}" style="color: #2A7B78;">${data.email || '—'}</a></td></tr>
-          <tr><td style="padding: 6px 0; color: #697686;">Address</td><td style="padding: 6px 0;">${data.address || '—'}</td></tr>
+          <tr><td style="padding: 6px 0; color: #697686; width: 120px;">Name</td><td style="padding: 6px 0; font-weight: 600;">${escapeHtml(data.name || '—')}</td></tr>
+          <tr><td style="padding: 6px 0; color: #697686;">Phone</td><td style="padding: 6px 0;"><a href="tel:${(data.phone || '').replace(/[^\d+]/g, '')}" style="color: #1B3B5E; font-weight: 600;">${escapeHtml(data.phone || '—')}</a></td></tr>
+          <tr><td style="padding: 6px 0; color: #697686;">Email</td><td style="padding: 6px 0;"><a href="mailto:${escapeHtml(data.email || '')}" style="color: #2A7B78;">${escapeHtml(data.email || '—')}</a></td></tr>
+          <tr><td style="padding: 6px 0; color: #697686;">Address</td><td style="padding: 6px 0;">${escapeHtml(data.address || '—')}</td></tr>
         </table>
 
         <h2 style="font-size: 16px; color: #1B3B5E; border-bottom: 1px solid #E3E8EF; padding-bottom: 8px;">
@@ -84,9 +93,9 @@ export function generateTeamNotification(data: TeamNotificationData) {
           Attribution
         </h2>
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
-          <tr><td style="padding: 6px 0; color: #697686; width: 120px;">Source Page</td><td style="padding: 6px 0;">${data.source?.page || '—'}</td></tr>
-          <tr><td style="padding: 6px 0; color: #697686;">Campaign</td><td style="padding: 6px 0;">${data.source?.utmCampaign || '—'}</td></tr>
-          <tr><td style="padding: 6px 0; color: #697686;">Referrer</td><td style="padding: 6px 0;">${data.source?.referrer || '—'}</td></tr>
+          <tr><td style="padding: 6px 0; color: #697686; width: 120px;">Source Page</td><td style="padding: 6px 0;">${escapeHtml(data.source?.page || '—')}</td></tr>
+          <tr><td style="padding: 6px 0; color: #697686;">Campaign</td><td style="padding: 6px 0;">${escapeHtml(data.source?.utmCampaign || '—')}</td></tr>
+          <tr><td style="padding: 6px 0; color: #697686;">Referrer</td><td style="padding: 6px 0;">${escapeHtml(data.source?.referrer || '—')}</td></tr>
         </table>
 
         ${data.payloadBaseUrl ? `

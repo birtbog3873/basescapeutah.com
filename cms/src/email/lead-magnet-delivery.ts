@@ -25,7 +25,7 @@ export function generateLeadMagnetDeliveryEmail(data: LeadMagnetDeliveryData): s
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your free guide: ${data.leadMagnetTitle}</title>
+  <title>Your free guide: ${escapeHtml(data.leadMagnetTitle)}</title>
 </head>
 <body style="margin:0;padding:0;background:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;background:#ffffff;">
@@ -43,15 +43,15 @@ export function generateLeadMagnetDeliveryEmail(data: LeadMagnetDeliveryData): s
           Thank you for your interest! Here's your free resource:
         </p>
         <h2 style="font-size:20px;font-weight:700;color:#1B3B5E;margin:0 0 8px;">
-          ${data.leadMagnetTitle}
+          ${escapeHtml(data.leadMagnetTitle)}
         </h2>
         <p style="font-size:14px;line-height:1.5;color:#666;margin:0 0 24px;">
-          ${data.description}
+          ${escapeHtml(data.description)}
         </p>
         <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
           <tr>
             <td style="background:#E8920A;border-radius:6px;padding:14px 32px;">
-              <a href="${data.downloadUrl}" style="color:#ffffff;font-size:16px;font-weight:600;text-decoration:none;display:inline-block;">
+              <a href="${/^(https?:\/\/|\/)/i.test(data.downloadUrl) ? escapeHtml(data.downloadUrl) : '#'}" style="color:#ffffff;font-size:16px;font-weight:600;text-decoration:none;display:inline-block;">
                 Download Your Free Guide
               </a>
             </td>
@@ -87,5 +87,5 @@ export function generateLeadMagnetDeliveryEmail(data: LeadMagnetDeliveryData): s
 }
 
 export function generateLeadMagnetDeliverySubject(leadMagnetTitle: string): string {
-  return `Your free guide: ${leadMagnetTitle}`
+  return `Your free guide: ${escapeHtml(leadMagnetTitle)}`
 }

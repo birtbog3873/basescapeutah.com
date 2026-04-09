@@ -24,7 +24,7 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props
 
-let settings: any = { phone: '(888) 414-0007', businessName: 'BaseScape' }
+let settings: any = { phone: '(801) 919-8224', businessName: 'BaseScape' }
 try {
   settings = { ...settings, ...(await fetchSiteSettings()) }
 } catch {}

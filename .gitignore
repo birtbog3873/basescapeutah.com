@@ -74,6 +74,9 @@ Biz Docs/
 Legal Docs/
 BaseScape/
 
+# Data pipeline output
+*.parquet
+
 # Working artifacts
 artifacts/
 memory/

@@ -22,13 +22,14 @@ import { Navigation } from './src/globals/Navigation'
 import { deployHookCollection, deployHookGlobal } from './src/hooks/deployHook'
 
 export default buildConfig({
-  secret: process.env.PAYLOAD_SECRET || 'dev-secret-change-me',
+  cors: ['https://basescapeutah.com'],
+  secret: process.env.PAYLOAD_SECRET ?? (() => { throw new Error('PAYLOAD_SECRET env var required') })(),
   editor: lexicalEditor(),
   db: sqliteD1Adapter({
     binding: 'DB',
   }),
   email: resendAdapter({
-    defaultFromAddress: 'noreply@basescape.com',
+    defaultFromAddress: 'noreply@basescapeutah.com',
     defaultFromName: 'BaseScape',
     apiKey: process.env.RESEND_API_KEY || '',
   }),

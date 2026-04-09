@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4}$/
+const phoneRegex = /^[\+]?1?[-\s.]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4}$/
 
 export const sourceSchema = z.object({
   page: z.string().max(2048, 'Page URL too long'),

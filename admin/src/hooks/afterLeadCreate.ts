@@ -10,14 +10,11 @@ export const afterLeadCreate: CollectionAfterChangeHook = async ({
   req,
   operation,
 }) => {
-  console.log('[afterLeadCreate] hook fired', { operation, status: doc.status, id: doc.id })
-
   // Only trigger on status change to "complete"
   const statusChanged = operation === 'update'
     ? previousDoc?.status !== 'complete' && doc.status === 'complete'
     : operation === 'create' && doc.status === 'complete'
 
-  console.log('[afterLeadCreate] statusChanged:', statusChanged)
   if (!statusChanged) return doc
 
   let settings: any = {}
@@ -29,7 +26,7 @@ export const afterLeadCreate: CollectionAfterChangeHook = async ({
 
   const businessPhone = settings?.phone || '(801) 919-8224'
   const businessName = settings?.businessName || 'BaseScape'
-  const teamEmail = process.env.TEAM_NOTIFICATION_EMAIL || 'team@basescape.com'
+  const teamEmail = process.env.TEAM_NOTIFICATION_EMAIL || 'team@basescapeutah.com'
   const payloadBaseUrl = process.env.PAYLOAD_BASE_URL || ''
 
   // Send homeowner confirmation email
@@ -44,8 +41,8 @@ export const afterLeadCreate: CollectionAfterChangeHook = async ({
 
       await req.payload.sendEmail({
         to: doc.email,
-        from: `${businessName} <noreply@basescape.com>`,
-        replyTo: 'hello@basescape.com',
+        from: `${businessName} <noreply@basescapeutah.com>`,
+        replyTo: 'hello@basescapeutah.com',
         subject: confirmation.subject,
         html: confirmation.html,
       })
@@ -85,7 +82,7 @@ export const afterLeadCreate: CollectionAfterChangeHook = async ({
 
     await req.payload.sendEmail({
       to: teamEmail,
-      from: `BaseScape Leads <leads@basescape.com>`,
+      from: `BaseScape Leads <leads@basescapeutah.com>`,
       replyTo: doc.email && EMAIL_RE.test(doc.email) ? doc.email : undefined,
       subject: notification.subject,
       html: notification.html,

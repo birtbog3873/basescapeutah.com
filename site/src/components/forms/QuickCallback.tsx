@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { actions } from 'astro:actions'
+import { getGaClientId, getGclid } from '../../lib/analytics'
 
 interface Props {
   sourcePage?: string
@@ -39,6 +40,8 @@ export default function QuickCallback({ sourcePage = '/' }: Props) {
           utmMedium: params.get('utm_medium') || undefined,
           utmCampaign: params.get('utm_campaign') || undefined,
           referrer: document.referrer || undefined,
+          gaClientId: getGaClientId(),
+          gclid: getGclid(),
         },
       })
 

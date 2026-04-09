@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { actions } from 'astro:actions'
+import { getGaClientId, getGclid } from '../../lib/analytics'
 import './form-styles.css'
 
 interface Props {
@@ -40,6 +41,8 @@ export default function LeadMagnetForm({
           utmMedium: new URLSearchParams(window.location.search).get('utm_medium') || undefined,
           utmCampaign: new URLSearchParams(window.location.search).get('utm_campaign') || undefined,
           referrer: document.referrer || undefined,
+          gaClientId: getGaClientId(),
+          gclid: getGclid(),
         },
       })
 

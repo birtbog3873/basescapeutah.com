@@ -1,0 +1,241 @@
+============================================================
+BaseScape Neighborhood Identification Pipeline
+============================================================
+  Year range: 2000–2020
+  Min homes per subdivision: 20
+  Counties: Salt Lake, Utah, Davis
+  Slope analysis: top 60
+
+  Using cached data from /Users/stevenbunker/clients/general-contracting/data/neighborhoods/_lir_cache.parquet
+  Loaded 244,086 records from cache
+
+============================================================
+PHASE 2: Filtering for target properties
+============================================================
+
+  Unique PROP_CLASS values:
+    Residential: 182,995
+    Unknown: 35,938
+    : 12,590
+    Commercial: 6,963
+    Commercial - Apartment & Condo: 1,523
+    Commercial - Office Space: 1,509
+    Commercial - Industrial: 670
+    Agricultural: 361
+    Tax Exempt - Government: 322
+    Vacant: 318
+    Commercial - Retail: 293
+    Tax Exempt - Charitable Organization or Religious: 200
+    Recreational: 179
+    Industrial: 178
+    Greenbelt: 27
+
+  After residential filter: 214,412 (29,674 removed)
+  After subdivision filter: 180,961
+  After condo/townhome filter: 158,135
+  After year sanity check: 158,135
+
+============================================================
+PHASE 3: Clustering by subdivision
+============================================================
+  Total subdivisions: 12,646
+  Subdivisions with 20+ homes: 2,660
+
+============================================================
+PHASE 4: Slope analysis for top 60 subdivisions
+============================================================
+  [1/60] 6386 (Utah Co., 475 homes)
+  [2/60] Kennecott Daybreak Pl 7 (Salt Lake Co., 403 homes)
+  [3/60] 3344 (Utah Co., 390 homes)
+  [4/60] 6453 (Utah Co., 368 homes)
+    Fetched 50 records (offset=0)...    Fetched 50 records (offset=0)...
+
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    ✓ Kennecott Daybreak Pl 7: 4.3m range (1462–1466m) | Score: 37.1
+    ✓ 6453: 22.2m range (1383–1405m) | Score: 189.0
+    ✓ 3344: 37.3m range (1378–1416m) | Score: 321.3
+    ✓ 6386: 5.2m range (1399–1405m) | Score: 46.5
+  [5/60] Kennecott Daybreak Pl 5 (Salt Lake Co., 327 homes)
+  [6/60] Kennecott Daybreak Pl 9 (Salt Lake Co., 307 homes)
+  [7/60] Kennecott Daybreak Ph 1 Amd (Salt Lake Co., 267 homes)
+  [8/60] Eagle Crest No 1 At Suncrest (Utah Co., 255 homes)
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    ✓ Kennecott Daybreak Ph 1 Amd: 18.6m range (1447–1465m) | Score: 149.7
+    ✓ Kennecott Daybreak Pl 9: 12.2m range (1474–1487m) | Score: 101.0
+    ✓ Eagle Crest No 1 At Suncrest: 47.5m range (1828–1875m) | Score: 379.4
+    ✓ Kennecott Daybreak Pl 5: 1.2m range (1466–1467m) | Score: 9.9
+  [9/60] Daybreak Village 8 Plat 3 (Salt Lake Co., 252 homes)
+  [10/60] Kennecott Daybreak Ph 2 Pl 3 (Salt Lake Co., 248 homes)
+  [11/60] Westgate Aclaime At Independence (Salt Lake Co., 246 homes)
+  [12/60] Kennecott Daybreak Pl 8 (Salt Lake Co., 242 homes)
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    ✓ Kennecott Daybreak Pl 8: 19.6m range (1445–1465m) | Score: 155.4
+    ✓ Westgate Aclaime At Independence: 3.1m range (1367–1370m) | Score: 24.9
+    ✓ Daybreak Village 8 Plat 3: 14.5m range (1516–1530m) | Score: 115.7
+  [13/60] Kennecott Daybreak Pl 6 (Salt Lake Co., 237 homes)
+  [14/60] Heights On Quarry Bend Pud (Salt Lake Co., 228 homes)
+  [15/60] Boulders At Rosecrest Pud (Salt Lake Co., 222 homes)
+  [16/60] Day Ranch Towns Phase 1 (Salt Lake Co., 214 homes)
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    ✓ Kennecott Daybreak Pl 6: 2.4m range (1463–1465m) | Score: 19.0
+    ✓ Boulders At Rosecrest Pud: 6.1m range (1531–1537m) | Score: 47.8
+  [17/60] Sunstone Vlge 1 (Salt Lake Co., 206 homes)
+  [18/60] Kennecott Daybreak Plat 4 (Salt Lake Co., 199 homes)
+  [19/60] Marketplace Aclaime At Independence Pl A (Salt Lake Co., 190 homes)
+  [20/60] Rosecrest Pl G (Salt Lake Co., 173 homes)
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    ✓ Marketplace Aclaime At Independence Pl A: 0.5m range (1369–1369m) | Score: 3.5
+    ✓ Kennecott Daybreak Plat 4: 3.2m range (1464–1467m) | Score: 24.3
+    ✓ Sunstone Vlge 1: 6.9m range (1491–1498m) | Score: 52.8
+    ✓ Rosecrest Pl G: 7.2m range (1503–1510m) | Score: 53.4
+  [21/60] Lakes At Sleepy Ridge The Prd Phase 2 (Utah Co., 168 homes)
+  [22/60] South Hills Pod 2 Phase 1a (Salt Lake Co., 164 homes)
+  [23/60] Kennecott Daybreak Ph 2 (Salt Lake Co., 164 homes)
+  [24/60] Sunset Hills Ph 1 Pud Amd (Salt Lake Co., 159 homes)
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    ✓ Kennecott Daybreak Ph 2: 17.4m range (1447–1464m) | Score: 128.1
+    ✓ Lakes At Sleepy Ridge The Prd Phase 2: 2.9m range (1377–1380m) | Score: 21.6
+    ✓ South Hills Pod 2 Phase 1a: 15.6m range (1440–1455m) | Score: 114.9
+    ✓ Sunset Hills Ph 1 Pud Amd: 6.5m range (1565–1571m) | Score: 47.2
+  [25/60] Rosecrest Pl 1e (Salt Lake Co., 155 homes)
+  [26/60] Maple Hollow 10, 11, & 13 At Suncrest (Utah Co., 154 homes)
+  [27/60] Rosecrest Pl Q (Salt Lake Co., 154 homes)
+  [28/60] Oak Vista 3 At Suncrest (Salt Lake Co., 153 homes)
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    ✓ Maple Hollow 10, 11, & 13 At Suncrest: 7.9m range (1687–1695m) | Score: 57.6
+    ✓ Oak Vista 3 At Suncrest: 4.9m range (1910–1915m) | Score: 35.5
+    ✓ Rosecrest Pl 1e: 6.1m range (1508–1514m) | Score: 44.6
+    ✓ Rosecrest Pl Q: 13.4m range (1548–1561m) | Score: 97.4
+  [29/60] Eagle Point Plat C (Utah Co., 150 homes)
+  [30/60] Hamilton Farms Ph 2 Pud (Salt Lake Co., 150 homes)
+  [31/60] Rosecrest Pl P (Salt Lake Co., 150 homes)
+  [32/60] Jessie's Brook Plat A (Utah Co., 149 homes)
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    ✓ Eagle Point Plat C: 1.7m range (1483–1484m) | Score: 12.0
+    ✓ Rosecrest Pl P: 1.7m range (1555–1557m) | Score: 12.6
+    ✓ Jessie's Brook Plat A: 1.6m range (1381–1383m) | Score: 11.2
+  [33/60] Herriman Vlge Pud Amd (Salt Lake Co., 147 homes)
+  [34/60] Thanksgiving Village Pud Plat A (Utah Co., 144 homes)
+  [35/60] Villages At 27th Pud (Salt Lake Co., 140 homes)
+  [36/60] Northshore Plat C-1 (Utah Co., 139 homes)
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    ✓ Villages At 27th Pud: 1.8m range (1317–1318m) | Score: 12.8
+    ✓ Thanksgiving Village Pud Plat A: 3.0m range (1382–1385m) | Score: 21.7
+    ✓ Herriman Vlge Pud Amd: 3.2m range (1484–1487m) | Score: 23.4
+    ✓ Northshore Plat C-1: 0.7m range (1369–1370m) | Score: 4.8
+  [37/60] Red Sage (Salt Lake Co., 135 homes)
+  [38/60] Creekside Village Plat A (Utah Co., 135 homes)
+  [39/60] Commons The Plat A Amd (Utah Co., 134 homes)
+  [40/60] Red Oaks Vlge Pud (Salt Lake Co., 133 homes)
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    ✓ Creekside Village Plat A: 0.8m range (1375–1375m) | Score: 5.4
+    ✓ Red Oaks Vlge Pud: 0.5m range (1293–1293m) | Score: 3.3
+    ✓ Red Sage: 1.0m range (1365–1366m) | Score: 7.3
+  [41/60] Villages At Sandy (Salt Lake Co., 132 homes)
+  [42/60] Giverny Amended Pud (Salt Lake Co., 129 homes)
+  [43/60] Pioneer Addition Phase Vii ""A"" (Utah Co., 128 homes)
+  [44/60] Rosecrest Pl 1b (Salt Lake Co., 127 homes)
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    ✓ Giverny Amended Pud: 2.0m range (1568–1569m) | Score: 13.8
+    ✓ Pioneer Addition Phase Vii ""A"": 3.2m range (1492–1495m) | Score: 22.5
+  [45/60] Parry Farms Ph 2 (Salt Lake Co., 124 homes)
+  [46/60] Oak Vista #04 At Suncrest (Utah Co., 121 homes)
+  [47/60] Midas Creek Villas (Salt Lake Co., 120 homes)
+  [48/60] Lake Mountain Estates Plat I (Utah Co., 120 homes)
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    ✓ Midas Creek Villas: 4.3m range (1480–1484m) | Score: 30.0
+    ✓ Oak Vista #04 At Suncrest: 27.1m range (1888–1915m) | Score: 187.6
+    ✓ Lake Mountain Estates Plat I: 22.7m range (1425–1448m) | Score: 156.5
+    ✓ Parry Farms Ph 2: 29.8m range (1355–1384m) | Score: 207.1
+  [49/60] Winter Haven Phase 1 Amd (Utah Co., 119 homes)
+  [50/60] Rosecrest Pl R (Salt Lake Co., 117 homes)
+  [51/60] Cottages On 78th Amd (Salt Lake Co., 117 homes)
+  [52/60] South Mtn Ph 3d (Salt Lake Co., 116 homes)
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    ✓ Rosecrest Pl R: 20.8m range (1572–1593m) | Score: 143.0
+    ✓ Cottages On 78th Amd: 0.4m range (1350–1350m) | Score: 3.1
+    ✓ Winter Haven Phase 1 Amd: 12.4m range (1479–1491m) | Score: 85.2
+    ✓ South Mtn Ph 3d: 24.4m range (1461–1486m) | Score: 167.1
+  [53/60] Sage Valley Plat B (Utah Co., 116 homes)
+  [54/60] South Jordan High Pointe Ph 4 & 5 Pud (Salt Lake Co., 114 homes)
+  [55/60] Cottages At Jordan Hills Villages Amended (Salt Lake Co., 114 homes)
+  [56/60] Kennecott Daybreak Pl 5 Amd (Salt Lake Co., 113 homes)
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    ✓ Cottages At Jordan Hills Villages Amended: 2.1m range (1536–1538m) | Score: 14.7
+    ✓ Kennecott Daybreak Pl 5 Amd: 2.2m range (1465–1468m) | Score: 15.0
+    ✓ South Jordan High Pointe Ph 4 & 5 Pud: 8.5m range (1430–1439m) | Score: 58.2
+    ✓ Sage Valley Plat B: 3.9m range (1526–1530m) | Score: 26.5
+  [57/60] Willow Glen Phase 1 (Utah Co., 112 homes)
+  [58/60] Rosecrest Pl I (Salt Lake Co., 110 homes)
+  [59/60] Cascade At Waters Edge Plat A (Utah Co., 109 homes)
+  [60/60] Maples At Jordan Hills Ph 3 (Salt Lake Co., 109 homes)
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    Fetched 50 records (offset=0)...
+    ✓ Willow Glen Phase 1: 1.2m range (1378–1379m) | Score: 8.5
+    ✓ Maples At Jordan Hills Ph 3: 5.5m range (1540–1546m) | Score: 37.1
+    ✓ Cascade At Waters Edge Plat A: 1.4m range (1377–1379m) | Score: 9.3
+    ✓ Rosecrest Pl I: 19.4m range (1505–1525m) | Score: 131.3
+
+  Total USGS API calls: 360
+
+============================================================
+PHASE 5: Writing output files
+============================================================
+  /Users/stevenbunker/clients/general-contracting/data/neighborhoods/subdivisions-all.csv: 2660 subdivisions
+  /Users/stevenbunker/clients/general-contracting/data/neighborhoods/subdivisions-scored.csv: 60 scored subdivisions
+  /Users/stevenbunker/clients/general-contracting/data/neighborhoods/target-neighborhoods.csv: 30 target neighborhoods
+  /Users/stevenbunker/clients/general-contracting/data/neighborhoods/target-neighborhoods.md: Markdown summary
+  /Users/stevenbunker/clients/general-contracting/data/neighborhoods/properties-filtered.csv: 158135 filtered properties
+
+============================================================
+DONE
+============================================================
+
+Top 5 target neighborhoods:
+  1. Eagle Crest No 1 At Suncrest (Utah Co.) — 255 homes, 47.5m elevation range, score: 379.4
+  2. 3344 (Utah Co.) — 390 homes, 37.3m elevation range, score: 321.3
+  3. Parry Farms Ph 2 (Salt Lake Co.) — 124 homes, 29.8m elevation range, score: 207.1
+  4. 6453 (Utah Co.) — 368 homes, 22.2m elevation range, score: 189.0
+  5. Oak Vista #04 At Suncrest (Utah Co.) — 121 homes, 27.1m elevation range, score: 187.6

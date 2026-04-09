@@ -1,6 +1,15 @@
+import { timingSafeEqual } from 'crypto'
 import type { CollectionConfig } from 'payload'
 import { afterLeadCreate } from '../hooks/afterLeadCreate'
 import { sendOfflineConversion } from '../hooks/sendOfflineConversion'
+
+function safeCompare(a: string, b: string): boolean {
+  try {
+    return a.length === b.length && timingSafeEqual(Buffer.from(a), Buffer.from(b))
+  } catch {
+    return false
+  }
+}
 
 export const Leads: CollectionConfig = {
   slug: 'leads',
@@ -11,7 +20,15 @@ export const Leads: CollectionConfig = {
   },
   access: {
     read: ({ req: { user } }) => Boolean(user),
-    create: () => true, // API key auth handled at action layer
+    create: ({ req }) => {
+      if (req.user) return true
+      const apiKey = process.env.PAYLOAD_API_KEY?.trim()
+      if (!apiKey) return false
+      const auth = req.headers?.get?.('authorization')?.trim()
+        ?? (req.headers as any)?.authorization?.trim()
+      if (!auth) return false
+      return safeCompare(auth, `Bearer ${apiKey}`)
+    },
     update: ({ req: { user } }) => Boolean(user),
     delete: ({ req: { user } }) => Boolean(user),
   },
@@ -151,7 +168,7 @@ export const Leads: CollectionConfig = {
       ],
     },
     { name: 'name', type: 'text', maxLength: 100 },
-    { name: 'phone', type: 'text' },
+    { name: 'phone', type: 'text', maxLength: 20 },
     { name: 'email', type: 'email' },
     { name: 'address', type: 'text', maxLength: 200 },
     { name: 'additionalNotes', type: 'textarea', maxLength: 1000 },

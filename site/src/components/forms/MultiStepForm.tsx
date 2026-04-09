@@ -203,7 +203,16 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(801) 919-822
         source: getSource(),
       })
 
-      if (result.error || (result.data && !result.data.success)) {
+      if (result.error) {
+        // Surface field-specific Zod validation errors when available
+        const fieldErrors: Record<string, string> = {}
+        if (result.error.code === 'BAD_REQUEST' && result.error.fields) {
+          for (const [field, msgs] of Object.entries(result.error.fields)) {
+            if (Array.isArray(msgs) && msgs.length) fieldErrors[field] = msgs[0]
+          }
+        }
+        setErrors(Object.keys(fieldErrors).length ? fieldErrors : { form: 'Something went wrong. Please try again.' })
+      } else if (result.data && !result.data.success) {
         setErrors({ form: 'Something went wrong. Please try again.' })
       } else {
         setSuccess(true)
