@@ -4,12 +4,26 @@ let debounceTimer: ReturnType<typeof setTimeout> | null = null
 const DEBOUNCE_MS = 30_000
 
 async function triggerDeploy() {
-  const url = process.env.DEPLOY_HOOK_URL
-  if (!url) return
+  const token = process.env.GITHUB_DEPLOY_TOKEN
+  if (!token) return
 
   try {
-    await fetch(url, { method: 'POST' })
-    console.log('[deployHook] Deploy triggered')
+    const res = await fetch(
+      'https://api.github.com/repos/birtbog3873/basescapeutah.com/actions/workflows/deploy-site.yml/dispatches',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/vnd.github+json',
+        },
+        body: JSON.stringify({ ref: 'main' }),
+      },
+    )
+    if (res.ok) {
+      console.log('[deployHook] Deploy triggered')
+    } else {
+      console.error('[deployHook] GitHub API error:', res.status, await res.text())
+    }
   } catch (err) {
     console.error('[deployHook] Failed to trigger deploy:', err)
   }
