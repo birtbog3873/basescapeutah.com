@@ -13,10 +13,11 @@ This repo contains two distinct workstreams:
 
 See **[docs/deployment.md](docs/deployment.md)** for full deployment instructions. Key points:
 
-- **Site** → Cloudflare Pages: `pnpm --filter site build && npx wrangler pages deploy site/dist --project-name basescape-site`
-- **Admin CMS** → Vercel (production backend): `cd admin && npx vercel --prod`
+- **Automated via GitHub** — push to `main` triggers both deploys
+- **Site** → Cloudflare Pages (auto-deploy on push, site/ changes)
+- **Admin CMS** → Vercel (auto-deploy on push, admin/ changes)
 - **Both `cms/` and `admin/` have backend code** — production uses `admin/`. Always sync changes between them.
-- No GitHub remote. All deploys are manual CLI.
+- CMS content changes trigger site rebuild via deploy hook
 
 ## Commands
 

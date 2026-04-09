@@ -49,6 +49,39 @@ cms/media/
 
 # Admin build output
 admin/.next/
+admin/tsconfig.tsbuildinfo
+admin/package-lock.json
 
 # Google Apps Script working directory
 cms/google-apps-script/
+
+# Business/research documents (not code)
+AngisList List of Services
+HomeAdvisor List
+Houzz Design Ideas
+Houzz List of Professionals
+List of Trades
+Thumbtack Services
+Top500 - Sheet1.csv
+Target Category Profile.md
+recommended-fixes.md
+image-guidelines.md
+download.html
+Icon*
+
+# Business docs
+Biz Docs/
+Legal Docs/
+BaseScape/
+
+# Working artifacts
+artifacts/
+memory/
+# Root-level screenshots/artifacts only
+/*.png
+tasks.json
+.playwright-mcp/
+.specify/
+
+# Claude config (local-only)
+.claude/
