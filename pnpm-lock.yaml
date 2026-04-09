@@ -10,6 +10,9 @@ importers:
 
   admin:
     dependencies:
+      '@libsql/client':
+        specifier: ^0.14.0
+        version: 0.14.0
       '@payloadcms/db-sqlite':
         specifier: 3.80.0
         version: 3.80.0(@cloudflare/workers-types@4.20260317.1)(payload@3.80.0(graphql@16.13.1)(typescript@5.9.3))
@@ -28,6 +31,9 @@ importers:
       graphql:
         specifier: ^16.8.1
         version: 16.13.1
+      libsql:
+        specifier: ^0.4.7
+        version: 0.4.7
       next:
         specifier: 15.3.9
         version: 15.3.9(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.77.4)
