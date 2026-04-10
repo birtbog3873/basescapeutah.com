@@ -11,6 +11,15 @@ function safeCompare(a: string, b: string): boolean {
   }
 }
 
+function hasValidApiKey(req: any): boolean {
+  const apiKey = process.env.PAYLOAD_API_KEY?.trim()
+  if (!apiKey) return false
+  const auth = req.headers?.get?.('authorization')?.trim()
+    ?? (req.headers as any)?.authorization?.trim()
+  if (!auth) return false
+  return safeCompare(auth, `Bearer ${apiKey}`)
+}
+
 export const Leads: CollectionConfig = {
   slug: 'leads',
   admin: {
@@ -19,17 +28,9 @@ export const Leads: CollectionConfig = {
     description: 'Submitted prospect records from website forms.',
   },
   access: {
-    read: ({ req: { user } }) => Boolean(user),
-    create: ({ req }) => {
-      if (req.user) return true
-      const apiKey = process.env.PAYLOAD_API_KEY?.trim()
-      if (!apiKey) return false
-      const auth = req.headers?.get?.('authorization')?.trim()
-        ?? (req.headers as any)?.authorization?.trim()
-      if (!auth) return false
-      return safeCompare(auth, `Bearer ${apiKey}`)
-    },
-    update: ({ req: { user } }) => Boolean(user),
+    read: ({ req }) => Boolean(req.user) || hasValidApiKey(req),
+    create: ({ req }) => Boolean(req.user) || hasValidApiKey(req),
+    update: ({ req }) => Boolean(req.user) || hasValidApiKey(req),
     delete: ({ req: { user } }) => Boolean(user),
   },
   hooks: {
