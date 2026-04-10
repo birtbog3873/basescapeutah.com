@@ -59,53 +59,51 @@ export const Leads: CollectionConfig = {
           : operation === 'create' && doc.status === 'complete'
         if (!statusChanged) return doc
 
-        // Google Sheets webhook (skip emails for now)
+        // Fire-and-forget: Google Sheets webhook + teamNotifiedAt update.
+        // Apps Script can take 5-15s, so we do NOT await — the response to
+        // the form submission should return immediately. Vercel Fluid Compute
+        // keeps the function alive long enough for these to complete.
         const webhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL
         const webhookSecret = process.env.GOOGLE_SHEETS_WEBHOOK_SECRET
         if (webhookUrl && webhookSecret) {
-          try {
-            // TODO: Apps Script doPost(e) cannot read HTTP headers — see afterLeadCreate.ts
-            await fetch(webhookUrl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${webhookSecret}`,
-              },
-              body: JSON.stringify({
-                timestamp: doc.createdAt,
-                name: doc.name,
-                phone: doc.phone,
-                email: doc.email,
-                zipCode: doc.zipCode,
-                serviceType: doc.serviceType,
-                preferredDate: doc.preferredDate,
-                timePreference: doc.timePreference,
-                address: doc.address,
-                additionalNotes: doc.additionalNotes,
-                formType: doc.formType,
-                isOutOfServiceArea: doc.isOutOfServiceArea,
-                source: doc.source?.page,
-                utmSource: doc.source?.utmSource,
-                utmMedium: doc.source?.utmMedium,
-                utmCampaign: doc.source?.utmCampaign,
-                gaClientId: doc.source?.gaClientId,
-                gclid: doc.source?.gclid,
-              }),
-            })
-            console.log('[LEADS] Webhook sent for lead', doc.id)
-          } catch (err: any) {
-            console.error('[LEADS] Webhook failed:', err?.message)
-          }
+          fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${webhookSecret}`,
+            },
+            body: JSON.stringify({
+              timestamp: doc.createdAt,
+              name: doc.name,
+              phone: doc.phone,
+              email: doc.email,
+              zipCode: doc.zipCode,
+              serviceType: doc.serviceType,
+              preferredDate: doc.preferredDate,
+              timePreference: doc.timePreference,
+              address: doc.address,
+              additionalNotes: doc.additionalNotes,
+              formType: doc.formType,
+              isOutOfServiceArea: doc.isOutOfServiceArea,
+              source: doc.source?.page,
+              utmSource: doc.source?.utmSource,
+              utmMedium: doc.source?.utmMedium,
+              utmCampaign: doc.source?.utmCampaign,
+              gaClientId: doc.source?.gaClientId,
+              gclid: doc.source?.gclid,
+            }),
+          })
+            .then(() => console.log('[LEADS] Webhook sent for lead', doc.id))
+            .catch((err: any) => console.error('[LEADS] Webhook failed:', err?.message))
         }
 
-        // Mark as processed
-        try {
-          await req.payload.update({
+        req.payload
+          .update({
             collection: 'leads',
             id: doc.id,
             data: { teamNotifiedAt: new Date().toISOString() },
           })
-        } catch { /* ignore */ }
+          .catch(() => { /* ignore */ })
 
         return doc
       },
