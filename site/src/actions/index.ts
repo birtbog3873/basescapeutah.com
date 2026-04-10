@@ -34,13 +34,16 @@ function fireLeadWebhook(lead: any, ctx: any) {
   const webhookSecret = import.meta.env.GOOGLE_SHEETS_WEBHOOK_SECRET
   if (!webhookUrl || !webhookSecret) return
 
+  // Google Apps Script doPost(e) does NOT expose HTTP headers — the secret
+  // must travel in the POST body and be checked against data.secret on the
+  // script side. See cms/google-apps-script/lead-webhook.gs line 49.
   const promise = fetch(webhookUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${webhookSecret}`,
     },
     body: JSON.stringify({
+      secret: webhookSecret,
       timestamp: lead.createdAt || new Date().toISOString(),
       name: lead.name,
       phone: lead.phone,
