@@ -1,5 +1,6 @@
 import { timingSafeEqual } from 'crypto'
 import type { CollectionConfig } from 'payload'
+import { waitUntil } from '@vercel/functions'
 import { afterLeadCreate } from '../hooks/afterLeadCreate'
 import { sendOfflineConversion } from '../hooks/sendOfflineConversion'
 
@@ -60,51 +61,54 @@ export const Leads: CollectionConfig = {
           : operation === 'create' && doc.status === 'complete'
         if (!statusChanged) return doc
 
-        // Fire-and-forget: Google Sheets webhook + teamNotifiedAt update.
-        // Apps Script can take 5-15s, so we do NOT await — the response to
-        // the form submission should return immediately. Vercel Fluid Compute
-        // keeps the function alive long enough for these to complete.
+        // Background work: Google Sheets webhook (Apps Script takes 5-15s)
+        // + teamNotifiedAt update. Use waitUntil so the HTTP response flushes
+        // immediately and these run after the user gets their "thank you" page.
         const webhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL
         const webhookSecret = process.env.GOOGLE_SHEETS_WEBHOOK_SECRET
         if (webhookUrl && webhookSecret) {
-          fetch(webhookUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${webhookSecret}`,
-            },
-            body: JSON.stringify({
-              timestamp: doc.createdAt,
-              name: doc.name,
-              phone: doc.phone,
-              email: doc.email,
-              zipCode: doc.zipCode,
-              serviceType: doc.serviceType,
-              preferredDate: doc.preferredDate,
-              timePreference: doc.timePreference,
-              address: doc.address,
-              additionalNotes: doc.additionalNotes,
-              formType: doc.formType,
-              isOutOfServiceArea: doc.isOutOfServiceArea,
-              source: doc.source?.page,
-              utmSource: doc.source?.utmSource,
-              utmMedium: doc.source?.utmMedium,
-              utmCampaign: doc.source?.utmCampaign,
-              gaClientId: doc.source?.gaClientId,
-              gclid: doc.source?.gclid,
-            }),
-          })
-            .then(() => console.log('[LEADS] Webhook sent for lead', doc.id))
-            .catch((err: any) => console.error('[LEADS] Webhook failed:', err?.message))
+          waitUntil(
+            fetch(webhookUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${webhookSecret}`,
+              },
+              body: JSON.stringify({
+                timestamp: doc.createdAt,
+                name: doc.name,
+                phone: doc.phone,
+                email: doc.email,
+                zipCode: doc.zipCode,
+                serviceType: doc.serviceType,
+                preferredDate: doc.preferredDate,
+                timePreference: doc.timePreference,
+                address: doc.address,
+                additionalNotes: doc.additionalNotes,
+                formType: doc.formType,
+                isOutOfServiceArea: doc.isOutOfServiceArea,
+                source: doc.source?.page,
+                utmSource: doc.source?.utmSource,
+                utmMedium: doc.source?.utmMedium,
+                utmCampaign: doc.source?.utmCampaign,
+                gaClientId: doc.source?.gaClientId,
+                gclid: doc.source?.gclid,
+              }),
+            })
+              .then(() => console.log('[LEADS] Webhook sent for lead', doc.id))
+              .catch((err: any) => console.error('[LEADS] Webhook failed:', err?.message)),
+          )
         }
 
-        req.payload
-          .update({
-            collection: 'leads',
-            id: doc.id,
-            data: { teamNotifiedAt: new Date().toISOString() },
-          })
-          .catch(() => { /* ignore */ })
+        waitUntil(
+          req.payload
+            .update({
+              collection: 'leads',
+              id: doc.id,
+              data: { teamNotifiedAt: new Date().toISOString() },
+            })
+            .catch(() => { /* ignore */ }),
+        )
 
         return doc
       },
