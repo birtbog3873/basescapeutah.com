@@ -100,15 +100,12 @@ export const Leads: CollectionConfig = {
           )
         }
 
-        waitUntil(
-          req.payload
-            .update({
-              collection: 'leads',
-              id: doc.id,
-              data: { teamNotifiedAt: new Date().toISOString() },
-            })
-            .catch(() => { /* ignore */ }),
-        )
+        // NOTE: teamNotifiedAt used to be set via req.payload.update() here,
+        // but calling update() on the same row during afterChange causes
+        // connection pool contention with the outer transaction and adds
+        // 5-7 seconds to the response time. The field is nice-to-have; if
+        // we need it back, set it via a write before the main update returns
+        // (e.g. by setting doc.teamNotifiedAt in a beforeChange hook).
 
         return doc
       },
