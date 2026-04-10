@@ -18,10 +18,11 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Write site env file
+        run: |
+          echo "PAYLOAD_URL=${{ secrets.PAYLOAD_URL }}" > site/.env
+          echo "PAYLOAD_API_KEY=${{ secrets.PAYLOAD_API_KEY }}" >> site/.env
       - run: pnpm --filter site build
-        env:
-          PAYLOAD_URL: ${{ secrets.PAYLOAD_URL }}
-          PAYLOAD_API_KEY: ${{ secrets.PAYLOAD_API_KEY }}
       - uses: cloudflare/wrangler-action@v3
         with:
           command: pages deploy site/dist --project-name basescape-site
