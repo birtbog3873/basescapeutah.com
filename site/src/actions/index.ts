@@ -22,6 +22,56 @@ async function withRetry<T>(fn: () => Promise<T>): Promise<T> {
   }
 }
 
+/**
+ * Fire the Google Sheets webhook as background work using Cloudflare
+ * Worker's ctx.waitUntil. Apps Script is slow (5-15s) so we must NOT
+ * block the user response. This used to live in the Payload afterChange
+ * hook on Vercel but waitUntil wasn't being respected there — moving it
+ * to the Cloudflare Worker runtime gives us reliable fire-and-forget.
+ */
+function fireLeadWebhook(lead: any, ctx: any) {
+  const webhookUrl = import.meta.env.GOOGLE_SHEETS_WEBHOOK_URL
+  const webhookSecret = import.meta.env.GOOGLE_SHEETS_WEBHOOK_SECRET
+  if (!webhookUrl || !webhookSecret) return
+
+  const promise = fetch(webhookUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${webhookSecret}`,
+    },
+    body: JSON.stringify({
+      timestamp: lead.createdAt || new Date().toISOString(),
+      name: lead.name,
+      phone: lead.phone,
+      email: lead.email,
+      zipCode: lead.zipCode,
+      serviceType: lead.serviceType,
+      preferredDate: lead.preferredDate,
+      timePreference: lead.timePreference,
+      address: lead.address,
+      additionalNotes: lead.additionalNotes,
+      formType: lead.formType,
+      isOutOfServiceArea: lead.isOutOfServiceArea,
+      source: lead.source?.page,
+      utmSource: lead.source?.utmSource,
+      utmMedium: lead.source?.utmMedium,
+      utmCampaign: lead.source?.utmCampaign,
+      gaClientId: lead.source?.gaClientId,
+      gclid: lead.source?.gclid,
+    }),
+  })
+    .then(() => console.log('[LEADS] Webhook sent for lead', lead.id))
+    .catch((err: any) => console.error('[LEADS] Webhook failed:', err?.message))
+
+  // ctx.waitUntil tells the Cloudflare Worker to keep running the promise
+  // after the response has been returned to the user. Fallback to a bare
+  // promise if ctx isn't available (shouldn't happen in prod).
+  if (ctx?.waitUntil) {
+    ctx.waitUntil(promise)
+  }
+}
+
 export const server = {
   saveFormStep: defineAction({
     accept: 'json',
@@ -30,7 +80,10 @@ export const server = {
       leadStepTwoSchema,
       leadStepThreeSchema,
     ]),
-    handler: async (input) => {
+    handler: async (input, context) => {
+      // Cloudflare Worker execution context — used for fire-and-forget webhook
+      const ctx = (context.locals as any)?.runtime?.ctx
+
       // Honeypot check — silent fake success with realistic response
       if (input.honeypot) {
         return { success: true, leadId: crypto.randomUUID(), step: input.step }
@@ -86,22 +139,30 @@ export const server = {
           additionalNotes: input.comments,
         }
         try {
+          let finalLead: any = null
           if (existing) {
             try {
               const result = await withRetry(() => updateLead(existing.id, step3Data))
-              return { success: true, leadId: result.doc?.id, step: 3 }
+              finalLead = result.doc
             } catch {
               // Update failed — fall through to create a new complete lead
             }
           }
-          // No partial lead found or update failed — create complete lead with all data
-          const result = await withRetry(() => createLead({
-            ...step3Data,
-            sessionId: input.sessionId,
-            formType: 'multi-step',
-            source: input.source,
-          }))
-          return { success: true, leadId: result.doc?.id, step: 3 }
+          if (!finalLead) {
+            const result = await withRetry(() => createLead({
+              ...step3Data,
+              sessionId: input.sessionId,
+              formType: 'multi-step',
+              source: input.source,
+            }))
+            finalLead = result.doc
+          }
+
+          // Fire Google Sheets webhook as background work via ctx.waitUntil
+          // so the response flushes immediately, and Apps Script runs after.
+          fireLeadWebhook({ ...finalLead, source: input.source }, ctx)
+
+          return { success: true, leadId: finalLead?.id, step: 3 }
         } catch {
           return { success: false, leadId: null, step: 3 }
         }
@@ -114,7 +175,9 @@ export const server = {
   submitQuickCallback: defineAction({
     accept: 'json',
     input: quickCallbackSchema,
-    handler: async (input) => {
+    handler: async (input, context) => {
+      const ctx = (context.locals as any)?.runtime?.ctx
+
       // Honeypot check — silent fake success with realistic response
       if (input.honeypot) {
         return { success: true, leadId: crypto.randomUUID() }
@@ -130,6 +193,9 @@ export const server = {
         formType: 'quick-callback',
         source: input.source,
       }))
+
+      // Fire Google Sheets webhook as background work
+      fireLeadWebhook({ ...result.doc, source: input.source }, ctx)
 
       return { success: true, leadId: result.doc?.id }
     },

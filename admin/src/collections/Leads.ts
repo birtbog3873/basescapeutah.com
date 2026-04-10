@@ -1,6 +1,5 @@
 import { timingSafeEqual } from 'crypto'
 import type { CollectionConfig } from 'payload'
-import { waitUntil } from '@vercel/functions'
 import { afterLeadCreate } from '../hooks/afterLeadCreate'
 import { sendOfflineConversion } from '../hooks/sendOfflineConversion'
 
@@ -55,60 +54,11 @@ export const Leads: CollectionConfig = {
       },
     ],
     afterChange: [
-      async ({ doc, previousDoc, req, operation }) => {
-        const statusChanged = operation === 'update'
-          ? previousDoc?.status !== 'complete' && doc.status === 'complete'
-          : operation === 'create' && doc.status === 'complete'
-        if (!statusChanged) return doc
-
-        // Background work: Google Sheets webhook (Apps Script takes 5-15s)
-        // + teamNotifiedAt update. Use waitUntil so the HTTP response flushes
-        // immediately and these run after the user gets their "thank you" page.
-        const webhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL
-        const webhookSecret = process.env.GOOGLE_SHEETS_WEBHOOK_SECRET
-        if (webhookUrl && webhookSecret) {
-          waitUntil(
-            fetch(webhookUrl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${webhookSecret}`,
-              },
-              body: JSON.stringify({
-                timestamp: doc.createdAt,
-                name: doc.name,
-                phone: doc.phone,
-                email: doc.email,
-                zipCode: doc.zipCode,
-                serviceType: doc.serviceType,
-                preferredDate: doc.preferredDate,
-                timePreference: doc.timePreference,
-                address: doc.address,
-                additionalNotes: doc.additionalNotes,
-                formType: doc.formType,
-                isOutOfServiceArea: doc.isOutOfServiceArea,
-                source: doc.source?.page,
-                utmSource: doc.source?.utmSource,
-                utmMedium: doc.source?.utmMedium,
-                utmCampaign: doc.source?.utmCampaign,
-                gaClientId: doc.source?.gaClientId,
-                gclid: doc.source?.gclid,
-              }),
-            })
-              .then(() => console.log('[LEADS] Webhook sent for lead', doc.id))
-              .catch((err: any) => console.error('[LEADS] Webhook failed:', err?.message)),
-          )
-        }
-
-        // NOTE: teamNotifiedAt used to be set via req.payload.update() here,
-        // but calling update() on the same row during afterChange causes
-        // connection pool contention with the outer transaction and adds
-        // 5-7 seconds to the response time. The field is nice-to-have; if
-        // we need it back, set it via a write before the main update returns
-        // (e.g. by setting doc.teamNotifiedAt in a beforeChange hook).
-
-        return doc
-      },
+      // Google Sheets webhook is now fired from the Astro action
+      // (site/src/actions/index.ts) using Cloudflare Worker's ctx.waitUntil,
+      // because Vercel's waitUntil wasn't flushing the HTTP response early
+      // when called from inside a Payload hook (Payload's transaction model
+      // or Next.js route handler appears to wait for pending promises).
       sendOfflineConversion,
     ],
   },
