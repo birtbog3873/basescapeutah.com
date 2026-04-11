@@ -11,13 +11,34 @@ This repo contains two distinct workstreams:
 
 ## Deployment
 
-See **[docs/deployment.md](docs/deployment.md)** for full deployment instructions. Key points:
+See **[docs/deployment.md](docs/deployment.md)** for full deployment instructions.
 
-- **Automated via GitHub** — push to `main` triggers both deploys
-- **Site** → Cloudflare Pages (auto-deploy on push, site/ changes)
-- **Admin CMS** → Vercel (auto-deploy on push, admin/ changes)
-- **Both `cms/` and `admin/` have backend code** — production uses `admin/`. Always sync changes between them.
-- CMS content changes trigger site rebuild via deploy hook
+### Topology
+
+```
+GitHub: github.com/birtbog3873/basescapeutah.com (main branch)
+  │
+  ├── site/ changes      → .github/workflows/deploy-site.yml
+  │                         → pnpm --filter site build
+  │                         → wrangler pages deploy site/dist
+  │                         → Cloudflare Pages: basescape-site
+  │                         → basescapeutah.com
+  │
+  └── admin/ changes     → Vercel native Git integration
+                            → Next.js + Payload build
+                            → admin.basescapeutah.com
+```
+
+- **Site** deploys via **GitHub Actions + wrangler-action** (not Cloudflare Pages native Git integration). Build env vars are written to `site/.env` by the workflow from GitHub Actions secrets.
+- **Admin CMS** deploys via **Vercel's native Git integration** (the `admin` project in the `stevenabunker-3859s-projects` team is linked to the repo, so pushes to `main` auto-build). Env vars live in Vercel project settings.
+- **`cms/` is dev-only** — `pnpm dev` runs it locally on SQLite. `admin/` is the production codebase. When changing shared backend logic (collections, hooks, globals), **edit both**.
+- **CMS content changes** trigger a site rebuild via `DEPLOY_HOOK_URL` (a Cloudflare Pages deploy hook) fired from `admin/src/hooks/deployHook.ts`, debounced 30 seconds.
+
+### GitHub Actions secrets (site deploy)
+`CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, `PAYLOAD_URL`, `PAYLOAD_API_KEY`, `GOOGLE_SHEETS_WEBHOOK_URL`, `GOOGLE_SHEETS_WEBHOOK_SECRET`, `RESEND_API_KEY`, `TEAM_NOTIFICATION_EMAIL`
+
+### Vercel env vars (admin CMS)
+`TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`, `PAYLOAD_SECRET`, `PAYLOAD_API_KEY`, `RESEND_API_KEY`, `TEAM_NOTIFICATION_EMAIL`, `R2_*`, `DEPLOY_HOOK_URL`, `GA4_MP_API_SECRET`, `PAYLOAD_BASE_URL`. `GOOGLE_SHEETS_WEBHOOK_*` are present but unused here — the webhook is fired from the site action, not the CMS.
 
 ## Commands
 
@@ -91,8 +112,10 @@ pnpm --filter admin generate:types
 
 ### CMS Hooks
 - **`deployHook.ts`** — Triggers site rebuild (via `DEPLOY_HOOK_URL`) on `afterChange` for content collections/globals, debounced 30 seconds
-- **`afterLeadCreate.ts`** — On lead status → "complete": sends confirmation email to homeowner + team notification email (with admin link), updates `confirmationSentAt`/`teamNotifiedAt` timestamps
-- **`validateLead.ts`** — `beforeValidate`: checks zipCode against `site-settings.serviceAreaZipCodes`, sets `isOutOfServiceArea` flag
+- **`sendOfflineConversion.ts`** — `afterChange` on Leads: posts qualified/closed conversions to the Google Ads API (runs synchronously, short-circuits for non-qualified statuses)
+- Lead `beforeValidate` — checks zipCode against `site-settings.serviceAreaZipCodes`, sets `isOutOfServiceArea` flag (defined inline in the Leads collection)
+
+**Historical:** `afterLeadCreate.ts` used to send confirmation/team emails + fire the Google Sheets webhook from a Payload hook. It added 3–15s of latency to form submissions because Vercel's `waitUntil` does not flush the HTTP response when called inside a Payload hook context. It has been **deleted** — that work now runs from the site's Astro action (see *Lead Pipeline* below).
 
 ### Data Flow
 
@@ -104,12 +127,21 @@ Astro page → fetchServices() / fetchProjects() / etc. (lib/payload.ts)
   → Static HTML output → Cloudflare Pages
 ```
 
-**Write path (forms):**
+**Write path (forms / lead pipeline):**
 ```
 React form component → client-side Zod validation → Astro Action
-  → POST/PATCH PAYLOAD_URL/api/leads (with PAYLOAD_API_KEY)
-  → beforeValidate hook: zip code check → afterChange hook: emails
+  (Cloudflare Worker runtime)
+  → POST/PATCH PAYLOAD_URL/api/leads (Bearer PAYLOAD_API_KEY)
+  → Leads.beforeValidate: zip code check
+  → Leads.afterChange: sendOfflineConversion (Google Ads)
+  → return { success: true } to the React form
+  → (in parallel, ctx.waitUntil) fireLeadWebhook → Google Apps Script → Google Sheet
+  → (in parallel, ctx.waitUntil) fireLeadEmails → Resend API → homeowner + team@
 ```
+
+**Why the background work is in the site action, not a Payload hook:** `ctx.waitUntil` is reliably respected in the Cloudflare Worker runtime that Astro runs in. `waitUntil` from `@vercel/functions` did NOT flush the HTTP response when called from inside a Payload hook on Vercel — the user would still wait 6–15s for Resend + Apps Script to finish before seeing the thank-you page. Moving the work to the Astro action fixed this (typical step 3 latency is now ~1.0–1.5s).
+
+The Google Apps Script webhook secret must travel in the POST body (`data.secret`), not in an Authorization header — Apps Script `doPost(e)` does not expose HTTP request headers. See `cms/google-apps-script/lead-webhook.gs`.
 
 ### Form Architecture (`site/src/actions/index.ts`)
 Three Astro Actions with Zod validation (`site/src/lib/validation.ts`):
@@ -144,17 +176,24 @@ Color palette: navy (primary), green (accent), amber (warm accent), teal (cool a
 
 ### Environment Variables
 
-**Site** (`.env` or `.env.local`):
-- `PAYLOAD_URL` — CMS API base (defaults to `http://localhost:3000`)
-- `PAYLOAD_API_KEY` — Auth for form submission write ops
+**Site** (`.env` or `.env.local` in dev; written by `.github/workflows/deploy-site.yml` from GitHub Actions secrets in CI):
+- `PAYLOAD_URL` — CMS API base (prod: `https://admin.basescapeutah.com`, dev: `http://localhost:3000`)
+- `PAYLOAD_API_KEY` — Bearer auth for form submission writes
+- `GOOGLE_SHEETS_WEBHOOK_URL` — Google Apps Script web app URL (lead logging)
+- `GOOGLE_SHEETS_WEBHOOK_SECRET` — shared secret, sent in POST body as `data.secret`
+- `RESEND_API_KEY` — Resend REST API key for lead notification emails
+- `TEAM_NOTIFICATION_EMAIL` — Recipient of new-lead alerts (`hello@basescapeutah.com`)
 
-**CMS** (`cms/.env`):
+**Admin CMS** (`admin/.env` in dev; Vercel project settings in prod):
 - `PAYLOAD_SECRET` — CMS auth secret
-- `RESEND_API_KEY` — Email service
+- `PAYLOAD_API_KEY` — same value as the site — Leads access control grants read/create/update to this Bearer token
+- `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN` — Production database
+- `RESEND_API_KEY` — Payload's Resend adapter (used for user invites, password resets — NOT for lead emails anymore)
 - `R2_BUCKET_NAME`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_ENDPOINT` — Media storage
-- `DEPLOY_HOOK_URL` — Triggers site rebuild on content changes
-- `TEAM_NOTIFICATION_EMAIL` — Lead notification recipient
-- `PAYLOAD_BASE_URL` — Admin link in notification emails
+- `DEPLOY_HOOK_URL` — Cloudflare Pages deploy hook (triggers site rebuild on content changes)
+- `TEAM_NOTIFICATION_EMAIL`, `PAYLOAD_BASE_URL` — currently unused in admin/ after the hook removal, but kept for parity with the site
+
+**Dev CMS** (`cms/.env`): same as admin, minus the Turso vars — `pnpm dev` uses file-based SQLite at `cms/data/dev.db`.
 
 ### Spec-Driven Development
 Feature specs live in `specs/NNN-feature-name/` with numbered prefixes (currently 001–011). Each contains spec, plan, and tasks files generated by the speckit workflow.

@@ -42,7 +42,6 @@ async function getConfig(env: Env) {
   const { Navigation } = await import('./globals/Navigation')
 
   const { deployHookCollection, deployHookGlobal } = await import('./hooks/deployHook')
-  const { afterLeadCreate } = await import('./hooks/afterLeadCreate')
 
   if (!process.env.PAYLOAD_SECRET) {
     throw new Error('PAYLOAD_SECRET environment variable is required')
@@ -114,13 +113,11 @@ async function getConfig(env: Env) {
           afterChange: [...(Projects.hooks?.afterChange || []), deployHookCollection],
         },
       },
-      {
-        ...Leads,
-        hooks: {
-          ...Leads.hooks,
-          afterChange: [...(Leads.hooks?.afterChange || []), afterLeadCreate],
-        },
-      },
+      // Leads: do NOT append afterLeadCreate here. Lead emails + Google
+      // Sheets webhook are fired from the Astro action (see
+      // site/src/actions/index.ts) via Cloudflare Worker ctx.waitUntil so
+      // they run in the background without blocking the user's response.
+      Leads,
       Offers,
       PaidLandingPages,
       LeadMagnets,

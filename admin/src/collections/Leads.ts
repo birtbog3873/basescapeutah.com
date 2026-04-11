@@ -1,6 +1,5 @@
 import { timingSafeEqual } from 'crypto'
 import type { CollectionConfig } from 'payload'
-import { afterLeadCreate } from '../hooks/afterLeadCreate'
 import { sendOfflineConversion } from '../hooks/sendOfflineConversion'
 
 function safeCompare(a: string, b: string): boolean {

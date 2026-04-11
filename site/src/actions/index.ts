@@ -8,6 +8,10 @@ import {
   leadMagnetSchema,
 } from '../lib/validation'
 import { createLead, updateLead, findLeadBySessionId } from '../lib/payload'
+import { generateConfirmationEmail } from '../lib/emails/lead-confirmation'
+import { generateTeamNotification } from '../lib/emails/team-notification'
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 // Retry CMS operations once on 500 errors per edge case spec (T085)
 async function withRetry<T>(fn: () => Promise<T>): Promise<T> {
@@ -72,6 +76,111 @@ function fireLeadWebhook(lead: any, ctx: any) {
   // promise if ctx isn't available (shouldn't happen in prod).
   if (ctx?.waitUntil) {
     ctx.waitUntil(promise)
+  }
+}
+
+/**
+ * Send lead confirmation (to homeowner) + team notification emails via
+ * Resend REST API as background work. Same pattern as fireLeadWebhook —
+ * moved out of the Payload afterChange hook because Vercel's waitUntil
+ * didn't flush the HTTP response when called from inside a Payload hook.
+ * Runs in Cloudflare Worker runtime via ctx.waitUntil so the thank-you
+ * page shows immediately and emails finish sending in the background.
+ *
+ * Only fires when lead.status === 'complete' (matches the old hook's gate).
+ */
+function fireLeadEmails(lead: any, ctx: any) {
+  const resendApiKey = import.meta.env.RESEND_API_KEY
+  if (!resendApiKey) return
+  if (lead.status !== 'complete') return
+
+  const teamEmail = import.meta.env.TEAM_NOTIFICATION_EMAIL || 'team@basescapeutah.com'
+  const payloadBaseUrl = import.meta.env.PAYLOAD_URL || ''
+  const businessPhone = '(801) 919-8224'
+  const businessName = 'BaseScape'
+
+  const sendViaResend = (payload: {
+    from: string
+    to: string
+    subject: string
+    html: string
+    reply_to?: string
+  }) =>
+    fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${resendApiKey}`,
+      },
+      body: JSON.stringify(payload),
+    })
+
+  const promises: Promise<any>[] = []
+
+  // Homeowner confirmation
+  if (lead.email && EMAIL_RE.test(lead.email)) {
+    const confirmation = generateConfirmationEmail({
+      name: lead.name || 'Homeowner',
+      serviceType: lead.serviceType,
+      phone: businessPhone,
+      businessName,
+    })
+    promises.push(
+      sendViaResend({
+        from: `${businessName} <noreply@basescapeutah.com>`,
+        to: lead.email,
+        reply_to: 'hello@basescapeutah.com',
+        subject: confirmation.subject,
+        html: confirmation.html,
+      })
+        .then((res) =>
+          res.ok
+            ? console.log('[LEADS] Confirmation email sent for', lead.id)
+            : console.error('[LEADS] Confirmation email failed:', res.status),
+        )
+        .catch((err: any) =>
+          console.error('[LEADS] Confirmation email error:', err?.message),
+        ),
+    )
+  }
+
+  // Team notification
+  const notification = generateTeamNotification({
+    id: lead.id,
+    name: lead.name,
+    phone: lead.phone,
+    email: lead.email,
+    address: lead.address,
+    serviceType: lead.serviceType,
+    preferredDate: lead.preferredDate,
+    timePreference: lead.timePreference,
+    zipCode: lead.zipCode,
+    formType: lead.formType,
+    source: lead.source,
+    isOutOfServiceArea: lead.isOutOfServiceArea,
+    createdAt: lead.createdAt || new Date().toISOString(),
+    payloadBaseUrl,
+  })
+  promises.push(
+    sendViaResend({
+      from: 'BaseScape Leads <leads@basescapeutah.com>',
+      to: teamEmail,
+      reply_to: lead.email && EMAIL_RE.test(lead.email) ? lead.email : undefined,
+      subject: notification.subject,
+      html: notification.html,
+    })
+      .then((res) =>
+        res.ok
+          ? console.log('[LEADS] Team notification sent for', lead.id)
+          : console.error('[LEADS] Team notification failed:', res.status),
+      )
+      .catch((err: any) =>
+        console.error('[LEADS] Team notification error:', err?.message),
+      ),
+  )
+
+  if (ctx?.waitUntil) {
+    ctx.waitUntil(Promise.all(promises))
   }
 }
 
@@ -161,9 +270,13 @@ export const server = {
             finalLead = result.doc
           }
 
-          // Fire Google Sheets webhook as background work via ctx.waitUntil
-          // so the response flushes immediately, and Apps Script runs after.
-          fireLeadWebhook({ ...finalLead, source: input.source }, ctx)
+          // Fire Google Sheets webhook + lead notification emails as
+          // background work via ctx.waitUntil so the response flushes
+          // immediately. Apps Script + Resend both run after the user
+          // sees the thank-you page.
+          const leadForBackground = { ...finalLead, source: input.source }
+          fireLeadWebhook(leadForBackground, ctx)
+          fireLeadEmails(leadForBackground, ctx)
 
           return { success: true, leadId: finalLead?.id, step: 3 }
         } catch {
@@ -197,8 +310,10 @@ export const server = {
         source: input.source,
       }))
 
-      // Fire Google Sheets webhook as background work
-      fireLeadWebhook({ ...result.doc, source: input.source }, ctx)
+      // Fire Google Sheets webhook + team notification email as background work
+      const leadForBackground = { ...result.doc, source: input.source }
+      fireLeadWebhook(leadForBackground, ctx)
+      fireLeadEmails(leadForBackground, ctx)
 
       return { success: true, leadId: result.doc?.id }
     },

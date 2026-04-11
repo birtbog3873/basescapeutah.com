@@ -1,51 +1,80 @@
 # BaseScape Deployment Guide
 
-Deployments are automated via GitHub. Pushing to `main` triggers both platforms.
+Deployments are automated from GitHub (`github.com/birtbog3873/basescapeutah.com`). Pushing to `main` triggers both platforms via two different mechanisms.
 
 ## Quick Reference
 
 | Component | Platform | URL | Trigger |
 |-----------|----------|-----|---------|
-| Site | Cloudflare Pages | basescapeutah.com | Push to `main` (site/ changes) |
-| Admin CMS | Vercel | admin.basescapeutah.com | Push to `main` (admin/ changes) |
+| Site | Cloudflare Pages (`basescape-site`) | basescapeutah.com | GitHub Actions workflow on push to `main` when `site/**` changes |
+| Admin CMS | Vercel (`admin` project, team `stevenabunker-3859s-projects`) | admin.basescapeutah.com | Vercel native Git integration on push to `main` |
 
 ## How It Works
 
 ```
-Push to main
-  ├── Cloudflare Pages builds site/ (Astro static)
-  └── Vercel builds admin/ (Next.js + Payload CMS)
+Push to main on GitHub
+  ├── .github/workflows/deploy-site.yml
+  │     → pnpm install → writes site/.env from GH Actions secrets
+  │     → pnpm --filter site build
+  │     → wrangler pages deploy site/dist --project-name basescape-site
+  │
+  └── Vercel Git integration (admin project)
+        → Next.js + Payload build from admin/
+        → Deployed to admin.basescapeutah.com
 
-CMS content edited
-  └── deployHook.ts fires → Cloudflare Pages rebuilds site
+CMS content edited in the admin UI
+  └── admin/src/hooks/deployHook.ts (debounced 30s)
+        → fetches DEPLOY_HOOK_URL (Cloudflare Pages deploy hook)
+        → Cloudflare Pages rebuilds the site
 ```
 
 - **Site** reads from the production CMS (`admin.basescapeutah.com`) at build time
 - **Admin CMS** triggers a site rebuild via `DEPLOY_HOOK_URL` when content changes
-- **Preview deployments** are created automatically on pull requests by both platforms
+- **Site preview deployments** on PRs are NOT currently wired up — the workflow only runs on `push` to `main`. Add a `pull_request` trigger and a separate `wrangler pages deploy --branch=<pr-branch>` step if you want them.
+- **Admin preview deployments** are created automatically by Vercel on PRs
+
+## Why GitHub Actions for the site (instead of Cloudflare Pages native Git)?
+
+Cloudflare Pages' native Git integration would also work, but the Actions workflow gives us finer control over the build environment (pnpm workspace filter, explicit `.env` composition from secrets). Both approaches are valid — do not migrate without a reason.
 
 ## Pull Request Workflow
 
-1. Create a branch and open a PR
-2. Both platforms create preview URLs automatically
-3. Site preview fetches from the production CMS (shows real content at a preview URL)
-4. Merge to `main` triggers production deploys
+1. Create a branch and open a PR against `main`
+2. Vercel creates an admin preview URL automatically
+3. `.github/workflows/ci.yml` runs `pnpm test` (vitest unit tests)
+4. Merge to `main` triggers production deploys on both platforms
 
 ## Environment Variables
 
-**Site** (Cloudflare Pages dashboard):
-- `PAYLOAD_URL` — CMS API endpoint (`https://admin.basescapeutah.com`)
-- `PAYLOAD_API_KEY` — Auth for form submission write ops
-- `NODE_VERSION` — Set to `20`
+### Site — GitHub Actions secrets (written to `site/.env` by the workflow)
+- `PAYLOAD_URL` — `https://admin.basescapeutah.com`
+- `PAYLOAD_API_KEY` — Bearer auth for form submission writes
+- `GOOGLE_SHEETS_WEBHOOK_URL`, `GOOGLE_SHEETS_WEBHOOK_SECRET` — Lead → Google Sheet
+- `RESEND_API_KEY` — Resend REST API key for lead notification emails
+- `TEAM_NOTIFICATION_EMAIL` — Recipient of new-lead alerts
+- `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` — used by wrangler-action itself (not passed to the site build)
 
-**Admin CMS** (Vercel dashboard or `vercel env`):
+Manage with `gh secret list` / `gh secret set`.
+
+### Admin CMS — Vercel project settings
 - `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN` — Database
 - `PAYLOAD_SECRET` — CMS auth secret
-- `RESEND_API_KEY`, `TEAM_NOTIFICATION_EMAIL` — Email
+- `PAYLOAD_API_KEY` — Must match the value the site uses (Leads collection grants API access to this Bearer token)
+- `RESEND_API_KEY` — Used by Payload's Resend adapter for user invites / password resets (lead emails are now fired from the site action, not here)
 - `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_ENDPOINT`, `R2_BUCKET_NAME` — Media storage
-- `DEPLOY_HOOK_URL` — Cloudflare Pages deploy hook (triggers site rebuild)
-- `GOOGLE_SHEETS_WEBHOOK_URL`, `GOOGLE_SHEETS_WEBHOOK_SECRET` — Lead tracking
-- `GA4_MP_API_SECRET` — Analytics
+- `DEPLOY_HOOK_URL` — Cloudflare Pages deploy hook (triggers site rebuild on content changes)
+- `TEAM_NOTIFICATION_EMAIL`, `PAYLOAD_BASE_URL` — kept for parity with the site but currently unused in admin/
+- `GA4_MP_API_SECRET` — Offline conversion reporting
+
+Manage with `vercel env ls` / `vercel env add` / `vercel env rm` from `admin/`.
+
+> **Env var hygiene:** When setting values via stdin, use `printf '...'` rather than `echo` to avoid trailing newlines. `\n` contamination in `GOOGLE_SHEETS_WEBHOOK_URL` and `PAYLOAD_API_KEY` previously caused silent webhook failures and 403s on lead lookups.
+
+## Lead Pipeline Architecture
+
+Lead notification emails + the Google Sheets webhook are **fired from the Astro action** (`site/src/actions/index.ts`), not from a Payload `afterChange` hook. The Astro action runs in the Cloudflare Worker runtime where `ctx.waitUntil` is reliably respected, so the thank-you page flushes immediately while Resend and Apps Script finish in the background.
+
+The previous `afterLeadCreate.ts` hook blocked form submissions for 3–15 seconds because Vercel's `waitUntil` is not respected inside Payload hook contexts — it has been deleted.
 
 ## Manual Deploy (Fallback)
 
@@ -56,7 +85,7 @@ If you need to deploy without pushing to GitHub:
 pnpm --filter site build
 npx wrangler pages deploy site/dist --project-name basescape-site
 
-# Admin CMS
+# Admin CMS — from admin/ directory
 cd admin && npx vercel --prod
 ```
 

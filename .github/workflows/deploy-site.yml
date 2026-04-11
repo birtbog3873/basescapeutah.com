@@ -24,6 +24,8 @@ jobs:
           echo "PAYLOAD_API_KEY=${{ secrets.PAYLOAD_API_KEY }}" >> site/.env
           echo "GOOGLE_SHEETS_WEBHOOK_URL=${{ secrets.GOOGLE_SHEETS_WEBHOOK_URL }}" >> site/.env
           echo "GOOGLE_SHEETS_WEBHOOK_SECRET=${{ secrets.GOOGLE_SHEETS_WEBHOOK_SECRET }}" >> site/.env
+          echo "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" >> site/.env
+          echo "TEAM_NOTIFICATION_EMAIL=${{ secrets.TEAM_NOTIFICATION_EMAIL }}" >> site/.env
       - run: pnpm --filter site build
       - uses: cloudflare/wrangler-action@v3
         with:

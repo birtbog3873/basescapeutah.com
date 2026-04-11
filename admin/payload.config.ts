@@ -93,13 +93,11 @@ export default buildConfig({
         afterChange: [...(Projects.hooks?.afterChange || []), deployHookCollection],
       },
     },
-    // Leads: do NOT append afterLeadCreate here. It blocks form submissions
-    // for 3-15 seconds because it awaits Resend email sends, inner
-    // req.payload.update() calls, and the Google Sheets webhook fetch, and
-    // Vercel's waitUntil is not respected inside Payload hooks. Emails and
-    // the webhook are fired from the Astro action (site/src/actions/index.ts)
-    // via Cloudflare Worker's ctx.waitUntil so the user sees the thank-you
-    // page immediately while background work completes.
+    // Leads: lead notification emails + Google Sheets webhook are fired
+    // from the Astro action (site/src/actions/index.ts) via Cloudflare
+    // Worker ctx.waitUntil — not from a Payload afterChange hook. Putting
+    // them here blocks form submissions for 3-15 seconds because Vercel's
+    // waitUntil is not respected inside Payload hook contexts.
     Leads,
     Offers,
     PaidLandingPages,

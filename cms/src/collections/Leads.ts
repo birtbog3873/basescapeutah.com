@@ -1,6 +1,5 @@
 import { timingSafeEqual } from 'crypto'
 import type { CollectionConfig } from 'payload'
-import { afterLeadCreate } from '../hooks/afterLeadCreate'
 import { sendOfflineConversion } from '../hooks/sendOfflineConversion'
 
 function safeCompare(a: string, b: string): boolean {
@@ -52,7 +51,12 @@ export const Leads: CollectionConfig = {
         return data
       },
     ],
-    afterChange: [afterLeadCreate, sendOfflineConversion],
+    // Lead notification emails + Google Sheets webhook moved to the Astro
+    // action (site/src/actions/index.ts) so they run via Cloudflare Worker
+    // ctx.waitUntil instead of blocking the Payload response. Keep only
+    // sendOfflineConversion here — it's fast and runs Google Ads conversion
+    // reporting synchronously.
+    afterChange: [sendOfflineConversion],
   },
   fields: [
     {

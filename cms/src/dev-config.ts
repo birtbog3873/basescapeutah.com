@@ -18,13 +18,11 @@ import { BlogPosts } from './collections/BlogPosts.js'
 import { SiteSettings } from './globals/SiteSettings.js'
 import { Navigation } from './globals/Navigation.js'
 
-import { afterLeadCreate } from './hooks/afterLeadCreate.js'
-
 // Environment variables:
 // PAYLOAD_SECRET        — CMS auth secret
-// RESEND_API_KEY        — Email service
-// TEAM_NOTIFICATION_EMAIL — Lead notification recipient
-// GOOGLE_SHEETS_WEBHOOK_URL — (optional) Google Apps Script web app URL for lead logging
+// RESEND_API_KEY        — Email service (used by the site Astro action, not here)
+// TEAM_NOTIFICATION_EMAIL — Lead notification recipient (used by site action)
+// GOOGLE_SHEETS_WEBHOOK_URL — (optional) Apps Script URL (used by site action)
 
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET || 'dev-secret-change-me',
@@ -46,13 +44,7 @@ export default buildConfig({
     FAQs,
     Reviews,
     Projects,
-    {
-      ...Leads,
-      hooks: {
-        ...Leads.hooks,
-        afterChange: [...(Leads.hooks?.afterChange || []), afterLeadCreate],
-      },
-    },
+    Leads,
     Offers,
     PaidLandingPages,
     LeadMagnets,
