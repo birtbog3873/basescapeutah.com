@@ -1,0 +1,152 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+
+const phone = '(801) 919-8224'
+const phoneClean = phone.replace(/[^\d+]/g, '')
+---
+<BaseLayout title="Thank You" noindex hideEstimate>
+  <main class="thank-you">
+    <div class="thank-you__card">
+      <div class="thank-you__icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+      </div>
+      <h1 class="thank-you__title">Thank You for Scheduling an Appointment!</h1>
+      <p class="thank-you__text">
+        A BaseScape specialist will be in touch shortly to confirm your appointment details.
+      </p>
+
+      <div class="thank-you__guide">
+        <h2 class="thank-you__guide-title">Pre-Appointment Guide</h2>
+        <p class="thank-you__guide-intro">Here's what to expect and how to prepare:</p>
+        <ol class="thank-you__guide-list">
+          <li class="thank-you__guide-item">
+            <strong>Confirmation Call</strong>
+            <span>We'll reach out within 24 hours to confirm your preferred date and time.</span>
+          </li>
+          <li class="thank-you__guide-item">
+            <strong>On-Site Design Visit</strong>
+            <span>A BaseScape design specialist will visit your property to assess the space, take measurements, and discuss your vision.</span>
+          </li>
+          <li class="thank-you__guide-item">
+            <strong>Custom Design & Estimate</strong>
+            <span>You'll receive a detailed design plan and transparent estimate — completely free, no obligation.</span>
+          </li>
+        </ol>
+
+        <div class="thank-you__prepare">
+          <h2 class="thank-you__guide-title">How to Prepare</h2>
+          <ul class="thank-you__prepare-list">
+            <li>Have a general idea of the area you'd like to transform</li>
+            <li>Note any HOA requirements or property boundaries</li>
+            <li>Gather any inspiration photos or ideas you've collected</li>
+            <li>Think about your budget range — this helps us design to your needs</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="thank-you__phone">
+        Questions before your appointment? Call
+        <a href={`tel:${phoneClean}`}>{phone}</a>
+      </p>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .thank-you {
+    display: flex;
+    justify-content: center;
+    padding: var(--size-8) var(--size-5);
+    min-height: 60vh;
+  }
+
+  .thank-you__card {
+    max-width: 640px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .thank-you__icon {
+    color: var(--color-green500);
+    margin-bottom: var(--size-4);
+  }
+
+  .thank-you__title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-3);
+  }
+
+  .thank-you__text {
+    font-size: 1.0625rem;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-6);
+  }
+
+  .thank-you__guide {
+    text-align: left;
+    background: var(--color-slate50, #f8fafc);
+    border-radius: var(--radius-lg, 12px);
+    padding: var(--size-5) var(--size-6);
+    margin-bottom: var(--size-6);
+  }
+
+  .thank-you__guide-title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-2);
+  }
+
+  .thank-you__guide-intro {
+    font-size: 0.9375rem;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-3);
+  }
+
+  .thank-you__guide-list {
+    padding-left: var(--size-5);
+    margin-bottom: var(--size-5);
+  }
+
+  .thank-you__guide-item {
+    margin-bottom: var(--size-3);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-textBody);
+  }
+
+  .thank-you__guide-item strong {
+    display: block;
+    color: var(--color-textPrimary);
+  }
+
+  .thank-you__prepare {
+    border-top: 1px solid var(--color-slate200, #e2e8f0);
+    padding-top: var(--size-4);
+  }
+
+  .thank-you__prepare-list {
+    padding-left: var(--size-5);
+    font-size: 0.9375rem;
+    line-height: 1.8;
+    color: var(--color-textBody);
+  }
+
+  .thank-you__phone {
+    font-size: 0.9375rem;
+    color: var(--color-textMuted);
+  }
+
+  .thank-you__phone a {
+    color: var(--color-navy600);
+    font-weight: 600;
+    text-decoration: none;
+  }
+</style>

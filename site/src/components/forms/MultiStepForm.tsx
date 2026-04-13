@@ -30,7 +30,7 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(801) 919-822
   const [step, setStep] = useState(1)
   const [sessionId, setSessionId] = useState('')
   const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
+  // success state removed — form now redirects to /thank-you/estimate
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const [serviceType, setServiceType] = useState(preselectedService || '')
@@ -215,14 +215,9 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(801) 919-822
       } else if (result.data && !result.data.success) {
         setErrors({ form: 'Something went wrong. Please try again.' })
       } else {
-        setSuccess(true)
-        // Hide the hero and scroll to top for clean thank-you view
-        const hero = document.querySelector('.contact-hero') as HTMLElement
-        if (hero) hero.style.display = 'none'
-        const scrollArea = document.querySelector('.page-scroll') as HTMLElement
-        if (scrollArea) scrollArea.scrollTop = 0
-        else window.scrollTo({ top: 0 })
         ;(window as any).dataLayer?.push({ event: 'form_complete', service: serviceType })
+        window.location.href = '/thank-you/estimate'
+        return
       }
     } catch {
       setErrors({ form: 'Something went wrong. Please try again or call us directly.' })
@@ -324,59 +319,6 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(801) 919-822
       </div>
     </div>
   )
-
-  if (success) {
-    return (
-      <div className="multi-form">
-        <div className="form-success">
-          <div className="form-success__icon">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-              <polyline points="22 4 12 14.01 9 11.01" />
-            </svg>
-          </div>
-          <h3 className="form-success__title">Thank You for Scheduling an Appointment!</h3>
-          <p className="form-success__text">
-            A BaseScape specialist will be in touch shortly to confirm your appointment details.
-          </p>
-
-          <div className="form-success__guide">
-            <h4 className="form-success__guide-title">Pre-Appointment Guide</h4>
-            <p className="form-success__guide-intro">Here's what to expect and how to prepare:</p>
-            <ol className="form-success__guide-list">
-              <li className="form-success__guide-item">
-                <strong>Confirmation Call</strong>
-                <span>We'll reach out within 24 hours to confirm your preferred date and time.</span>
-              </li>
-              <li className="form-success__guide-item">
-                <strong>On-Site Design Visit</strong>
-                <span>A BaseScape design specialist will visit your property to assess the space, take measurements, and discuss your vision.</span>
-              </li>
-              <li className="form-success__guide-item">
-                <strong>Custom Design & Estimate</strong>
-                <span>You'll receive a detailed design plan and transparent estimate — completely free, no obligation.</span>
-              </li>
-            </ol>
-
-            <div className="form-success__prepare">
-              <h4 className="form-success__guide-title">How to Prepare</h4>
-              <ul className="form-success__prepare-list">
-                <li>Have a general idea of the area you'd like to transform</li>
-                <li>Note any HOA requirements or property boundaries</li>
-                <li>Gather any inspiration photos or ideas you've collected</li>
-                <li>Think about your budget range — this helps us design to your needs</li>
-              </ul>
-            </div>
-          </div>
-
-          <p className="form-success__phone">
-            Questions before your appointment? Call{' '}
-            <a href={`tel:${phoneClean}`}>{phone}</a>
-          </p>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className="multi-form">

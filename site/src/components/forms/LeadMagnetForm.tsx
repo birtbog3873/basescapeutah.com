@@ -17,8 +17,7 @@ export default function LeadMagnetForm({
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
-  const [downloadUrl, setDownloadUrl] = useState('')
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'error'>('idle')
   const [honeypot, setHoneypot] = useState('')
 
   const requiresName = requiredFields.includes('name')
@@ -58,32 +57,16 @@ export default function LeadMagnetForm({
         return
       }
 
-      setStatus('success')
-      setDownloadUrl(result.data?.downloadUrl || '#')
+      const url = result.data?.downloadUrl || '#'
+      if (url && url !== '#') {
+        sessionStorage.setItem('leadmagnet:downloadUrl', url)
+      }
       ;(window as any).gtag?.('event', 'lead_magnet_submit')
+      window.location.href = '/thank-you/guide'
+      return
     } catch {
       setStatus('error')
     }
-  }
-
-  if (status === 'success') {
-    return (
-      <div className="form-success">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="form-success__icon">
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-          <polyline points="22 4 12 14.01 9 11.01" />
-        </svg>
-        <h3 className="form-success__title">Your guide is ready!</h3>
-        {downloadUrl && downloadUrl !== '#' && (
-          <a href={downloadUrl} className="form-success__download" target="_blank" rel="noopener noreferrer">
-            Download Now
-          </a>
-        )}
-        <p className="form-success__note">
-          We've also sent a copy to your email for easy access later.
-        </p>
-      </div>
-    )
   }
 
   return (

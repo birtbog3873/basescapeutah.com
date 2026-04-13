@@ -1,0 +1,102 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+---
+<BaseLayout title="Your Guide Is Ready" noindex hideEstimate>
+  <main class="thank-you">
+    <div class="thank-you__card">
+      <div class="thank-you__icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+      </div>
+      <h1 class="thank-you__title">Your guide is ready!</h1>
+
+      <div id="download-area">
+        <!-- Populated by client script from sessionStorage -->
+      </div>
+
+      <p class="thank-you__note">
+        We've also sent a copy to your email for easy access later.
+      </p>
+    </div>
+  </main>
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    var area = document.getElementById('download-area')
+    if (!area) return
+    var url = sessionStorage.getItem('leadmagnet:downloadUrl')
+    if (url && url !== '#') {
+      area.innerHTML =
+        '<a href="' + url + '" class="thank-you__download" target="_blank" rel="noopener noreferrer">Download Now</a>'
+      sessionStorage.removeItem('leadmagnet:downloadUrl')
+    } else {
+      area.innerHTML =
+        '<p class="thank-you__fallback">Looking for a guide? <a href="/guides/">Browse our free guides</a> and submit the form to download.</p>'
+    }
+  })()
+</script>
+
+<style>
+  .thank-you {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--size-8) var(--size-5);
+    min-height: 60vh;
+  }
+
+  .thank-you__card {
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .thank-you__icon {
+    color: var(--color-green500);
+    margin-bottom: var(--size-4);
+  }
+
+  .thank-you__title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-4);
+  }
+
+  .thank-you__note {
+    font-size: 0.9375rem;
+    color: var(--color-textMuted);
+    margin-top: var(--size-4);
+  }
+
+  .thank-you__fallback {
+    font-size: 0.9375rem;
+    color: var(--color-textBody);
+    padding: var(--size-4);
+    background: var(--color-slate50, #f8fafc);
+    border-radius: var(--radius-md, 8px);
+  }
+
+  .thank-you__fallback a {
+    color: var(--color-navy600);
+    font-weight: 600;
+    text-decoration: none;
+  }
+</style>
+
+<style is:global>
+  .thank-you__download {
+    display: inline-block;
+    background: var(--color-green600, #16a34a);
+    color: white;
+    padding: var(--size-3) var(--size-6);
+    text-decoration: none;
+    border-radius: var(--radius-md, 8px);
+    font-weight: 600;
+    font-size: 1.0625rem;
+  }
+</style>

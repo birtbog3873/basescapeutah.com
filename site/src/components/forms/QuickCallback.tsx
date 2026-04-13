@@ -13,7 +13,6 @@ export default function QuickCallback({ sourcePage = '/' }: Props) {
   const [notes, setNotes] = useState('')
   const [honeypot, setHoneypot] = useState('')
   const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -48,27 +47,14 @@ export default function QuickCallback({ sourcePage = '/' }: Props) {
       if (actionError) {
         setError('Something went wrong. Please try again or call us directly.')
       } else {
-        setSuccess(true)
         ;(window as any).gtag?.('event', 'quick_callback_submit')
+        window.location.href = '/thank-you/callback'
+        return
       }
     } catch {
       setError('Something went wrong. Please try again or call us directly.')
     }
     setLoading(false)
-  }
-
-  if (success) {
-    return (
-      <div className="callback-success">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-green500)' }}>
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-          <polyline points="22 4 12 14.01 9 11.01" />
-        </svg>
-        <p className="callback-success__text">
-          We'll call you back shortly!
-        </p>
-      </div>
-    )
   }
 
   return (

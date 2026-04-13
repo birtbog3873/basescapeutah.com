@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+
+const phone = '(801) 919-8224'
+const phoneClean = phone.replace(/[^\d+]/g, '')
+---
+<BaseLayout title="Thank You" noindex hideEstimate>
+  <main class="thank-you">
+    <div class="thank-you__card">
+      <div class="thank-you__icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+      </div>
+      <h1 class="thank-you__title">We'll Call You Back Shortly!</h1>
+      <p class="thank-you__text">
+        A BaseScape team member will reach out within the hour. If you need us sooner, call directly:
+      </p>
+      <p class="thank-you__cta">
+        <a href={`tel:${phoneClean}`} class="thank-you__phone-btn">{phone}</a>
+      </p>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .thank-you {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--size-8) var(--size-5);
+    min-height: 60vh;
+  }
+
+  .thank-you__card {
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .thank-you__icon {
+    color: var(--color-green500);
+    margin-bottom: var(--size-4);
+  }
+
+  .thank-you__title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: var(--color-textPrimary);
+    margin-bottom: var(--size-3);
+  }
+
+  .thank-you__text {
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--color-textBody);
+    margin-bottom: var(--size-5);
+  }
+
+  .thank-you__cta {
+    margin-top: var(--size-2);
+  }
+
+  .thank-you__phone-btn {
+    display: inline-block;
+    background: var(--color-navy600, #1B3B5E);
+    color: white;
+    padding: var(--size-3) var(--size-6);
+    text-decoration: none;
+    border-radius: var(--radius-md, 8px);
+    font-weight: 600;
+    font-size: 1.0625rem;
+  }
+</style>

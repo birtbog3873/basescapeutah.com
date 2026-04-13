@@ -15,6 +15,8 @@ export default defineConfig({
         if (page.includes('/lp/')) return false
         // Exclude gallery when hidden (showGallery defaults to false)
         if (page.includes('/gallery')) return false
+        // Exclude thank-you confirmation pages
+        if (page.includes('/thank-you/')) return false
         return true
       },
     }),
