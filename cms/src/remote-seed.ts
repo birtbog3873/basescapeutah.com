@@ -206,6 +206,7 @@ async function seedNavigation() {
             label: 'Basement Remodeling',
             url: '/services/basement-remodeling',
           },
+          { label: 'Concrete Flatwork', url: '/services/concrete-flatwork' },
           {
             label: 'Pavers & Hardscapes',
             url: '/services/pavers-hardscapes',
@@ -229,6 +230,7 @@ async function seedNavigation() {
             label: 'Basement Remodeling',
             url: '/services/basement-remodeling',
           },
+          { label: 'Concrete Flatwork', url: '/services/concrete-flatwork' },
           {
             label: 'Pavers & Hardscapes',
             url: '/services/pavers-hardscapes',
@@ -376,7 +378,7 @@ async function seedServices(
     serviceType: 'specialized',
     heroImage: heroImageId,
     overview: richText(
-      "Your outdoor space should be an extension of your home — not a cracked concrete slab you avoid. BaseScape designs and installs custom paver patios, walkways, driveways, fire pit surrounds, and outdoor living areas using premium interlocking pavers, natural stone, and engineered base systems purpose-built for the Wasatch Front's punishing freeze-thaw cycles. Unlike poured concrete, interlocking pavers flex with ground movement without cracking and can be individually replaced if ever damaged. The result is a stunning, durable outdoor space that adds real value to your property and years of enjoyment for your family.",
+      "Your outdoor space should be an extension of your home you actually want to use. BaseScape designs and installs custom paver patios, walkways, driveways, fire pit surrounds, and outdoor living areas using premium interlocking pavers, natural stone, and engineered base systems purpose-built for the Wasatch Front's freeze-thaw cycles. Pavers shine where joints can flex with ground movement, where individual units can be replaced if a section is damaged, and where the look of distinct units is part of the design. For driveways, garage floors, and large continuous slabs, we also pour concrete flatwork — and we will tell you honestly which material fits your specific project.",
     ),
     anxietyStack: {
       structuralSafety: richText(
@@ -653,7 +655,7 @@ async function seedServiceAreas(): Promise<Record<string, string | number>> {
       coordinates: { lat: city.lat, lng: city.lng },
       serviceRadius: 15,
       localContent: richText(
-        `BaseScape serves ${city.cityName}, UT with specialized walkout basements, basement remodeling, pavers & hardscapes, retaining walls, artificial turf, and egress windows.`,
+        `BaseScape serves ${city.cityName}, UT with walkout basements, basement remodeling, concrete flatwork, pavers & hardscapes, retaining walls, artificial turf, and egress windows.`,
       ),
       localReferences: `${city.cityName} area homeowners`,
       seo: {
@@ -825,9 +827,9 @@ async function seedFAQs() {
       category: 'general',
     },
     {
-      question: 'Are pavers better than concrete for patios?',
+      question: 'Should I choose pavers or concrete for my patio?',
       answer: richText(
-        "For Utah's freeze-thaw climate, pavers are generally superior to poured concrete. Poured concrete develops cracks as the ground shifts, requiring costly repairs or full replacement. Interlocking pavers flex with ground movement without cracking. They're also easier to repair — you can replace individual pavers instead of tearing out an entire slab.",
+        "Both work in Utah's climate when installed correctly — the question is which fits your specific project. Pavers shine for patios, walkways, and pool decks where joints can flex with ground movement, where individual units can be replaced if damaged, and where distinct units are part of the design. Properly poured air-entrained concrete with engineered control joints is an excellent choice for driveways, garage floors, basement slabs, sidewalks, and large continuous patios. BaseScape installs both and recommends the right material for the project rather than the one we'd rather sell you.",
       ),
       category: 'general',
     },

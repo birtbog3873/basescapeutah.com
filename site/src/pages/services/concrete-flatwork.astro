@@ -1,0 +1,77 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro'
+import { fetchServices, fetchSiteSettings, resolveServiceImage } from '../../lib/payload'
+
+let service: any = null
+let settings: any = null
+
+try {
+  const [servicesRes, siteSettings] = await Promise.all([
+    fetchServices(),
+    fetchSiteSettings(),
+  ])
+  service = servicesRes.docs?.find((s: any) => s.slug === 'concrete-flatwork')
+  if (service) service.heroImage = resolveServiceImage(service.slug, 'hero', service.heroImage)
+  settings = siteSettings
+} catch {
+  // Fallback for build without CMS
+}
+
+// Fallback service data if CMS unavailable
+if (!service) {
+  service = {
+    title: 'Concrete Flatwork',
+    slug: 'concrete-flatwork',
+    tagline: 'Driveways, sidewalks, patios, garage floors, and basement slabs — engineered for Utah\'s freeze-thaw climate, finished the way it should be.',
+    primaryValuePillar: 'transformation',
+    heroImage: { url: '/images/services/hero-concrete-flatwork.webp', alt: 'Freshly poured residential concrete driveway with broom finish and tooled control joints in front of a Utah home' },
+    supportingPillars: ['safety', 'financial'],
+    overview: '<p>Concrete flatwork is the unglamorous backbone of a well-built home — the driveway you back out of every morning, the sidewalk that takes a Utah winter, the garage floor your tools roll across, the basement slab everything else is built on top of. Done right, it lasts 50 years. Done wrong, it cracks, heaves, and sinks within five.</p><p>BaseScape pours residential concrete for the four projects that matter most to Wasatch Front homeowners:</p><ul><li><strong>Driveways and exterior approaches</strong> — Replacement and new pours, including stamped, exposed-aggregate, and broom-finish options.</li><li><strong>Sidewalks, patios, and pool decks</strong> — Standard slabs and decorative finishes that handle freeze-thaw without the cracking horror stories.</li><li><strong>Basement slabs and foundation flatwork</strong> — Interior pours for new builds, basement finishes, and walkout basement floors.</li><li><strong>Garage floors and interior slabs</strong> — Including resurfacing, leveling, polishing, and epoxy-ready finishes.</li></ul><p>The difference between concrete that lasts and concrete that fails comes down to four things: subgrade preparation, mix design, control joints, and curing. We don\'t cut corners on any of them.</p>',
+    process: [
+      { stepTitle: 'Site Evaluation & Subgrade Prep', stepDescription: '<p>We evaluate your soil conditions, drainage, and load requirements. Subgrade is excavated, leveled, and compacted to the engineered depth — typically 4 inches of compacted gravel base for sidewalks and patios, 6+ inches for driveways. Geotextile fabric is added in expansive clay conditions.</p>' },
+      { stepTitle: 'Forming, Reinforcement & Mix Design', stepDescription: '<p>Forms are set to grade with proper slope (minimum 1% away from structures). Rebar or fiber reinforcement is installed based on slab type and load. We specify a 4,000–4,500 PSI air-entrained mix for exterior pours — air entrainment is what protects against freeze-thaw damage, and not every contractor specifies it.</p>' },
+      { stepTitle: 'Pour, Finish & Control Joints', stepDescription: '<p>Concrete is placed, screeded, floated, and finished to your chosen texture — broom, exposed aggregate, stamped, or smooth interior trowel. Control joints are sawcut at engineered spacing (typically 2.5× the slab thickness in feet) within 12 hours of placement so cracks form where we want them, not where they don\'t.</p>' },
+      { stepTitle: 'Cure, Seal & Walkthrough', stepDescription: '<p>Curing compound is applied immediately after finishing. We protect the slab from foot traffic for 24 hours, light vehicle traffic for 7 days, and full loading for 28 days. A penetrating sealer is applied for exterior pours. Final walkthrough covers expected hairline cracking, sealing schedule, and your written warranty.</p>' },
+    ],
+    anxietyStack: {
+      structuralSafety: '<p>Slab thickness, rebar, and fiber reinforcement are spec\'d to the load — 4 inches for sidewalks and patios, 5–6 inches for residential driveways, 6+ inches for RV pads and heavy vehicle parking. Every exterior pour uses air-entrained concrete (5–7% entrained air) for freeze-thaw protection. Interior basement and garage slabs use a vapor barrier under the slab to prevent moisture migration.</p>',
+      codeCompliance: '<p>Sidewalks tied to the public right-of-way and any driveway approach connecting to a city street typically require a permit. BaseScape pulls every required permit, schedules inspections, and verifies your specific city\'s slope, ADA, and approach geometry requirements before forming.</p>',
+      drainageMoisture: '<p>Every exterior slab is poured with a minimum 1% slope (1/8" per foot) away from your foundation. We engineer drainage during site prep — not after the pour — so water moves to the right place from day one. For interior slabs, we install a 10–15 mil vapor barrier and verify subgrade drainage before placement.</p>',
+      dustDisruption: '<p>Saw-cutting control joints produces dust; we use water-fed saws and contain the work area. Demolition of existing concrete is scheduled in a single day where possible, with debris hauled the same day. Forms are set carefully to protect lawn, landscaping, and existing hardscape.</p>',
+      costAffordability: '<p>Residential concrete on the Wasatch Front typically runs $8–$15 per square foot for standard broom finish, $12–$20 for stamped or exposed aggregate, and $5–$10 for interior basement slabs. A typical 2-car driveway (600 sq ft) runs $5,000–$9,000 depending on access and finish. Written estimates are line-item — base, rebar, concrete, finish, sealer — so you see exactly what you\'re paying for.</p>',
+      aesthetics: '<p>Choose from broom finish (most common for driveways and walkways), exposed aggregate, stamped patterns (slate, flagstone, brick, wood plank), salt finish, or smooth troweled interior. Integral colors and surface acid stains are available. We bring sample boards to the design consultation so you can see and feel the finish before we pour.</p>',
+      timeline: '<p>Most residential concrete projects pour in a single day after 1–2 days of forming and prep. You can walk on the slab after 24 hours, drive on it after 7 days, and consider it fully cured at 28 days. From signed estimate to finished walkthrough is typically 2–3 weeks for driveways and 1–2 weeks for sidewalks and patios.</p>',
+    },
+    differentiator: '<p><strong>Built for Utah\'s Freeze-Thaw — Not in Spite of It</strong> — Most concrete failure stories on the Wasatch Front trace back to three contractor shortcuts: skipping air entrainment in the mix, under-spacing control joints, and finishing in conditions the concrete can\'t handle. BaseScape specifies 4,500 PSI air-entrained concrete on every exterior pour, sawcuts joints at engineered spacing within 12 hours of placement, and won\'t pour when ground or air temperatures will cause problems with the cure. We\'ll tell you when concrete is the right answer for your project — and when pavers, asphalt, or another option will serve you better.</p>',
+    faqs: [
+      { question: 'How much does concrete cost per square foot in Utah?', answer: 'Residential concrete on the Wasatch Front typically runs $8–$15 per square foot for standard broom finish, $12–$20 for stamped or exposed aggregate, and $5–$10 for interior basement slabs. Pricing depends on slab thickness, reinforcement, finish, site access, and demolition of existing concrete. BaseScape provides itemized written estimates so you can see exactly what each line of the project costs.' },
+      { question: 'Will my concrete crack in Utah\'s freeze-thaw cycles?', answer: 'All concrete develops hairline cracks — that\'s normal and not a defect. The goal is to control where cracks form and prevent the kind of structural cracking that ruins a slab. We use three defenses: air-entrained concrete (5–7% entrained air pockets that give freezing water somewhere to go), control joints sawcut at engineered spacing within 12 hours of pour so cracks form along the joints, and a penetrating sealer that reduces water absorption. Properly poured residential concrete on the Wasatch Front routinely lasts 30–50 years.' },
+      { question: 'Should I choose concrete or pavers for my driveway?', answer: 'Concrete generally wins for driveways. It handles vehicle loads with a single continuous slab, costs less per square foot than pavers, and modern stamped and exposed-aggregate finishes look great. Pavers are better for patios and walkways where individual replacement matters and where ground movement is more visible. We\'ll walk through your specific site and goals during the design consultation — the right answer depends on your driveway slope, drainage, and aesthetic preference, not on what we\'d rather sell you.' },
+      { question: 'How long before I can drive on a new concrete driveway?', answer: 'You can walk on a new concrete slab after 24 hours, drive a passenger vehicle on it after 7 days, and put full loads (RV, dumpster, heavy trucks) on it after 28 days. Curing compound is applied immediately after finishing to keep the slab hydrated during this window. Driving on concrete too early is one of the most common causes of premature cracking.' },
+      { question: 'Do I need a permit for a concrete driveway in Utah?', answer: 'Driveway approaches that tie into a public street almost always require a permit and inspection from the city — slope, geometry, and right-of-way work all need approval. New flat slabs entirely on private property may not require a permit, depending on the city. BaseScape pulls every required permit and schedules every inspection — you don\'t deal with the permit office.' },
+      { question: 'What thickness should my concrete slab be?', answer: 'Sidewalks: 4 inches over a compacted base. Patios: 4 inches. Residential driveways: 5–6 inches with rebar reinforcement. RV pads and heavy vehicle parking: 6+ inches with engineered reinforcement. Interior basement slabs: 4 inches over a vapor barrier. Garage floors: 4–5 inches. Going thinner than these specs is the most common cause of slab failure on the Wasatch Front.' },
+      { question: 'Can BaseScape resurface or repair an existing concrete slab?', answer: 'Yes — for slabs that are structurally sound but cosmetically tired (surface spalling, light cracking, faded color), we apply polymer-modified overlays or grind-and-seal treatments. For slabs that are heaved, structurally cracked, or sinking, removal and replacement is the correct answer — overlay on a failed slab just transfers the problem upward. We evaluate your slab during the design consultation and tell you honestly which path makes sense.' },
+      { question: 'What finish options do I have for concrete?', answer: 'Broom finish (most common — slip-resistant and inexpensive), exposed aggregate (decorative pebble surface, hides minor imperfections), stamped concrete (mimics flagstone, slate, brick, or wood plank), salt finish (textured pattern using rock salt), smooth trowel (interior basements and garages), and integrally colored or acid-stained options. We bring physical sample boards to the design consultation so you can see and feel the finish before we pour.' },
+      { question: 'Why do control joints matter in concrete?', answer: 'Concrete shrinks as it cures, and unrestrained shrinkage causes random cracking. Control joints are sawcuts that create planned weak points — the slab cracks along the joint instead of randomly across the surface. Joints must be cut within 12 hours of placement and spaced at roughly 2.5× the slab thickness in feet (a 4" slab gets joints every 10 feet). Skipped, undersized, or late control joints are one of the top three causes of cracked concrete in Utah.' },
+      { question: 'Can I pour concrete in winter on the Wasatch Front?', answer: 'Yes, with the right precautions. We use heated water in the mix, insulating blankets to maintain cure temperature, and accelerating admixtures when needed. We will not pour when ground temperatures are below freezing without proper protection — cold-weather pours done improperly are how slabs end up with surface scaling and reduced strength. Most homeowners prefer to schedule exterior concrete from April through October, but we can pour year-round when the project requires it.' },
+    ],
+    projects: [],
+    reviews: [],
+    seo: {
+      metaTitle: 'Concrete Driveways, Patios & Garage Floors | BaseScape Utah',
+      metaDescription: 'Residential concrete done right for Utah\'s freeze-thaw. Driveways, sidewalks, patios, basement slabs, and garage floors across the Wasatch Front.',
+    },
+    comparisonTable: {
+      heading: 'Concrete vs Pavers vs Asphalt for Driveways',
+      caption: 'BaseScape installs both concrete and pavers and helps you choose the right material for your project. Concrete typically wins for driveways and large slabs. Pavers shine for patios, walkways, and projects where individual unit replacement matters. Asphalt is rarely the right long-term answer in Utah.',
+      columns: ['Material', 'Cost per Sq Ft', 'Lifespan (Utah)', 'Freeze-Thaw Performance', 'Repair', 'Best For'],
+      rows: [
+        ['Poured Concrete', '$8–$20/sqft installed', '30–50 years', 'Excellent with air-entrained mix and proper joints', 'Patch repair or full slab replacement', 'Driveways, garage floors, basement slabs, sidewalks, large patios'],
+        ['Interlocking Pavers', '$15–$35/sqft installed', '25–50 years', 'Excellent — joints flex with ground movement', 'Individual paver replacement', 'Patios, walkways, pool decks, areas where repair access matters'],
+        ['Asphalt', '$5–$12/sqft installed', '12–20 years', 'Poor — softens in summer, cracks in winter, requires sealing every 3 years', 'Resealing and crack patching, eventual full replacement', 'Long rural driveways, budget-first installations'],
+      ],
+    },
+  }
+}
+---
+<ServiceLayout service={service} settings={settings} />

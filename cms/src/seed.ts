@@ -247,6 +247,7 @@ async function seed() {
           children: [
             { label: 'Walkout Basements', url: '/services/walkout-basements' },
             { label: 'Basement Remodeling', url: '/services/basement-remodeling' },
+            { label: 'Concrete Flatwork', url: '/services/concrete-flatwork' },
             { label: 'Pavers & Hardscapes', url: '/services/pavers-hardscapes' },
             { label: 'Retaining Walls', url: '/services/retaining-walls' },
             { label: 'Artificial Turf', url: '/services/artificial-turf' },
@@ -264,6 +265,7 @@ async function seed() {
           links: [
             { label: 'Walkout Basements', url: '/services/walkout-basements' },
             { label: 'Basement Remodeling', url: '/services/basement-remodeling' },
+            { label: 'Concrete Flatwork', url: '/services/concrete-flatwork' },
             { label: 'Pavers & Hardscapes', url: '/services/pavers-hardscapes' },
             { label: 'Retaining Walls', url: '/services/retaining-walls' },
             { label: 'Artificial Turf', url: '/services/artificial-turf' },
@@ -357,7 +359,7 @@ async function seed() {
       primaryValuePillar: 'transformation',
       serviceType: 'specialized',
       heroImage: heroWalkout,
-      overview: richText('Your outdoor space should be an extension of your home — not a cracked concrete slab you avoid. BaseScape designs and installs custom paver patios, walkways, driveways, fire pit surrounds, and outdoor living areas using premium interlocking pavers, natural stone, and engineered base systems purpose-built for the Wasatch Front\'s punishing freeze-thaw cycles. Unlike poured concrete, interlocking pavers flex with ground movement without cracking and can be individually replaced if ever damaged. The result is a stunning, durable outdoor space that adds real value to your property and years of enjoyment for your family.'),
+      overview: richText('Your outdoor space should be an extension of your home you actually want to use. BaseScape designs and installs custom paver patios, walkways, driveways, fire pit surrounds, and outdoor living areas using premium interlocking pavers, natural stone, and engineered base systems purpose-built for the Wasatch Front\'s freeze-thaw cycles. Pavers shine where joints can flex with ground movement, where individual units can be replaced if a section is damaged, and where the look of distinct units is part of the design. For driveways, garage floors, and large continuous slabs, we also pour concrete flatwork — and we will tell you honestly which material fits your specific project.'),
       anxietyStack: {
         structuralSafety: richText('Every hardscape installation starts with a compacted aggregate base engineered for your soil conditions. We use 6-8 inches of base material for patios and 10-12 inches for driveways.'),
         codeCompliance: richText('We verify setback requirements, HOA guidelines, and local drainage ordinances before design begins. Retaining walls over 4 feet require engineered plans — we handle that too.'),
@@ -369,6 +371,33 @@ async function seed() {
       seo: {
         metaTitle: 'Paver Patios & Hardscapes | BaseScape Utah',
         metaDescription: 'Custom paver patios, walkways, and hardscape installations in Utah. Engineered for freeze-thaw durability. Free estimates.',
+      },
+      status: 'published',
+    } as any,
+  })
+
+  const concreteFlatwork = await payload.create({
+    collection: 'services',
+    data: {
+      title: 'Concrete Flatwork',
+      slug: 'concrete-flatwork',
+      tagline: 'Driveways, sidewalks, patios, garage floors, and basement slabs — engineered for Utah\'s freeze-thaw climate, finished the way it should be.',
+      primaryValuePillar: 'transformation',
+      serviceType: 'core',
+      heroImage: heroWalkout,
+      overview: richText('Concrete flatwork is the unglamorous backbone of a well-built home — the driveway you back out of every morning, the sidewalk that takes a Utah winter, the garage floor your tools roll across, the basement slab everything else is built on top of. BaseScape pours residential concrete for the four projects that matter most to Wasatch Front homeowners: driveways and exterior approaches, sidewalks and patios, basement slabs and foundation flatwork, and garage floors. The difference between concrete that lasts 50 years and concrete that fails in five comes down to subgrade preparation, mix design, control joints, and curing. We don\'t cut corners on any of them.'),
+      anxietyStack: {
+        structuralSafety: richText('Slab thickness and reinforcement are spec\'d to the load — 4 inches for sidewalks and patios, 5–6 inches for residential driveways, 6+ inches for RV pads. Every exterior pour uses 4,500 PSI air-entrained concrete (5–7% entrained air) for freeze-thaw protection.'),
+        codeCompliance: richText('Driveway approaches tied to a city street typically require a permit. BaseScape pulls every required permit, schedules inspections, and verifies your specific city\'s slope and approach geometry requirements before forming.'),
+        drainageMoisture: richText('Every exterior slab is poured with a minimum 1% slope away from your foundation. Interior basement and garage slabs are installed over a 10–15 mil vapor barrier with verified subgrade drainage.'),
+        dustDisruption: richText('Saw-cutting control joints uses water-fed saws with contained work areas. Demolition is scheduled in a single day where possible, with debris hauled the same day. Forms protect lawn, landscaping, and existing hardscape.'),
+        costAffordability: richText('Residential concrete on the Wasatch Front typically runs $8–$15 per square foot for standard broom finish, $12–$20 for stamped or exposed aggregate, and $5–$10 for interior basement slabs. A typical 2-car driveway runs $5,000–$9,000.'),
+        aesthetics: richText('Choose from broom finish, exposed aggregate, stamped patterns (slate, flagstone, brick, wood plank), salt finish, or smooth troweled interior. Integral colors and acid stains are available. Sample boards are part of the design consultation.'),
+        timeline: richText('Most residential concrete projects pour in a single day after 1–2 days of forming and prep. Walk on the slab after 24 hours, drive on it after 7 days, fully cured at 28 days. From signed estimate to finished walkthrough is typically 2–3 weeks.'),
+      },
+      seo: {
+        metaTitle: 'Concrete Driveways, Patios & Garage Floors | BaseScape Utah',
+        metaDescription: 'Residential concrete done right for Utah\'s freeze-thaw. Driveways, sidewalks, patios, basement slabs, and garage floors across the Wasatch Front.',
       },
       status: 'published',
     } as any,
@@ -465,7 +494,7 @@ async function seed() {
         county: city.county,
         coordinates: { lat: city.lat, lng: city.lng },
         serviceRadius: 15,
-        localContent: richText(`BaseScape serves ${city.cityName}, UT with specialized walkout basements, basement remodeling, pavers & hardscapes, retaining walls, artificial turf, and egress windows.`),
+        localContent: richText(`BaseScape serves ${city.cityName}, UT with walkout basements, basement remodeling, concrete flatwork, pavers & hardscapes, retaining walls, artificial turf, and egress windows.`),
         localReferences: `${city.cityName} area homeowners`,
         seo: {
           metaTitle: `Walkout Basements & Egress Windows in ${city.cityName}, UT`,
@@ -506,7 +535,7 @@ async function seed() {
     { question: 'How much do retaining walls cost?', answer: richText('Retaining wall costs typically range from $20-$50 per square foot of wall face, depending on materials (segmental block, natural stone, poured concrete) and site complexity. Walls requiring engineered drainage, tiebacks, or significant excavation will be on the higher end. We provide free on-site estimates.'), category: 'cost' },
     // Pavers & Hardscapes FAQs
     { question: 'How long do paver patios last in Utah?', answer: richText('A properly installed paver patio with an engineered base lasts 25-50 years in Utah\'s climate. The key is base preparation — 6-8 inches of compacted aggregate that prevents settling and shifting during freeze-thaw cycles. Individual pavers that crack or stain can be replaced without disturbing the rest of the patio.'), category: 'general' },
-    { question: 'Are pavers better than concrete for patios?', answer: richText('For Utah\'s freeze-thaw climate, pavers are generally superior to poured concrete. Poured concrete develops cracks as the ground shifts, requiring costly repairs or full replacement. Interlocking pavers flex with ground movement without cracking. They\'re also easier to repair — you can replace individual pavers instead of tearing out an entire slab.'), category: 'general' },
+    { question: 'Should I choose pavers or concrete for my patio?', answer: richText('Both work in Utah\'s climate when installed correctly — the question is which fits your specific project. Pavers shine for patios, walkways, and pool decks where joints can flex with ground movement, where individual units can be replaced if damaged, and where distinct units are part of the design. Properly poured air-entrained concrete with engineered control joints is an excellent choice for driveways, garage floors, basement slabs, sidewalks, and large continuous patios. BaseScape installs both and recommends the right material for the project rather than the one we\'d rather sell you.'), category: 'general' },
     { question: 'How much does a paver patio cost per square foot?', answer: richText('Paver patio installation in Utah typically costs $15-$35 per square foot, including materials, base preparation, and labor. Budget-friendly concrete pavers start around $15/sq ft, while premium natural stone or large-format porcelain pavers can reach $35/sq ft or more. A typical 300 sq ft patio runs $4,500-$10,500 installed.'), category: 'cost' },
     { question: 'Do paver patios need maintenance?', answer: richText('Paver patios require minimal maintenance: annual polymeric sand replenishment (every 2-3 years), occasional pressure washing, and prompt weed removal. Unlike concrete, pavers don\'t need sealing (though optional sealers can enhance color). Snow removal is safe with a standard snow blower or shovel — pavers handle salt and ice melt without damage.'), category: 'general' },
     { question: 'Can you install pavers over existing concrete?', answer: richText('In some cases, yes — if the existing concrete is level, structurally sound, and has proper drainage. Pavers are installed on a thin sand setting bed over the concrete. However, if the existing concrete is cracked, heaved, or has drainage issues, removal and a proper aggregate base installation is the better long-term investment.'), category: 'general' },

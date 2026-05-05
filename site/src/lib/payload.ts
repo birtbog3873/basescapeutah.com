@@ -159,6 +159,10 @@ const SERVICE_ALT_TEXT: Record<string, { card: string; hero: string }> = {
     card: 'Interlocking paver patio with bistro dining set extending from a Utah home, Wasatch foothills in the background',
     hero: 'Custom paver patio and walkway installation extending outdoor living space on a Utah home',
   },
+  'concrete-flatwork': {
+    card: 'Freshly poured residential concrete driveway with a clean broom finish and crisp tooled control joints in front of a Utah home',
+    hero: 'Wide angle of a finished concrete driveway, walkway, and front approach with broom finish and tooled control joints in front of a Utah home',
+  },
   'retaining-walls': {
     card: 'Tiered stone retaining walls with landscaping creating usable flat outdoor space in a sloped Utah backyard',
     hero: 'Engineered retaining wall system managing a steep slope and creating terraced outdoor space',

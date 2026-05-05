@@ -10,6 +10,7 @@ function escapeHtml(text: string): string {
 const SERVICE_LABELS: Record<string, string> = {
   'walkout-basement': 'Walkout Basement',
   'basement-remodeling': 'Basement Remodeling',
+  'concrete-flatwork': 'Concrete Flatwork',
   'pavers-hardscapes': 'Pavers & Hardscapes',
   'retaining-walls': 'Retaining Walls',
   'artificial-turf': 'Artificial Turf',

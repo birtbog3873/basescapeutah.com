@@ -22,6 +22,7 @@ export const leadStepOneSchema = z.object({
   serviceType: z.enum([
     'walkout-basement',
     'basement-remodeling',
+    'concrete-flatwork',
     'pavers-hardscapes',
     'retaining-walls',
     'artificial-turf',
@@ -46,6 +47,7 @@ export const leadStepThreeSchema = z.object({
   serviceType: z.enum([
     'walkout-basement',
     'basement-remodeling',
+    'concrete-flatwork',
     'pavers-hardscapes',
     'retaining-walls',
     'artificial-turf',

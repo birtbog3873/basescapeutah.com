@@ -32,7 +32,7 @@ describe('leadStepOneSchema', () => {
   })
 
   it('accepts all valid serviceType enum values', () => {
-    const types = ['walkout-basement', 'basement-remodeling', 'pavers-hardscapes', 'retaining-walls', 'artificial-turf', 'egress-windows'] as const
+    const types = ['walkout-basement', 'basement-remodeling', 'concrete-flatwork', 'pavers-hardscapes', 'retaining-walls', 'artificial-turf', 'egress-windows'] as const
     for (const serviceType of types) {
       const result = leadStepOneSchema.safeParse({ ...validData, serviceType })
       expect(result.success).toBe(true)

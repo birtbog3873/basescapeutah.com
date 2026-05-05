@@ -826,3 +826,32 @@ Highest total score in pipeline — but the asterisk matters. The 349 is conditi
 - [x] No fabricated data
 - [x] Executive summary gives the answer first
 - [x] Founder-specific context (BullRock, equipment rental friends, framing connections) incorporated into Basement Walkouts re-analysis
+
+---
+
+## 2026-05-05 Override: Concrete Flatwork Added as Core Service
+
+**Decision (Steven, 2026-05-05):** Add Concrete Flatwork as a published core service on basescapeutah.com despite the Phase 4 rejection score.
+
+**Source:** A conversation with a friend (industry contact) prompted the reconsideration. The conversation surfaced an angle the pipeline did not weight heavily: BaseScape already has the equipment relationships, crew, and structural expertise to pour residential concrete, and the current pavers-only positioning was leaving driveways, garage floors, and basement slabs on the table — work the existing customer base already asks for.
+
+**Why the original Phase 4 score (273/410) said no:**
+- Average decorative concrete job size $5K–$10K below the targeted sweet spot
+- Utah freeze-thaw post-sale risk (sealer wear, surface scaling, cracking complaints)
+- 7–8 month outdoor season for exterior pours
+- Skilled concrete finisher labor shortage on the Wasatch Front
+- Total fell 17 points below the 290 viability threshold
+
+**Why we are overriding:**
+1. The four sub-trades being offered (driveways, sidewalks/patios/pool decks, basement slabs/foundation flatwork, garage floors/interior slabs) are broader than "decorative concrete" alone. Interior pours (basements, garages) are not freeze-thaw exposed and can be year-round work.
+2. Concrete is a natural attach product for the existing service mix — every walkout basement has a landing, every basement remodel has a slab, many retaining wall jobs have an adjacent flat-pour.
+3. The original analysis treated concrete as a standalone primary trade. As a *complementary* offering inside the existing BaseScape mix, the economics are different — lead acquisition is partly subsidized by the other services.
+4. The pavers page was actively marketing *against* concrete. That position is no longer tenable given (a) the friend's input on real demand and (b) the long-term goal of being the homeowner's single contractor for outdoor and structural concrete work.
+
+**Guardrails:**
+- Page is **on probation through 2026 outdoor season.** If the concrete service does not generate qualifying leads at the cost-per-lead targets used for other services by the end of October 2026, deprioritize and consider unpublishing.
+- **Do not invest in fabrication of concrete-specific lead magnets, paid landing pages, or video assets** until the page proves out organically and through the existing mix.
+- **Air-entrained mix (5–7% entrained air) and engineered control joint spacing are non-negotiable on every exterior pour.** The original Phase 4 freeze-thaw concern is mitigated, not eliminated, by execution discipline. A single high-profile failure on the Wasatch Front would damage the brand more than the revenue justifies.
+- **Outdoor patios and pool decks should be steered to pavers when the homeowner has not specifically asked for concrete.** Pavers remain the recommended outdoor surface where joints/individual replacement matter; concrete leads with driveways, garage floors, basements, and sidewalks.
+
+**Site changes shipped 2026-05-05:** New `/services/concrete-flatwork` page; `/services/pavers-hardscapes` overview, FAQ, and comparison table repositioned from "concrete is inferior" to "right material for the project"; service added to Leads collection enum, MultiStepForm options, navigation, homepage grid, email label maps, and validation schema.

@@ -97,6 +97,7 @@ export const Leads: CollectionConfig = {
       options: [
         { label: 'Walkout Basement', value: 'walkout-basement' },
         { label: 'Basement Remodeling', value: 'basement-remodeling' },
+        { label: 'Concrete Flatwork', value: 'concrete-flatwork' },
         { label: 'Pavers & Hardscapes', value: 'pavers-hardscapes' },
         { label: 'Retaining Walls', value: 'retaining-walls' },
         { label: 'Artificial Turf', value: 'artificial-turf' },
