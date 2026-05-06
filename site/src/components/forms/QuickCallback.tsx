@@ -2,11 +2,21 @@ import { useState, useEffect } from 'react'
 import { actions } from 'astro:actions'
 import { getGaClientId, getGclid } from '../../lib/analytics'
 
+type ServiceType =
+  | 'walkout-basement'
+  | 'basement-remodeling'
+  | 'concrete-flatwork'
+  | 'pavers-hardscapes'
+  | 'retaining-walls'
+  | 'artificial-turf'
+  | 'egress-windows'
+
 interface Props {
   sourcePage?: string
+  serviceType?: ServiceType
 }
 
-export default function QuickCallback({ sourcePage = '/' }: Props) {
+export default function QuickCallback({ sourcePage = '/', serviceType }: Props) {
   const [sessionId, setSessionId] = useState('')
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
@@ -32,6 +42,7 @@ export default function QuickCallback({ sourcePage = '/' }: Props) {
         name: name.trim(),
         phone: phone.trim(),
         notes: notes.trim() || undefined,
+        serviceType,
         honeypot,
         source: {
           page: sourcePage || window.location.pathname,

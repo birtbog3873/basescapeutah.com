@@ -72,6 +72,15 @@ export const quickCallbackSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name too long'),
   phone: z.string().regex(phoneRegex, 'Enter a valid phone number'),
   notes: z.string().max(1000, 'Notes too long').optional(),
+  serviceType: z.enum([
+    'walkout-basement',
+    'basement-remodeling',
+    'concrete-flatwork',
+    'pavers-hardscapes',
+    'retaining-walls',
+    'artificial-turf',
+    'egress-windows',
+  ]).optional(),
   honeypot: honeypotSchema,
   source: sourceSchema,
 })

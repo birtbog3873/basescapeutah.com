@@ -1,0 +1,87 @@
+---
+interface Props {
+  phone?: string
+  estimateUrl?: string
+}
+
+const { phone = '(801) 919-8224', estimateUrl = '/contact' } = Astro.props
+const phoneClean = phone.replace(/[^\d+]/g, '')
+---
+<div class="sticky-mobile-cta" role="region" aria-label="Quick contact">
+  <a
+    href={`tel:${phoneClean}`}
+    class="sticky-mobile-cta__btn sticky-mobile-cta__btn--call plausible-event-name=Call+Click"
+    aria-label={`Call ${phone}`}
+    data-cta="sticky-call"
+  >
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+    </svg>
+    <span>Call</span>
+  </a>
+  <a
+    href={estimateUrl}
+    class="sticky-mobile-cta__btn sticky-mobile-cta__btn--estimate"
+    data-cta="sticky-estimate"
+  >
+    Book Estimate
+  </a>
+</div>
+
+<style is:global>
+  /* Reserve space below the page on mobile so the sticky bar doesn't cover the footer's last row. */
+  @media (max-width: 767.98px) {
+    body:has(.sticky-mobile-cta) {
+      padding-bottom: 76px;
+      padding-bottom: calc(76px + env(safe-area-inset-bottom));
+    }
+  }
+</style>
+
+<style>
+  .sticky-mobile-cta {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    gap: var(--size-2);
+    padding: var(--size-2) var(--size-3);
+    padding-bottom: max(var(--size-2), env(safe-area-inset-bottom));
+    background: var(--color-bgSurface);
+    border-top: 1px solid var(--color-borderSubtle, rgba(0, 0, 0, 0.08));
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+    z-index: 50;
+  }
+
+  @media (min-width: 768px) {
+    .sticky-mobile-cta {
+      display: none;
+    }
+  }
+
+  .sticky-mobile-cta__btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--size-2);
+    padding: var(--size-3) var(--size-3);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    min-height: 48px;
+  }
+
+  .sticky-mobile-cta__btn--call {
+    background: var(--color-ctaSecondaryBg);
+    color: var(--color-ctaSecondaryText);
+  }
+
+  .sticky-mobile-cta__btn--estimate {
+    background: var(--color-ctaPrimaryBg);
+    color: var(--color-ctaPrimaryText);
+  }
+</style>

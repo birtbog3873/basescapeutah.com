@@ -17,12 +17,22 @@ try {
   // Fallback for build without CMS
 }
 
+// Layer page-only enrichments on top of the CMS record. These fields aren't
+// modeled in the Services collection — they're concrete-flatwork-specific
+// landing-page CRO copy that we want regardless of whether the page renders
+// from the CMS or the offline fallback.
+if (service) {
+  service.availabilityNote = service.availabilityNote
+    ?? 'Now booking April–October 2026 driveway and patio pours along the Wasatch Front'
+}
+
 // Fallback service data if CMS unavailable
 if (!service) {
   service = {
     title: 'Concrete Flatwork',
     slug: 'concrete-flatwork',
     tagline: 'Driveways, sidewalks, patios, garage floors, and basement slabs — engineered for Utah\'s freeze-thaw climate, finished the way it should be.',
+    availabilityNote: 'Now booking April–October 2026 driveway and patio pours along the Wasatch Front',
     primaryValuePillar: 'transformation',
     heroImage: { url: '/images/services/hero-concrete-flatwork.webp', alt: 'Freshly poured residential concrete driveway with broom finish and tooled control joints in front of a Utah home' },
     supportingPillars: ['safety', 'financial'],

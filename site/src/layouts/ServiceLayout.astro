@@ -12,6 +12,9 @@ import { fetchSiteSettings } from '../lib/payload'
 import { serializeLexical } from '../lib/serialize-lexical'
 import LeadMagnetCTA from '../components/content/LeadMagnetCTA.astro'
 import ComparisonTable from '../components/content/ComparisonTable.astro'
+import QuickCallback from '../components/forms/QuickCallback.tsx'
+import StickyMobileCTA from '../components/content/StickyMobileCTA.astro'
+import '../components/forms/form-styles.css'
 
 interface Props {
   service: any
@@ -83,6 +86,12 @@ const pillar = pillarAccents[service.primaryValuePillar] || pillarAccents.transf
       </span>
       <h1 class="service-hero__title">{service.title}</h1>
       <p class="service-hero__tagline">{service.tagline}</p>
+      {service.availabilityNote && (
+        <p class="service-hero__availability">
+          <span class="service-hero__availability-dot" aria-hidden="true"></span>
+          {service.availabilityNote}
+        </p>
+      )}
       <CTABlock
         variant="hero"
         phone={phone}
@@ -162,6 +171,20 @@ const pillar = pillarAccents[service.primaryValuePillar] || pillarAccents.transf
       <div class="service-section__inner service-section__inner--narrow">
         <h2 class="service-section__heading">What Sets Us Apart</h2>
         <div class="differentiator" set:html={serializeLexical(service.differentiator)} />
+      </div>
+    </section>
+  )}
+
+  <!-- Mid-page Callback CTA -->
+  {service.showCallback !== false && (
+    <section class="service-section service-callback">
+      <div class="service-section__inner service-section__inner--narrow">
+        <p class="service-callback__intro">
+          Prefer a quick conversation before booking a full appointment? Drop your number — we call back within an hour during business hours, no high-pressure pitch.
+        </p>
+        <div class="service-callback__form">
+          <QuickCallback client:visible sourcePage={`/services/${service.slug}`} serviceType={service.slug} />
+        </div>
       </div>
     </section>
   )}
@@ -252,6 +275,8 @@ const pillar = pillarAccents[service.primaryValuePillar] || pillarAccents.transf
       </div>
     </section>
   )}
+
+  <StickyMobileCTA phone={phone} />
 </BaseLayout>
 
 <style>
@@ -299,6 +324,30 @@ const pillar = pillarAccents[service.primaryValuePillar] || pillarAccents.transf
     margin-bottom: var(--size-5);
   }
 
+  .service-hero__availability {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--size-2);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--color-textSecondary, var(--color-textBody));
+    background: var(--color-bgAlt);
+    border: 1px solid var(--color-borderSubtle, rgba(0, 0, 0, 0.08));
+    padding: var(--size-2) var(--size-3);
+    border-radius: 999px;
+    margin-bottom: var(--size-5);
+  }
+
+  .service-hero__availability-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--color-green500, #16a34a);
+    box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.15);
+    flex-shrink: 0;
+  }
+
   .service-hero__image {
     border-radius: var(--radius-lg);
     overflow: hidden;
@@ -317,6 +366,24 @@ const pillar = pillarAccents[service.primaryValuePillar] || pillarAccents.transf
 
   .service-section--alt {
     background: var(--color-bgAlt);
+  }
+
+  .service-callback {
+    background: var(--color-bgAlt);
+  }
+
+  .service-callback__intro {
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--color-textBody);
+    text-align: center;
+    margin-bottom: var(--size-5);
+  }
+
+  .service-callback__form {
+    max-width: 560px;
+    margin-inline: auto;
   }
 
   .service-section__inner {

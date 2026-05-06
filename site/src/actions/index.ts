@@ -306,6 +306,7 @@ export const server = {
         name: input.name,
         phone: input.phone,
         additionalNotes: input.notes,
+        serviceType: input.serviceType,
         formType: 'quick-callback',
         source: input.source,
       }))
