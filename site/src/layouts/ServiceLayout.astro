@@ -83,7 +83,11 @@ const pillar = pillarAccents[service.primaryValuePillar] || pillarAccents.transf
       </span>
       <h1 class="service-hero__title">{service.title}</h1>
       <p class="service-hero__tagline">{service.tagline}</p>
-      <CTABlock variant="hero" phone={phone} />
+      <CTABlock
+        variant="hero"
+        phone={phone}
+        headline={service.heroCtaHeadline || `Get your ${service.title.toLowerCase()} estimate`}
+      />
     </div>
     {service.heroImage && (
       <div class="service-hero__image">
