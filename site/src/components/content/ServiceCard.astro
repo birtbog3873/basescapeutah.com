@@ -5,9 +5,10 @@ interface Props {
   slug: string
   valuePillar?: string
   heroImage?: { url: string; alt: string }
+  showPillar?: boolean
 }
 
-const { title, tagline, slug, valuePillar, heroImage } = Astro.props
+const { title, tagline, slug, valuePillar, heroImage, showPillar = true } = Astro.props
 
 const pillarColors: Record<string, string> = {
   financial: 'var(--color-amber700, #9A5D06)',
@@ -35,7 +36,7 @@ const pillarLabels: Record<string, string> = {
     )}
   </div>
   <div class="service-card__body">
-    {valuePillar && (
+    {showPillar && valuePillar && (
       <span
         class="service-card__pillar"
         style={`--pillar-color: ${pillarColors[valuePillar] || 'var(--color-teal500)'}`}

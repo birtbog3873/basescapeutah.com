@@ -14,7 +14,6 @@ import { serializeLexical } from '../lib/serialize-lexical'
 import LeadMagnetCTA from '../components/content/LeadMagnetCTA.astro'
 import ComparisonTable from '../components/content/ComparisonTable.astro'
 import QuickCallback from '../components/forms/QuickCallback.tsx'
-import StickyMobileCTA from '../components/content/StickyMobileCTA.astro'
 import '../components/forms/form-styles.css'
 
 interface Props {
@@ -122,6 +121,7 @@ const pillar = pillarAccents[service.primaryValuePillar] || pillarAccents.transf
               slug={sub.slug}
               valuePillar={sub.valuePillar}
               heroImage={sub.heroImage}
+              showPillar={false}
             />
           ))}
         </div>
@@ -321,7 +321,6 @@ const pillar = pillarAccents[service.primaryValuePillar] || pillarAccents.transf
     </section>
   )}
 
-  <StickyMobileCTA phone={phone} />
 </BaseLayout>
 
 <style>
