@@ -24,6 +24,7 @@ export default defineConfig({
   site: 'https://basescapeutah.com',
   redirects: {
     '/services/window-well-upgrades': '/',
+    '/lp/driveway-2026': '/services/concrete-driveways',
   },
   vite: {
     plugins: [vanillaExtractPlugin()],

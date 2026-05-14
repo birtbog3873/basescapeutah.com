@@ -1,0 +1,137 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro'
+import { fetchServices, fetchSiteSettings, resolveServiceImage } from '../../lib/payload'
+
+let service: any = null
+let settings: any = null
+
+try {
+  const [servicesRes, siteSettings] = await Promise.all([
+    fetchServices(),
+    fetchSiteSettings(),
+  ])
+  service = servicesRes.docs?.find((s: any) => s.slug === 'concrete')
+  if (service) service.heroImage = resolveServiceImage(service.slug, 'hero', service.heroImage)
+  settings = siteSettings
+} catch {
+  // Fallback for build without CMS
+}
+
+// Sub-service cards rendered between hero and overview by ServiceLayout
+// when service.subServiceLinks is populated. Order is intent-led: driveways,
+// patios, stamped, and garage/RV pads carry the active ad campaigns.
+const subServiceLinks = [
+  {
+    title: 'Concrete Driveways',
+    tagline: 'Tear-out, replacement, and new pours engineered for Utah freeze-thaw — broom, stamped, or exposed-aggregate finishes.',
+    slug: 'concrete-driveways',
+    valuePillar: 'transformation',
+    heroImage: { url: '/images/services/card-concrete-driveways.webp', alt: 'Freshly poured residential concrete driveway with broom finish and tooled control joints in front of a Wasatch Front home' },
+  },
+  {
+    title: 'Concrete Patios',
+    tagline: 'Backyard patios poured for entertaining — clean broom finish or stamped patterns that look like flagstone, slate, or wood plank.',
+    slug: 'concrete-patios',
+    valuePillar: 'transformation',
+    heroImage: { url: '/images/services/card-concrete-patios.webp', alt: 'Stamped concrete patio with outdoor furniture in a Utah backyard' },
+  },
+  {
+    title: 'Stamped & Decorative Concrete',
+    tagline: 'Stamped patterns, integral color, exposed aggregate, and acid-stained finishes for driveways, patios, pool decks, and walkways.',
+    slug: 'concrete-stamped',
+    valuePillar: 'transformation',
+    heroImage: { url: '/images/services/card-concrete-stamped.webp', alt: 'Stamped concrete with terra-cotta running-bond pattern bordering a Utah home' },
+  },
+  {
+    title: 'Garage Slabs & RV Pads',
+    tagline: 'Structural pours for garage floors, shop slabs, and RV pads — proper thickness, rebar, and reinforcement. We pour. We don\'t coat.',
+    slug: 'concrete-garage-rv-pads',
+    valuePillar: 'transformation',
+    heroImage: { url: '/images/services/card-concrete-garage-rv-pads.webp', alt: 'New concrete RV pad with a motorhome parked beside a Utah home' },
+  },
+  {
+    title: 'Sidewalks & Walkways',
+    tagline: 'Front-walk replacement, side-yard paths, and approach sidewalks — permit-pulled and built to your city\'s ADA and approach geometry.',
+    slug: 'concrete-sidewalks',
+    valuePillar: 'transformation',
+    heroImage: { url: '/images/services/card-concrete-sidewalks.webp', alt: 'New concrete walkway leading to the front door of a Utah home' },
+  },
+  {
+    title: 'Pool Decks',
+    tagline: 'Slip-resistant pool decks — broom, salt finish, or stamped — engineered for chlorine, sun, and freeze-thaw without surface scaling.',
+    slug: 'concrete-pool-decks',
+    valuePillar: 'transformation',
+    heroImage: { url: '/images/services/card-concrete-pool-decks.webp', alt: 'Stamped concrete pool deck with wood-plank pattern surrounding a Utah backyard pool' },
+  },
+  {
+    title: 'Footings & Structural Pours',
+    tagline: 'Foundation footings, pier pads, and structural pours for additions, decks, pavilions, and detached structures — engineered and inspected.',
+    slug: 'concrete-footings',
+    valuePillar: 'safety',
+    heroImage: { url: '/images/services/card-concrete-footings.webp', alt: 'Newly poured concrete footing with rebar reinforcement on a Utah construction site' },
+  },
+  {
+    title: 'General Flatwork',
+    tagline: 'Mixed-scope flatwork projects — basement slabs, interior pours, garage floors, and the in-between work that doesn\'t fit a single category.',
+    slug: 'concrete-flatwork',
+    valuePillar: 'transformation',
+    heroImage: { url: '/images/services/card-concrete-flatwork.webp', alt: 'Concrete flatwork project showing fresh pour with broom finish in a Utah home' },
+  },
+]
+
+// Fallback service data if CMS unavailable
+if (!service) {
+  service = {
+    title: 'Concrete',
+    slug: 'concrete',
+    tagline: 'Driveways, patios, garage slabs, RV pads, stamped, sidewalks, pool decks, and footings — poured by a Utah-licensed crew that builds for freeze-thaw, not against it.',
+    availabilityNote: 'Now booking April–October 2026 driveway, patio, and slab pours along the Wasatch Front',
+    primaryValuePillar: 'transformation',
+    supportingPillars: ['safety', 'financial'],
+    heroImage: { url: '/images/services/hero-concrete.webp', alt: 'BaseScape work truck and crew at a residential concrete pour in a Wasatch Front neighborhood at golden hour' },
+    inlineImage: { url: '/images/services/inline-concrete.webp', alt: 'Overhead view of a multi-area residential concrete project showing driveway, walkway, and patio with consistent broom finish', caption: 'A typical BaseScape concrete project — driveway, approach walk, and side patio in one continuous scope.' },
+    heroCtaHeadline: 'Get a free on-site concrete estimate',
+    subServicesHeading: 'What kind of concrete work are you planning?',
+    subServicesIntro: 'BaseScape pours every common residential concrete project on the Wasatch Front. Pick the one that fits — you\'ll land on a page with pricing ranges, FAQs, and a way to book a free on-site estimate.',
+    subServiceLinks,
+    overview: '<p>Concrete is the unglamorous backbone of a well-built home — the driveway you back out of every morning, the patio you eat dinner on, the slab your shop is built on, the footing every wall above it is sitting on. Done right, it lasts 30 to 50 years. Done wrong, it cracks, heaves, and sinks within five.</p><p>BaseScape is a licensed Utah general contractor (DOPL #14082066-5501 B100) pouring residential concrete across Salt Lake, Utah, and Davis counties. We pour <strong>flatwork</strong> — driveways, patios, sidewalks, pool decks, RV pads, garage slabs — and we pour <strong>structural</strong> — footings, pier pads, foundation extensions. The same crew handles both, and we don\'t subcontract the work.</p><p>The difference between concrete that lasts 50 years and concrete that fails in five comes down to four decisions made before the truck shows up: subgrade preparation, mix design and reinforcement, control-joint spacing, and curing protocol. We don\'t cut corners on any of them — even when a homeowner asks us to.</p>',
+    process: [
+      { stepTitle: 'Free On-Site Estimate', stepDescription: '<p>A BaseScape designer visits your home (typically within the week), measures the area, evaluates drainage and subgrade, and walks the joint pattern with you on-site so you know where the lines will fall. You receive a written, itemized quote within 24 hours — no deposit, no pressure.</p>' },
+      { stepTitle: 'Permits, Forming & Prep', stepDescription: '<p>We pull every required city permit. The subgrade is excavated, leveled, and compacted to engineered depth (4–6+ inches of compacted road base depending on use). Forms are set to grade with proper slope (minimum 1% away from structures). Rebar or fiber reinforcement is installed based on slab type and load.</p>' },
+      { stepTitle: 'Pour, Finish & Cure', stepDescription: '<p>4,000+ psi air-entrained concrete is placed, screeded, floated, and finished to your chosen texture. Control joints are sawcut at engineered spacing within 12 hours of placement so cracks form where we want them. Curing compound is applied immediately. We protect the slab and walk you through the cure schedule before we leave.</p>' },
+    ],
+    anxietyStack: {
+      structuralSafety: '<p>Every pour is spec\'d to its actual load. Sidewalks 4″, residential driveways 5–6″, RV pads 6″+, structural footings to engineered depth. Air-entrained 4,000–4,500 psi mix on every exterior pour for freeze-thaw protection. Interior slabs get a 10–15 mil vapor barrier under the slab.</p>',
+      codeCompliance: '<p>Driveway approaches that connect to a public street, structural footings, and any work tied to a permit or inspection — BaseScape pulls every required permit and schedules every inspection. We hold a Utah DOPL B100 general contractor\'s license (#14082066-5501).</p>',
+      drainageMoisture: '<p>Every exterior slab is poured with a minimum 1% slope (1/8″ per foot) away from your foundation. Drainage is engineered during site prep, not after the pour. For interior slabs we install a vapor barrier and verify subgrade drainage before placement.</p>',
+      costAffordability: '<p>Residential concrete on the Wasatch Front runs $8–$15 per sq ft for standard broom finish, $12–$20 for stamped or exposed aggregate, and $5–$10 for interior basement slabs. Estimates are line-item — base, rebar, concrete, finish, sealer — so you see exactly what every dollar buys.</p>',
+      timeline: '<p>Most residential concrete projects pour in a single day after 1–2 days of forming and prep. You can walk on it after 24 hours, drive on it after 7 days, and load it fully at 28 days. From signed estimate to finished walkthrough is typically 2–3 weeks for driveways and 1–2 weeks for sidewalks and patios.</p>',
+    },
+    differentiator: '<p><strong>Flatwork and structural — same crew, same standard.</strong> Most concrete contractors in Utah specialize in one or the other. BaseScape pours both because the same crew has to know both to pour a complete home project — driveway and approach sidewalk, patio and footings for the pavilion, garage slab and the foundation extension beside it. One contractor, one schedule, one warranty.</p>',
+    faqs: [
+      { question: 'What concrete services does BaseScape pour?', answer: 'Driveways, patios, sidewalks, pool decks, garage floors, RV and shop pads, basement and interior slabs, stamped and decorative finishes, and structural pours (footings, pier pads, foundation extensions). We pour both flatwork and structural concrete with the same crew across Salt Lake, Utah, and Davis counties.' },
+      { question: 'How much does concrete cost per square foot in Utah?', answer: 'Residential concrete on the Wasatch Front typically runs $8–$15 per square foot for standard broom finish, $12–$20 for stamped or exposed aggregate, and $5–$10 for interior basement slabs. Pricing depends on slab thickness, reinforcement, finish, site access, and demolition of existing concrete. Every BaseScape estimate is itemized so you can see exactly what each line costs.' },
+      { question: 'Will my concrete crack in Utah\'s freeze-thaw cycles?', answer: 'All concrete develops hairline cracks — that\'s normal and not a defect. The goal is to control where cracks form. We use three defenses: air-entrained concrete (5–7% entrained air pockets that give freezing water somewhere to go), control joints sawcut at engineered spacing within 12 hours of pour, and a penetrating sealer on exterior pours. Properly poured residential concrete on the Wasatch Front routinely lasts 30–50 years.' },
+      { question: 'Do you pull permits?', answer: 'Yes — every time one is required. Driveway approaches tying into a public street, structural footings, and any work subject to inspection all get permitted through BaseScape. You don\'t deal with the permit office.' },
+      { question: 'How long before I can use my new concrete?', answer: 'You can walk on a new concrete slab after 24 hours, drive a passenger vehicle on it after 7 days, and put full loads (RV, dumpster, heavy trucks) on it after 28 days. Driving on concrete too early is one of the most common causes of premature cracking, so we mark the slab and walk you through the cure schedule before we leave.' },
+      { question: 'What\'s the difference between concrete flatwork and structural concrete?', answer: 'Flatwork is horizontal — slabs and pads (driveways, patios, garage floors). Structural concrete carries vertical loads — footings, pier pads, foundation walls. Most contractors specialize in one. BaseScape pours both, which matters when a single home project (e.g., a detached shop) needs the footings poured AND the slab poured by the same crew on the same schedule.' },
+      { question: 'When is concrete pour season on the Wasatch Front?', answer: 'Wasatch Front concrete season runs April through October. We can pour outside that window with cold-weather precautions (heated mix water, insulating blankets, accelerating admixtures), but most homeowners prefer to schedule exterior pours during the main season. We book design visits year-round and lock in spring/summer pour dates from the previous fall onward.' },
+      { question: 'Where do you pour?', answer: 'Across the Wasatch Front: Salt Lake County (Salt Lake City, West Jordan, Sandy, Draper, South Jordan, Riverton, Holladay, Murray, Cottonwood Heights, West Valley), Utah County (Lehi, Provo, Orem, Lindon, American Fork, Pleasant Grove, Saratoga Springs), and Davis County (Bountiful, Layton, Centerville, Farmington, Kaysville). If you\'re outside that footprint but on the Wasatch Front, ask — we\'ll tell you whether we can take the job.' },
+    ],
+    projects: [],
+    reviews: [],
+    seo: {
+      metaTitle: 'Concrete Contractor — Wasatch Front, Utah | BaseScape',
+      metaDescription: 'Licensed Utah concrete contractor. Driveways, patios, garage slabs, RV pads, stamped, sidewalks, pool decks, footings. Free on-site estimates across Salt Lake, Utah & Davis counties.',
+    },
+  }
+}
+
+// Ensure sub-service links render even if CMS record exists but doesn't carry them
+if (service && !service.subServiceLinks?.length) {
+  service.subServiceLinks = subServiceLinks
+  service.subServicesHeading = service.subServicesHeading || 'What kind of concrete work are you planning?'
+  service.subServicesIntro = service.subServicesIntro || 'BaseScape pours every common residential concrete project on the Wasatch Front. Pick the one that fits — you\'ll land on a page with pricing ranges, FAQs, and a way to book a free on-site estimate.'
+}
+---
+<ServiceLayout service={service} settings={settings} />

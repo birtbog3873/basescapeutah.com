@@ -1,0 +1,61 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro'
+import { fetchServices, fetchSiteSettings, resolveServiceImage } from '../../lib/payload'
+
+let service: any = null
+let settings: any = null
+
+try {
+  const [servicesRes, siteSettings] = await Promise.all([
+    fetchServices(),
+    fetchSiteSettings(),
+  ])
+  service = servicesRes.docs?.find((s: any) => s.slug === 'concrete-patios')
+  if (service) service.heroImage = resolveServiceImage(service.slug, 'hero', service.heroImage)
+  settings = siteSettings
+} catch {}
+
+if (!service) {
+  service = {
+    title: 'Concrete Patios',
+    slug: 'concrete-patios',
+    tagline: 'Backyard patios that turn your yard into the living room you wish you had — clean broom finish, stamped patterns, or exposed aggregate, poured to last 30+ years through Utah\'s freeze-thaw.',
+    availabilityNote: 'Now booking April–October 2026 patio pours along the Wasatch Front',
+    primaryValuePillar: 'transformation',
+    supportingPillars: ['financial'],
+    heroImage: { url: '/images/services/hero-concrete-patios.webp', alt: 'Backyard broom-finish concrete patio with outdoor furniture, string lights overhead, and warm interior light spilling out through sliding glass doors of a Wasatch Front home' },
+    inlineImage: { url: '/images/services/inline-concrete-patios.webp', alt: 'Crew member screeding wet concrete across wood forms during a residential patio pour, fresh light-gray concrete with bull-float marks', caption: 'Mid-pour on a residential patio — screeded flat across the forms before bull-floating.' },
+    heroCtaHeadline: 'Get a free on-site patio estimate',
+    overview: '<p>A concrete patio is the cheapest large-scale outdoor improvement a Wasatch Front homeowner can make — and the most lived-on. A 400-square-foot stamped patio costs less than a kitchen appliance package and gets used most days from May through October. It\'s where the grill goes, where dinner moves on warm nights, where the fire pit lives.</p><p>BaseScape pours residential patios on the same structural spec as our driveways: air-entrained 4,000+ psi mix, rebar reinforcement, control joints saw-cut at engineered spacing, drainage engineered before placement. The difference vs. a driveway is finish — patios have more aesthetic freedom (stamped, exposed aggregate, integral color, decorative borders) and they don\'t need to carry vehicle loads, so we can pour them in shapes that wouldn\'t work for a driveway.</p><p>Standard scope: rectangular, L-shaped, or curved patios off a back door or walkout basement; covered patios under a pavilion or pergola (we don\'t build pergolas — that\'s a different trade — but we pour the slab they sit on); fire pit and grill pad add-ons.</p>',
+    process: [
+      { stepTitle: 'Free On-Site Estimate', stepDescription: '<p>A designer walks the area with you, takes measurements, evaluates drainage and grade, and walks the joint pattern on-site so you know where the lines will fall. Finish samples available. Written quote within 24 hours.</p>' },
+      { stepTitle: 'Forming, Subgrade & Reinforcement', stepDescription: '<p>Subgrade excavated to depth and compacted. 4 inches of compacted road base installed. Forms set to grade with positive slope away from the house (minimum 1% — patios that slope toward the foundation are a common failure cause). #4 rebar or fiber reinforcement based on use.</p>' },
+      { stepTitle: 'Pour, Finish & Detail', stepDescription: '<p>Air-entrained 4,000 psi concrete placed, screeded, floated, and finished. Broom, stamped, exposed aggregate, or salt finish per your spec. Control joints sawcut within 12 hours. Decorative borders, integral color, or accent strips detailed in.</p>' },
+      { stepTitle: 'Cure, Seal & Walkthrough', stepDescription: '<p>Curing compound applied immediately. 24-hour foot traffic protection, 7-day furniture protection. Penetrating sealer applied. Walkthrough covers cure schedule and warranty.</p>' },
+    ],
+    anxietyStack: {
+      drainageMoisture: '<p>The #1 patio failure cause on the Wasatch Front is the patio sloping <em>toward</em> the house — every spring storm pushes water into the foundation. We pour every patio with a minimum 1% slope (1/8″ per foot) away from the structure. Where the existing grade fights us, we install a French drain or rock pit along the low edge before forming.</p>',
+      costAffordability: '<p>Typical patio pricing on the Wasatch Front:</p><ul><li><strong>Standard broom-finish patio</strong> (~300 sq ft): <strong>$2,800–$4,500</strong></li><li><strong>Standard broom-finish patio</strong> (~500 sq ft): <strong>$4,500–$7,500</strong></li><li><strong>Stamped or decorative patio</strong>: adds <strong>$4–$8 per sq ft</strong> over broom</li><li><strong>Demo of existing patio</strong>: $500–$1,500 depending on access and size</li></ul><p>Patios scale efficiently — the per-sq-ft cost drops on larger pours because the fixed costs (mobilization, forming labor, finishing crew) spread over more area.</p>',
+      aesthetics: '<p>Broom finish for budget and slip resistance. Exposed aggregate for a pebble-texture decorative look. Stamped patterns (slate, flagstone, brick, wood plank) for a high-design backyard. Integral color and acid-stained overlays available. Border bands and accent strips create visual definition between zones (dining area, fire pit, grill pad).</p>',
+      timeline: '<p>Typical patio: 2 working days on-site (form & prep day → pour day). Stay off the slab 24 hours; furniture can move on at 7 days. From signed estimate to walkthrough is typically 1–2 weeks during pour season.</p>',
+    },
+    faqs: [
+      { question: 'How much does a concrete patio cost in Utah?', answer: 'Standard broom-finish patios run $9–$14 per sq ft installed. A 300-sq-ft patio runs $2,800–$4,500; a 500-sq-ft patio runs $4,500–$7,500. Stamped or decorative finishes add $4–$8 per sq ft over the broom-finish baseline.' },
+      { question: 'How thick should a patio be?', answer: '4 inches over a compacted gravel base is standard for residential patios. We add #4 rebar reinforcement or fiber where the patio carries unusual loads (hot tub, large outdoor kitchen) or where soil conditions warrant.' },
+      { question: 'Will my patio slope away from the house?', answer: 'Yes — minimum 1% slope (1/8″ per foot) away from the foundation, which we engineer during site prep. A patio that slopes toward the house is a major failure mode and the most common cause of basement moisture intrusion on poorly built patios.' },
+      { question: 'Can I get a stamped or decorative patio?', answer: 'Yes — stamped patterns (slate, flagstone, brick, wood plank), exposed aggregate, integral color, salt finish, and acid-stained overlays are all on the menu. We bring physical samples to the estimate visit.' },
+      { question: 'Do you tear out an old patio?', answer: 'Yes. Demo, haul-off, and disposal are itemized in the quote. Typical patio demo runs $500–$1,500 depending on access and size.' },
+      { question: 'How long does a patio pour take?', answer: 'Most residential patios pour in a single day after 1 day of forming and prep. Total project time from signed estimate to finished walkthrough is typically 1–2 weeks during pour season.' },
+      { question: 'When can I put furniture on a new patio?', answer: 'You can walk on the slab after 24 hours. Furniture and grills can move on at 7 days. Heavy items (hot tub, large planters) wait 28 days for full cure.' },
+      { question: 'Can you pour a patio in a curved or irregular shape?', answer: 'Yes — patios don\'t carry vehicle loads, so we have more form flexibility than on a driveway. Curves, octagons, and stepped multi-level patios are all doable. Cost goes up modestly with form complexity.' },
+    ],
+    projects: [],
+    reviews: [],
+    seo: {
+      metaTitle: 'Concrete Patios — Wasatch Front Utah | BaseScape',
+      metaDescription: 'Residential concrete patios across Salt Lake, Utah, and Davis counties. Broom, stamped, exposed-aggregate finishes. Engineered drainage, freeze-thaw spec, 30+ year lifespan.',
+    },
+  }
+}
+---
+<ServiceLayout service={service} settings={settings} />

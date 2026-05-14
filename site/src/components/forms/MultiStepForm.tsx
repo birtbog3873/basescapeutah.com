@@ -7,7 +7,7 @@ const SERVICE_OPTIONS = [
   { value: 'walkout-basement', label: 'Walkout Basement' },
   { value: 'retaining-walls', label: 'Retaining Walls' },
   { value: 'basement-remodeling', label: 'Basement Remodeling' },
-  { value: 'concrete-flatwork', label: 'Concrete Flatwork' },
+  { value: 'concrete', label: 'Concrete' },
   { value: 'pavers-hardscapes', label: 'Pavers & Hardscapes' },
   { value: 'artificial-turf', label: 'Artificial Turf' },
   { value: 'egress-windows', label: 'Egress Windows' },

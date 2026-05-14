@@ -1,6 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro'
 import CTABlock from '../components/content/CTABlock.astro'
+import ServiceCard from '../components/content/ServiceCard.astro'
 import TrustBadges from '../components/trust/TrustBadges.astro'
 import ReviewCard from '../components/trust/ReviewCard.astro'
 import FAQ from '../components/content/FAQ.astro'
@@ -105,12 +106,56 @@ const pillar = pillarAccents[service.primaryValuePillar] || pillarAccents.transf
     )}
   </section>
 
+  <!-- Sub-Service Card Grid (parent-hub pages only) -->
+  {service.subServiceLinks?.length > 0 && (
+    <section class="service-section service-subservices">
+      <div class="service-section__inner">
+        <h2 class="service-section__heading">{service.subServicesHeading || 'Choose Your Concrete Service'}</h2>
+        {service.subServicesIntro && (
+          <p class="service-subservices__intro">{service.subServicesIntro}</p>
+        )}
+        <div class="subservices-grid">
+          {service.subServiceLinks.map((sub: any) => (
+            <ServiceCard
+              title={sub.title}
+              tagline={sub.tagline}
+              slug={sub.slug}
+              valuePillar={sub.valuePillar}
+              heroImage={sub.heroImage}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
   <!-- Overview -->
   <section class="service-section">
     <div class="service-section__inner">
       <div class="service-overview" set:html={serializeLexical(service.overview)} />
     </div>
   </section>
+
+  <!-- Inline content image (between Overview and Comparison Table) -->
+  {service.inlineImage && (
+    <section class="service-section">
+      <div class="service-section__inner service-section__inner--narrow">
+        <figure class="service-inline-image">
+          <img
+            src={service.inlineImage.url}
+            alt={service.inlineImage.alt}
+            width="1200"
+            height="800"
+            loading="lazy"
+            decoding="async"
+          />
+          {service.inlineImage.caption && (
+            <figcaption class="service-inline-image__caption">{service.inlineImage.caption}</figcaption>
+          )}
+        </figure>
+      </div>
+    </section>
+  )}
 
   <!-- Comparison Table -->
   {service.comparisonTable && (
@@ -370,6 +415,59 @@ const pillar = pillarAccents[service.primaryValuePillar] || pillarAccents.transf
 
   .service-callback {
     background: var(--color-bgAlt);
+  }
+
+  .service-inline-image {
+    margin: 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+
+  .service-inline-image img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    display: block;
+  }
+
+  .service-inline-image__caption {
+    margin-top: var(--size-3);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-textSecondary, var(--color-textBody));
+    text-align: center;
+    font-style: italic;
+  }
+
+  .service-subservices__intro {
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 0.5vw + 0.75rem, 1.125rem);
+    line-height: 1.6;
+    color: var(--color-textBody);
+    margin-top: calc(var(--size-6) * -1);
+    margin-bottom: var(--size-6);
+    max-width: 720px;
+  }
+
+  .subservices-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-5);
+  }
+
+  @media (min-width: 640px) {
+    .subservices-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .subservices-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
   }
 
   .service-callback__intro {

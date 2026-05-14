@@ -1,0 +1,62 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro'
+import { fetchServices, fetchSiteSettings, resolveServiceImage } from '../../lib/payload'
+
+let service: any = null
+let settings: any = null
+
+try {
+  const [servicesRes, siteSettings] = await Promise.all([
+    fetchServices(),
+    fetchSiteSettings(),
+  ])
+  service = servicesRes.docs?.find((s: any) => s.slug === 'concrete-footings')
+  if (service) service.heroImage = resolveServiceImage(service.slug, 'hero', service.heroImage)
+  settings = siteSettings
+} catch {}
+
+if (!service) {
+  service = {
+    title: 'Footings & Structural Pours',
+    slug: 'concrete-footings',
+    tagline: 'Foundation footings, pier pads, and structural pours for additions, detached garages, pavilions, decks, and outbuildings — engineered, inspected, and poured by a licensed Utah general contractor.',
+    availabilityNote: 'Now booking April–November 2026 structural pours along the Wasatch Front (footings can pour in colder weather than flatwork)',
+    primaryValuePillar: 'safety',
+    supportingPillars: ['transformation'],
+    heroImage: { url: '/images/services/hero-concrete-footings.webp', alt: 'Excavated residential footing trench with engineered rebar grid tied on chairs and wood forms set, ready to pour, foreman in BaseScape gear reviewing the layout' },
+    inlineImage: { url: '/images/services/inline-concrete-footings.webp', alt: 'Detail of a concrete pier pad with a rebar dowel protruding vertically from the center, wood form board still in place, ready to receive a post', caption: 'Pier pad with anchor dowel — the structural handoff between footing and post above.' },
+    heroCtaHeadline: 'Get a free footing or structural pour estimate',
+    overview: '<p>Footings are the part of concrete almost no homeowner sees and almost every homeowner depends on. They\'re the foundation under your foundation — the spread base that takes the vertical load of every wall above it and transfers it into soil that can carry the weight. Get the footing wrong and the structure above settles, cracks, or fails. Get it right and it\'s invisible for 100 years.</p><p>BaseScape is a licensed Utah general contractor (DOPL #14082066-5501 B100). We pour structural concrete for the projects most flatwork contractors won\'t touch: continuous strip footings for additions and detached structures, isolated pier pads for posts and columns, deck pier footings, pavilion and pergola post footings, retaining wall footings, and foundation extensions. Engineering drawings reviewed in advance, every footing inspected before the pour, every pour batched at the right mix strength for the load.</p><p>Common projects: detached garage or shop footing + slab, addition footing tied to existing foundation, deck pier footings (frost-depth piers), pavilion/pergola post bases, retaining wall footings (we don\'t install retaining walls — separate trade — but we pour the footing they sit on), greenhouse and outbuilding footings.</p>',
+    process: [
+      { stepTitle: 'Engineering & Estimate', stepDescription: '<p>For most footing projects, an engineered drawing (from your structural engineer, or one we can refer) defines the spec. We bid against the spec — depth, width, rebar size and spacing, mix strength — and pull the required permits. For simpler projects (deck piers, pergola bases) we work from code-minimum spec for your jurisdiction.</p>' },
+      { stepTitle: 'Excavation & Forms', stepDescription: '<p>Trench or pier holes excavated to the engineered depth — at minimum below the frost line (30–36 inches on the Wasatch Front), often deeper. Subgrade compacted. Forms set (where applicable — many footings pour against natural earth). Drain tile installed where required.</p>' },
+      { stepTitle: 'Rebar, Inspection & Pour', stepDescription: '<p>Engineered rebar grid installed and tied. City inspection scheduled before the pour (mandatory for permitted footings). Once approved, concrete is placed at the engineered mix strength (typically 3,000–4,000 psi for residential footings) and vibrated to consolidate.</p>' },
+      { stepTitle: 'Cure & Inspection Sign-Off', stepDescription: '<p>Curing under wet burlap or curing compound depending on weather. Forms stripped at 24–48 hours. Final inspection sign-off where required. Walkthrough covers what comes next (framer, mason, deck builder) and how to coordinate with the next trade.</p>' },
+    ],
+    anxietyStack: {
+      structuralSafety: '<p>Every footing is poured to spec, not to convenience. We don\'t pour shallow to save time, we don\'t skip rebar to save money, and we won\'t pour without an inspection sign-off where one is required. Footings carry the full load of everything above — there\'s no acceptable shortcut.</p>',
+      codeCompliance: '<p>BaseScape holds a Utah DOPL B100 general contractor\'s license (#14082066-5501). Every permitted footing project gets the permit pulled and the inspection booked through us. For projects requiring engineered drawings, we work against the spec or refer you to a structural engineer.</p>',
+      drainageMoisture: '<p>Footings below grade need drainage. We install perforated drain tile in a gravel bed at the footing base where the design calls for it (most foundation footings, most retaining wall footings, any footing that intersects the water table or expansive clay). Drain tile ties into a daylight outlet or sump.</p>',
+      costAffordability: '<p>Footing pricing varies widely with depth, length, rebar spec, and access. Rough ranges for residential work:</p><ul><li><strong>Deck pier footings</strong> (4–6 piers, frost-depth): <strong>$1,500–$3,500</strong></li><li><strong>Pavilion or pergola post footings</strong>: <strong>$1,200–$2,800</strong></li><li><strong>Detached garage strip footing</strong> (24x24 building): <strong>$3,500–$6,500</strong></li><li><strong>Addition footing tied to existing foundation</strong>: <strong>priced per engineered spec</strong></li><li><strong>Retaining wall footing</strong> (separate from wall): <strong>$25–$45 per linear foot</strong> depending on width and rebar</li></ul>',
+      timeline: '<p>Most residential footing projects pour in 1 day after 1–2 days of excavation, form, and rebar setup. Inspection is the variable — most cities turn around footing inspections within 1–2 business days. Project start to pour is typically 1–2 weeks once the engineered drawings (where required) are in hand.</p>',
+    },
+    differentiator: '<p><strong>Licensed B100 general contractor — not a flatwork-only outfit.</strong> Footings sit at the intersection of multiple trades — they have to be coordinated with the framer, the mason, the deck builder, or the addition crew that comes next. A flatwork-only contractor pours the footing and walks away. As a licensed B100 GC, we coordinate the inspection schedule, the next trade\'s arrival, and the cure window — and we can self-perform additional structural work where the project calls for it.</p>',
+    faqs: [
+      { question: 'What\'s the difference between a footing and a slab?', answer: 'A slab is a horizontal concrete pour that distributes loads across its full area (driveway, patio, garage floor). A footing is a deeper, narrower concrete pour designed to carry concentrated vertical loads from walls, columns, or posts and transfer them into the soil. Footings always sit below the frost line; slabs typically don\'t.' },
+      { question: 'How deep do footings need to be in Utah?', answer: 'At minimum, below the frost line — 30–36 inches in most Wasatch Front cities, deeper in higher-elevation jurisdictions. Engineered designs may go deeper depending on soil conditions and load. We verify the specific frost depth requirement for your city before excavating.' },
+      { question: 'Do I need an engineer for my footing project?', answer: 'For permitted projects (additions, detached structures over a certain size, retaining walls over 4 ft tall, anything carrying unusual loads): yes, engineered drawings are required. For simpler projects (deck piers, pergola posts, small outbuildings under code-permit thresholds): code-minimum spec from the IRC or your city\'s amendments is usually sufficient. We help you figure out which category your project falls into on the estimate visit.' },
+      { question: 'Do you pour footings for retaining walls?', answer: 'Yes — we pour the footing, but we don\'t install the retaining wall above it (block, segmental, or poured-in-place wall systems are a separate trade we don\'t self-perform). We coordinate with your wall installer on the spec, pour the footing to engineered drawings, and schedule the inspection so they can build on top.' },
+      { question: 'Can footings be poured in winter?', answer: 'Yes — footings can pour in colder weather than flatwork because they\'re below grade and the soil mass moderates the cure temperature. We use heated mix water, accelerating admixtures, and insulating blankets where needed. Below ~25°F sustained temperatures we hold off, but most of November and March are workable for footings even when flatwork season has ended.' },
+      { question: 'How long do footings need to cure before framing?', answer: 'Forms can usually strip at 24–48 hours. Framing can begin once the concrete reaches 75% design strength — typically 7 days in summer, 10–14 days in shoulder season. We mark the cure schedule on the project plan so your framer knows when to show up.' },
+      { question: 'Do you handle the inspection?', answer: 'Yes — for any permitted footing, we schedule the city inspection between rebar tie-off and pour. You don\'t coordinate with the inspector; we do. We won\'t pour without the green tag from the city.' },
+    ],
+    projects: [],
+    reviews: [],
+    seo: {
+      metaTitle: 'Footings & Structural Concrete — Wasatch Front Utah | BaseScape',
+      metaDescription: 'Foundation footings, pier pads, and structural pours by a licensed Utah B100 general contractor. Engineered, permitted, and inspected. Salt Lake, Utah, and Davis counties.',
+    },
+  }
+}
+---
+<ServiceLayout service={service} settings={settings} />

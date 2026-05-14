@@ -1,0 +1,80 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro'
+import { fetchServices, fetchSiteSettings, resolveServiceImage } from '../../lib/payload'
+
+let service: any = null
+let settings: any = null
+
+try {
+  const [servicesRes, siteSettings] = await Promise.all([
+    fetchServices(),
+    fetchSiteSettings(),
+  ])
+  service = servicesRes.docs?.find((s: any) => s.slug === 'concrete-driveways')
+  if (service) service.heroImage = resolveServiceImage(service.slug, 'hero', service.heroImage)
+  settings = siteSettings
+} catch {
+  // Fallback for build without CMS
+}
+
+// Fallback service data if CMS unavailable
+if (!service) {
+  service = {
+    title: 'Concrete Driveways',
+    slug: 'concrete-driveways',
+    tagline: 'Tear-out, replacement, and new pours from a Utah-licensed crew. Free on-site estimate, no high-pressure pitch — built to last 30+ years through Wasatch Front freeze-thaw.',
+    availabilityNote: 'Now booking April–October 2026 driveway pours along the Wasatch Front',
+    primaryValuePillar: 'transformation',
+    supportingPillars: ['financial', 'safety'],
+    heroImage: { url: '/images/services/hero-concrete-driveways.webp', alt: 'Newly poured residential concrete driveway with broom finish and crisp sawcut control joints in front of a vinyl-sided Wasatch Front home at golden hour' },
+    inlineImage: { url: '/images/services/inline-concrete-driveways.webp', alt: 'Engineered rebar grid tied on chairs above a compacted gravel base, wood forms in place, ready for a residential driveway pour', caption: '#4 rebar grid on chairs above a compacted base — the spec on every BaseScape driveway.' },
+    heroCtaHeadline: 'Get a free on-site driveway estimate',
+    overview: '<p>Most cracked driveways on the Wasatch Front weren\'t poured wrong on day one — they were poured for a different climate. Utah hands a slab three problems most concrete crews underbuild for: 100°F summer-to-winter temperature swings, expansive clay subgrades that heave with moisture, and aggressive deicing salts that chemically attack the surface.</p><p>BaseScape pours residential driveways built <em>for</em> that combination, not against it. Our standard spec on every driveway:</p><ul><li><strong>4-inch minimum slab thickness</strong> (5″ where the spec calls for it — RV pads, heavy trucks, steep approaches)</li><li><strong>#4 rebar grid on chairs</strong>, not wire mesh laid on grade</li><li><strong>Air-entrained 4,000+ psi mix</strong> so freeze-thaw cycles have somewhere to go</li><li><strong>Control joints saw-cut at 10–12 ft intervals</strong>, sized to the slab depth — joints are where you <em>want</em> the crack to form</li><li><strong>Subgrade prep</strong>: compacted road base, geotextile where soils warrant, positive drainage off the pad</li><li><strong>Curing compound applied within 30 minutes</strong> of finishing — no plastic-sheet shortcuts</li></ul><p>That\'s the spec on every driveway we pour. It\'s also why we walk away from jobs where the customer wants us to skip the rebar to save $400.</p>',
+    process: [
+      { stepTitle: 'Free On-Site Estimate', stepDescription: '<p>A BaseScape designer comes to you. The visit takes 30–45 minutes and covers a site walk and measurement, drainage assessment, tear-out scope, rebar and thickness recommendation matched to your use case, and a joint pattern walked on-site so you know where the lines will fall. You receive a written, itemized quote within 24 hours — no deposit, no high-pressure pitch.</p>' },
+      { stepTitle: 'Permits, Tear-Out & Subgrade', stepDescription: '<p>We pull every required city permit for the approach. Existing concrete is demoed and hauled off (itemized in the quote — we don\'t subcontract demo). Subgrade is excavated to depth, compacted with a plate compactor or jumping jack, and gravel base is installed and re-compacted. Geotextile fabric goes down in expansive clay conditions.</p>' },
+      { stepTitle: 'Form, Rebar & Pour', stepDescription: '<p>Forms are set to grade with positive slope away from the foundation. #4 rebar grid is laid on chairs (not on grade) and tied. Air-entrained 4,000+ psi concrete is placed, screeded, floated, and finished — broom, exposed aggregate, or stamped to your spec. Control joints are sawcut at engineered spacing within 12 hours.</p>' },
+      { stepTitle: 'Cure, Seal & Walkthrough', stepDescription: '<p>Curing compound is applied immediately after finishing. We protect the slab from foot traffic for 24 hours and vehicle traffic for 7 days. A penetrating sealer is applied. Final walkthrough covers expected hairline cracking, sealing schedule, and your written workmanship warranty.</p>' },
+    ],
+    comparisonTable: {
+      heading: 'Concrete vs. Asphalt vs. Pavers — Driveway-Specific',
+      caption: 'The right driveway material depends on how long you\'re staying in the home and what you want it to look like in year 15. We install concrete and we install pavers — and we\'ll tell you on the estimate which one fits your project.',
+      columns: ['Material', 'Lifespan (Utah)', 'Maintenance', 'Up-front Cost', 'Best Fit'],
+      rows: [
+        ['Concrete (what we do)', '30–40 years', 'Re-seal every 2–3 years (optional)', 'Highest', 'Long-term homeowners, anyone tired of patching'],
+        ['Asphalt', '12–20 years', 'Re-seal every 3–5 years (required)', 'Lowest', 'Short-hold properties, very long rural drives'],
+        ['Pavers', '25–30+ years', 'Periodic re-leveling, weed control', 'Highest', 'High-design front yards, freeze-prone shaded areas'],
+      ],
+    },
+    anxietyStack: {
+      structuralSafety: '<p>Standard residential driveway: 4-inch slab on 4 inches of compacted road base, #4 rebar grid on chairs. RV pads, heavy vehicle parking, and steep approaches step up to 5–6″ slabs with engineered reinforcement. Every exterior pour uses 4,000+ psi air-entrained concrete (5–7% entrained air) — the air pockets give freezing water somewhere to go, which is the single most important defense against freeze-thaw failure.</p>',
+      codeCompliance: '<p>Any driveway approach connecting to a public street requires a city permit and inspection — slope, geometry, and right-of-way work all need approval. BaseScape pulls every required permit, schedules every inspection, and verifies your specific city\'s slope and approach geometry requirements before we form. You don\'t deal with the permit office.</p>',
+      drainageMoisture: '<p>Every driveway is poured with a minimum 1% slope (1/8″ per foot) away from your foundation. Drainage is engineered during site prep — we evaluate where water currently ponds vs. where it needs to go before we set forms. Where soil drainage is poor, we install a French drain or rock pit along the low edge of the pad.</p>',
+      dustDisruption: '<p>Demo of existing concrete is scheduled in a single day with same-day haul-off — driveway, sidewalk, and front yard all stay accessible. Saw-cutting control joints uses water-fed saws. Forms are set carefully to protect lawn, landscaping, and existing hardscape. Your front entry stays usable throughout the project except on pour day.</p>',
+      costAffordability: '<p>Pricing depends on square footage, tear-out, slope, and finish. To set expectation:</p><ul><li><strong>Single 2-car driveway</strong> (~600 sq ft, broom finish, rebar, no tear-out): <strong>$4,500–$6,500</strong></li><li><strong>2-car with apron</strong> (~750 sq ft, with tear-out and demo): <strong>$6,000–$8,500</strong></li><li><strong>3-car or side-approach driveway</strong> (~1,000+ sq ft): <strong>$8,500–$12,000+</strong></li><li><strong>Stamped or decorative finish</strong> adds <strong>$4–$8 per sq ft</strong> over broom</li></ul><p>Every quote is itemized — base, rebar, concrete, finish, sealer, demo — so you see exactly what each line costs.</p>',
+      aesthetics: '<p>Choose from broom finish (most common — slip-resistant and inexpensive), exposed aggregate (decorative pebble surface), stamped concrete (slate, flagstone, brick, wood plank patterns), salt finish, or integrally colored and acid-stained options. We bring physical sample boards to the estimate visit so you can see and feel the finish before we pour.</p>',
+      timeline: '<p>Typical residential driveway runs 2–3 working days on-site (demo day → form & rebar day → pour day). You stay off the slab 24 hours, off in a car 5–7 days, and parking anything heavy (RV, dumpster) waits 28 days. From signed estimate to finished walkthrough is typically 2–3 weeks during pour season.</p>',
+    },
+    differentiator: '<p><strong>Built for Utah\'s freeze-thaw — not in spite of it.</strong> Most cracked driveways on the Wasatch Front trace back to three contractor shortcuts: skipping air entrainment in the mix, under-spacing control joints, and finishing in conditions the concrete can\'t handle. We specify 4,000+ psi air-entrained mix on every pour, sawcut joints at engineered spacing within 12 hours, and won\'t pour when ground or air temperatures will cause problems with the cure. If concrete isn\'t the right answer for your driveway, we\'ll tell you — we install pavers too, and asphalt is rarely the right long-term call in Utah.</p>',
+    faqs: [
+      { question: 'How long does a driveway pour take?', answer: 'Typical residential pour takes 2–3 working days on-site (demo day → form & rebar day → pour day). You\'ll need to stay off the slab for 5–7 days before driving on it, and 28 days before parking anything heavy.' },
+      { question: 'Do I need a permit for a driveway in Utah?', answer: 'For most Wasatch Front cities, yes — driveway approaches that connect to a public right-of-way require a permit and a city inspection. We pull it as part of the job; you don\'t have to do anything.' },
+      { question: 'Can you tear out and haul off my existing driveway?', answer: 'Yes. Demo, haul-off, and disposal are itemized in the quote. We don\'t subcontract demo to a separate crew — the same BaseScape crew that pours your new driveway tears out the old one.' },
+      { question: 'When can you start? When does driveway pour season end?', answer: 'Wasatch Front concrete season runs April through October. We\'re booking new driveway pours during that window. Outside that window we\'ll book the design visit and lock your spot in the spring/summer schedule — first-call advantage in March/April.' },
+      { question: 'Do you stamp or color concrete driveways?', answer: 'Yes — stamped patterns (slate, flagstone, brick, wood plank), exposed aggregate, integral color, and acid-stained finishes are all on the menu. Stamped or decorative finishes add roughly $4–$8 per square foot over the broom-finish baseline. We bring physical finish samples to the estimate visit.' },
+      { question: 'What\'s your warranty?', answer: 'We back our pours with a written workmanship warranty and full liability coverage through our general contractor\'s insurance. Specific terms walk through on the estimate so you know exactly what\'s covered.' },
+      { question: 'How much does a concrete driveway cost in Utah?', answer: 'Pricing varies by size, tear-out, slope, and finish. A standard 2-car broom-finish driveway runs $4,500–$6,500. A 2-car with apron and tear-out runs $6,000–$8,500. A 3-car or side-approach driveway runs $8,500–$12,000+. Stamped or decorative finishes add $4–$8 per sq ft over broom.' },
+      { question: 'Will my new concrete driveway crack?', answer: 'All concrete develops hairline cracks — that\'s normal and not a defect. The goal is to control where cracks form. We use three defenses: air-entrained concrete, control joints sawcut at engineered spacing within 12 hours, and a penetrating sealer. Properly poured driveways on the Wasatch Front routinely last 30–40+ years before structural replacement.' },
+      { question: 'What thickness should my driveway be?', answer: 'Standard residential driveways: 4 inches with rebar reinforcement. Steep approaches, RV pads, and heavy vehicle parking: 5–6 inches. Going thinner than 4 inches is the most common cause of slab failure on the Wasatch Front, and we won\'t pour to a thinner spec.' },
+      { question: 'Where do you pour driveways?', answer: 'Across the Wasatch Front: Salt Lake County (Salt Lake City, West Jordan, Sandy, Draper, South Jordan, Riverton, Holladay, Murray, Cottonwood Heights, West Valley), Utah County (Lehi, Provo, Orem, Lindon, American Fork, Pleasant Grove, Saratoga Springs), and Davis County (Bountiful, Layton, Centerville, Farmington, Kaysville).' },
+    ],
+    projects: [],
+    reviews: [],
+    seo: {
+      metaTitle: 'Concrete Driveways Wasatch Front | BaseScape Utah',
+      metaDescription: 'Licensed, insured concrete driveway contractor serving the Wasatch Front. Free on-site estimate. Built to handle Utah freeze-thaw — 30+ year lifespan.',
+    },
+  }
+}
+---
+<ServiceLayout service={service} settings={settings} />

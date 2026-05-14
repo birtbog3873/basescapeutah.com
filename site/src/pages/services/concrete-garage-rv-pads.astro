@@ -1,0 +1,73 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro'
+import { fetchServices, fetchSiteSettings, resolveServiceImage } from '../../lib/payload'
+
+let service: any = null
+let settings: any = null
+
+try {
+  const [servicesRes, siteSettings] = await Promise.all([
+    fetchServices(),
+    fetchSiteSettings(),
+  ])
+  service = servicesRes.docs?.find((s: any) => s.slug === 'concrete-garage-rv-pads')
+  if (service) service.heroImage = resolveServiceImage(service.slug, 'hero', service.heroImage)
+  settings = siteSettings
+} catch {}
+
+if (!service) {
+  service = {
+    title: 'Garage Slabs & RV Pads',
+    slug: 'concrete-garage-rv-pads',
+    tagline: 'Structural pours for garage floors, shop slabs, and RV pads. Proper thickness, rebar, and drainage — engineered for the loads they actually carry. We pour. We don\'t coat.',
+    availabilityNote: 'Now booking April–October 2026 garage slab and RV pad pours along the Wasatch Front',
+    primaryValuePillar: 'transformation',
+    supportingPillars: ['safety', 'financial'],
+    heroImage: { url: '/images/services/hero-concrete-garage-rv-pads.webp', alt: 'Two-car residential garage interior with a freshly poured smooth-trowel concrete slab, bright morning light through the open overhead door, no epoxy coating' },
+    inlineImage: { url: '/images/services/inline-concrete-garage-rv-pads.webp', alt: 'Exterior residential RV pad with a motorhome parked on a broom-finish concrete pad showing visible thickened-edge detail and engineered control joints', caption: 'RV pad with engineered thickened edge at the wheel-load points — not a flat slab pretending to be one.' },
+    heroCtaHeadline: 'Get a free garage slab or RV pad estimate',
+    overview: '<p><strong>We pour. We don\'t coat.</strong> Half the contractors who show up to bid a "garage floor" project want to grind, patch, and epoxy-coat your existing slab. That works if the slab underneath is structurally sound. If it isn\'t — cracking, heaving, sinking, or undersized for the loads you\'re putting on it — coating it just hides the problem until it gets worse.</p><p>BaseScape pours structural slabs from scratch. New garage builds, garage slab replacements where the existing pad is failing, RV pads for motorhomes and fifth-wheels, shop floors for residential workshops, lean-to and detached-structure slabs. We engineer the thickness, reinforcement, and drainage to the actual load — not the assumed load.</p><p>Typical residential garage: 4-inch slab, #4 rebar grid, air-entrained 4,000 psi mix, smooth trowel finish (epoxy-ready), vapor barrier under the slab, 1% slope to drain or floor drain. RV pads step up to 5–6 inches with engineered reinforcement and a thickened edge at the wheel load points. Shop slabs with heavy machinery loads get engineered case-by-case.</p>',
+    process: [
+      { stepTitle: 'Free On-Site Estimate', stepDescription: '<p>A designer walks the site, evaluates the load (vehicle weights, equipment, frequency), assesses subgrade and drainage, and recommends slab thickness and reinforcement matched to your actual use. Written quote within 24 hours.</p>' },
+      { stepTitle: 'Demo (if needed), Subgrade & Drainage', stepDescription: '<p>Existing slab demoed and hauled off. Subgrade excavated to depth, compacted, and topped with 4 inches of compacted road base. Vapor barrier (10–15 mil) installed under interior slabs. Floor drains or perimeter drainage plumbed in where required.</p>' },
+      { stepTitle: 'Forms, Rebar & Pour', stepDescription: '<p>Forms set to grade with proper slope to drain. #4 rebar grid laid on chairs (not on grade) at 18″ on-center for standard residential, tighter for RV pads. Thickened edges formed at wheel-load points. Air-entrained 4,000+ psi concrete placed, screeded, floated, and finished — smooth trowel for interior garages, broom or smooth for RV pads per spec.</p>' },
+      { stepTitle: 'Cure & Walkthrough', stepDescription: '<p>Control joints sawcut within 12 hours. Curing compound applied. Slab protected 24 hours from foot traffic, 7 days from vehicle, 28 days from full load (RV, dumpster, equipment). Walkthrough covers cure schedule, joint pattern, and warranty.</p>' },
+    ],
+    comparisonTable: {
+      heading: 'Structural Pour vs. Epoxy Coating — When Each Is the Right Call',
+      caption: 'These two products solve different problems. A coating refreshes a sound slab. A pour replaces a failing one. Picking wrong is expensive — coating over a structurally bad slab transfers cracks through the coating within a year.',
+      columns: ['Approach', 'When It Fits', 'Cost (~600 sq ft)', 'Lifespan', 'What It Fixes'],
+      rows: [
+        ['New structural pour', 'Slab is cracking, heaving, sinking, or undersized — OR no slab exists', '$5,500–$9,000', '30–40+ years', 'Structural problems, drainage, load capacity, anything below the surface'],
+        ['Epoxy / polyaspartic coating', 'Slab is structurally sound, just cosmetically tired or you want chemical resistance', '$2,500–$5,000', '5–15 years', 'Surface appearance, oil resistance, dust control'],
+        ['Grind-and-coat (resurface)', 'Slab has light surface damage but is structurally sound', '$3,500–$6,500', '10–20 years', 'Mild surface spalling, light cracking, color refresh'],
+      ],
+    },
+    anxietyStack: {
+      structuralSafety: '<p>Slab thickness and reinforcement are spec\'d to the actual load. Standard residential garage: 4-inch slab, #4 rebar grid, fiber mesh. RV pad: 5–6-inch slab with engineered reinforcement and thickened edges at wheel-load points. Shop floors with heavy machinery (lifts, presses, work trucks): engineered case-by-case, typically 6-inch with #5 rebar. Every interior slab gets a 10–15 mil vapor barrier under the pour to stop moisture migration.</p>',
+      drainageMoisture: '<p>Slab is poured with positive slope to a floor drain, doorway, or perimeter. RV pads slope to the back or sides — never toward the garage door, where pooling water freezes in winter. Vapor barriers under interior slabs prevent the moisture migration that\'s the #1 cause of epoxy coating failure on existing slabs.</p>',
+      codeCompliance: '<p>Detached garages, shops, and RV pads requiring zoning approval, setback verification, or building permits — BaseScape pulls every required permit and schedules every inspection. We coordinate with framers and structural engineers when the slab is part of a larger build (lean-to, detached structure, addition).</p>',
+      costAffordability: '<p>Typical residential pricing on the Wasatch Front:</p><ul><li><strong>2-car garage slab</strong> (~440 sq ft, 4″ with rebar, vapor barrier): <strong>$4,500–$6,500</strong></li><li><strong>3-car garage slab</strong> (~660 sq ft): <strong>$6,500–$9,500</strong></li><li><strong>RV pad</strong> (~300 sq ft, 6″ with engineered rebar): <strong>$3,500–$5,500</strong></li><li><strong>Large RV / fifth-wheel pad</strong> (~500 sq ft, 6″ engineered): <strong>$5,500–$8,500</strong></li><li><strong>Shop slab with heavy equipment loads</strong>: priced per engineered spec</li></ul>',
+      timeline: '<p>Typical garage slab or RV pad: 2–3 working days on-site (demo day → form/rebar day → pour day). Stay off the slab 24 hours; light vehicle traffic at 7 days; full RV or heavy equipment load at 28 days. From signed estimate to walkthrough is typically 2–3 weeks during pour season.</p>',
+    },
+    differentiator: '<p><strong>We pour. We don\'t coat.</strong> When you call us about a garage floor problem, we evaluate the slab honestly. If your existing slab is structurally sound and just needs a cosmetic refresh, we\'ll tell you a coating contractor is the right call — we don\'t pour new concrete to solve a coating problem. But if the slab is cracking, heaving, sinking, or undersized for your loads, no coating will hide that for long. The slab needs to come out. We do that work — full demo, engineered subgrade, structural pour, vapor barrier, drainage to spec — at the only point in the project where it can actually be fixed.</p>',
+    faqs: [
+      { question: 'Should I replace my garage slab or just coat it?', answer: 'Depends on the slab. If it\'s structurally sound (no major cracking, no heaving, no sinking, thick enough for your loads) and you just want it to look better — coat it, save the money. If it\'s cracking, heaving, sinking, or undersized for what you\'re parking on it, no coating will hide that for long. The honest answer comes from a designer walking the slab in person, which is the free estimate visit.' },
+      { question: 'How thick should my RV pad be?', answer: 'Standard motorhome / Class A RV pads: 6-inch slab with engineered rebar and thickened edges where the wheels sit. Lighter loads (travel trailers, fifth-wheels with disconnect): 5-inch with rebar. We size to the actual loaded weight, not the dry weight — full water and fuel adds 1,000+ lbs to a Class A.' },
+      { question: 'Do I need a permit for a garage slab or RV pad?', answer: 'Depends on the project and city. New detached garages, shops, and RV pads that exceed certain square footage usually require a permit and zoning verification. We pull every required permit and schedule every inspection — you don\'t deal with the permit office.' },
+      { question: 'What\'s the difference between a garage slab and a driveway slab?', answer: 'Garage slabs are interior — vapor barrier under the slab, smooth trowel finish (epoxy-ready), enclosed cure environment. Driveway slabs are exterior — broom or stamped finish, air-entrained mix critical for freeze-thaw, exposed to UV and salt. Same structural mix and rebar spec; different finish and prep.' },
+      { question: 'Can you pour a garage slab inside an existing structure?', answer: 'Yes — slab replacements inside an existing garage are common (failed original pour, no vapor barrier, undersized for current loads). We demo the existing slab, haul off, prep the subgrade, install vapor barrier, and pour through the garage door opening. Project takes 3–4 days plus 7 days of cure before the vehicles come back.' },
+      { question: 'Will my new garage slab handle a 4-post lift / car hoist?', answer: 'Yes — if it\'s spec\'d for it. Most factory 2-post and 4-post hoists need 4-inch reinforced concrete at 3,000+ psi. Heavier-duty commercial-rated lifts need 6-inch slabs at 4,000+ psi with engineered point loads. Tell us at the estimate visit what equipment you\'re running and we\'ll spec for it.' },
+      { question: 'How long before I can park on a new garage slab or RV pad?', answer: 'Walk on it after 24 hours. Light vehicle (passenger car, truck) after 7 days. Full RV, fifth-wheel, or heavy equipment load after 28 days. Driving on concrete too early is the most common cause of premature surface failure and edge cracking.' },
+      { question: 'Do you pour shop floors for woodworking, metalworking, or auto work?', answer: 'Yes — residential shop slabs are a regular project for us. Mix design, thickness, and drainage are spec\'d to the actual equipment (lathes, mills, lifts, welders) and the materials you\'re storing. We engineer floor drains where chemical or coolant spills are likely.' },
+    ],
+    projects: [],
+    reviews: [],
+    seo: {
+      metaTitle: 'Garage Slabs & RV Pads — Wasatch Front Utah | BaseScape',
+      metaDescription: 'Structural garage slab and RV pad pours across Utah\'s Wasatch Front. Engineered to the actual load — proper thickness, rebar, vapor barrier, and drainage. We pour, we don\'t coat.',
+    },
+  }
+}
+---
+<ServiceLayout service={service} settings={settings} />

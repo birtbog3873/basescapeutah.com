@@ -23,20 +23,26 @@ try {
 // from the CMS or the offline fallback.
 if (service) {
   service.availabilityNote = service.availabilityNote
-    ?? 'Now booking April–October 2026 driveway and patio pours along the Wasatch Front'
+    ?? 'Now booking April–October 2026 flatwork pours along the Wasatch Front'
+  service.inlineImage = service.inlineImage ?? {
+    url: '/images/services/inline-concrete-flatwork.webp',
+    alt: 'Close-up detail of a broom-finish concrete surface with a crisp sawcut control joint running diagonally across the frame',
+    caption: 'Broom finish + sawcut control joint — the standard residential flatwork detail.',
+  }
 }
 
 // Fallback service data if CMS unavailable
 if (!service) {
   service = {
-    title: 'Concrete Flatwork',
+    title: 'General Flatwork',
     slug: 'concrete-flatwork',
-    tagline: 'Driveways, sidewalks, patios, garage floors, and basement slabs — engineered for Utah\'s freeze-thaw climate, finished the way it should be.',
-    availabilityNote: 'Now booking April–October 2026 driveway and patio pours along the Wasatch Front',
+    tagline: 'The catch-all page for mixed-scope flatwork projects — basement slabs, interior pours, multi-area pours, and the in-between work that doesn\'t fit a single sub-service category. For driveway, patio, garage, or stamped work specifically, see the dedicated sub-pages.',
+    availabilityNote: 'Now booking April–October 2026 flatwork pours along the Wasatch Front',
     primaryValuePillar: 'transformation',
-    heroImage: { url: '/images/services/hero-concrete-flatwork.webp', alt: 'Freshly poured residential concrete driveway with broom finish and tooled control joints in front of a Utah home' },
+    heroImage: { url: '/images/services/hero-concrete-flatwork.webp', alt: 'Mixed-scope residential concrete flatwork showing driveway, approach walk, and patio in one frame, broom finish, late afternoon light' },
+    inlineImage: { url: '/images/services/inline-concrete-flatwork.webp', alt: 'Close-up detail of a broom-finish concrete surface with a crisp sawcut control joint running diagonally across the frame', caption: 'Broom finish + sawcut control joint — the standard residential flatwork detail.' },
     supportingPillars: ['safety', 'financial'],
-    overview: '<p>Concrete flatwork is the unglamorous backbone of a well-built home — the driveway you back out of every morning, the sidewalk that takes a Utah winter, the garage floor your tools roll across, the basement slab everything else is built on top of. Done right, it lasts 50 years. Done wrong, it cracks, heaves, and sinks within five.</p><p>BaseScape pours residential concrete for the four projects that matter most to Wasatch Front homeowners:</p><ul><li><strong>Driveways and exterior approaches</strong> — Replacement and new pours, including stamped, exposed-aggregate, and broom-finish options.</li><li><strong>Sidewalks, patios, and pool decks</strong> — Standard slabs and decorative finishes that handle freeze-thaw without the cracking horror stories.</li><li><strong>Basement slabs and foundation flatwork</strong> — Interior pours for new builds, basement finishes, and walkout basement floors.</li><li><strong>Garage floors and interior slabs</strong> — Including resurfacing, leveling, polishing, and epoxy-ready finishes.</li></ul><p>The difference between concrete that lasts and concrete that fails comes down to four things: subgrade preparation, mix design, control joints, and curing. We don\'t cut corners on any of them.</p>',
+    overview: '<p>This page covers our <strong>general flatwork</strong> work — projects that span multiple slab types, fall outside a single specific sub-service, or pull together several scopes into one job. For projects that fit cleanly into a single category, jump to the dedicated sub-page (<a href="/services/concrete-driveways">Driveways</a>, <a href="/services/concrete-patios">Patios</a>, <a href="/services/concrete-stamped">Stamped & Decorative</a>, <a href="/services/concrete-garage-rv-pads">Garage & RV Pads</a>, <a href="/services/concrete-sidewalks">Sidewalks & Walkways</a>, <a href="/services/concrete-pool-decks">Pool Decks</a>, <a href="/services/concrete-footings">Footings</a>) — each one has pricing ranges, FAQs, and specs specific to that work.</p><p>What lands here:</p><ul><li><strong>Basement slabs and interior flatwork</strong> — new-build basement floors, walkout basement floors, basement finish slabs, and interior pours that aren\'t covered elsewhere.</li><li><strong>Multi-scope flatwork projects</strong> — driveway + sidewalk + patio bundled into one project, or a job that tears out and replaces all the home\'s concrete at once.</li><li><strong>Resurfacing and overlays</strong> — polymer-modified overlays on structurally sound but cosmetically tired slabs.</li><li><strong>Anything else flat</strong> — small slabs, equipment pads, mailbox pads, AC pads, generator pads.</li></ul><p>The pouring spec is the same across every flatwork project we do: 4-inch slab minimum, air-entrained 4,000+ psi mix on every exterior pour, rebar or fiber reinforcement based on use, control joints sawcut at engineered spacing within 12 hours, curing compound applied immediately. Done right, it lasts 30 to 50 years.</p>',
     process: [
       { stepTitle: 'Site Evaluation & Subgrade Prep', stepDescription: '<p>We evaluate your soil conditions, drainage, and load requirements. Subgrade is excavated, leveled, and compacted to the engineered depth — typically 4 inches of compacted gravel base for sidewalks and patios, 6+ inches for driveways. Geotextile fabric is added in expansive clay conditions.</p>' },
       { stepTitle: 'Forming, Reinforcement & Mix Design', stepDescription: '<p>Forms are set to grade with proper slope (minimum 1% away from structures). Rebar or fiber reinforcement is installed based on slab type and load. We specify a 4,000–4,500 PSI air-entrained mix for exterior pours — air entrainment is what protects against freeze-thaw damage, and not every contractor specifies it.</p>' },
@@ -68,8 +74,8 @@ if (!service) {
     projects: [],
     reviews: [],
     seo: {
-      metaTitle: 'Concrete Driveways, Patios & Garage Floors | BaseScape Utah',
-      metaDescription: 'Residential concrete done right for Utah\'s freeze-thaw. Driveways, sidewalks, patios, basement slabs, and garage floors across the Wasatch Front.',
+      metaTitle: 'General Concrete Flatwork — Wasatch Front Utah | BaseScape',
+      metaDescription: 'Multi-scope flatwork, basement slabs, interior pours, overlays, and mixed concrete projects across Salt Lake, Utah, and Davis counties. Licensed Utah B100 contractor.',
     },
     comparisonTable: {
       heading: 'Concrete vs Pavers vs Asphalt for Driveways',

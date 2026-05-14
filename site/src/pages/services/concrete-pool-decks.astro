@@ -1,0 +1,61 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro'
+import { fetchServices, fetchSiteSettings, resolveServiceImage } from '../../lib/payload'
+
+let service: any = null
+let settings: any = null
+
+try {
+  const [servicesRes, siteSettings] = await Promise.all([
+    fetchServices(),
+    fetchSiteSettings(),
+  ])
+  service = servicesRes.docs?.find((s: any) => s.slug === 'concrete-pool-decks')
+  if (service) service.heroImage = resolveServiceImage(service.slug, 'hero', service.heroImage)
+  settings = siteSettings
+} catch {}
+
+if (!service) {
+  service = {
+    title: 'Concrete Pool Decks',
+    slug: 'concrete-pool-decks',
+    tagline: 'Slip-resistant pool decks engineered for chlorine, sun, and Utah freeze-thaw. Broom, salt finish, exposed aggregate, or stamped — built to handle wet feet without surface scaling.',
+    availabilityNote: 'Now booking April–October 2026 pool deck pours along the Wasatch Front',
+    primaryValuePillar: 'transformation',
+    supportingPillars: ['safety'],
+    heroImage: { url: '/images/services/hero-concrete-pool-decks.webp', alt: 'Salt-finish concrete pool deck surrounding a residential backyard pool with clear blue water, light-colored deck and Wasatch foothills softly visible in midday light' },
+    inlineImage: { url: '/images/services/inline-concrete-pool-decks.webp', alt: 'Detail close-up of a wet salt-finish pool deck surface with water droplets sitting on the textured concrete showing slip-resistance', caption: 'Salt-finish texture in the wet — visible slip resistance is the whole point of a pool deck.' },
+    heroCtaHeadline: 'Get a free pool deck estimate',
+    overview: '<p>Pool decks have to do three things most concrete doesn\'t: stay slip-resistant when wet, resist chemical attack from chlorine and pool salts, and handle freeze-thaw under conditions much more aggressive than a typical patio (wet surface + cold = surface scaling). A pool deck poured to a generic patio spec rarely lasts more than 8–10 years before the surface starts pitting and the color fades.</p><p>BaseScape pours residential pool decks on an upgraded exterior spec: 4,500 psi air-entrained mix with a higher entrained-air content (6–7%), salt finish or broom finish for slip resistance, expansion joints engineered for the larger thermal range pool decks see (the slab heats up under the sun, then plunges 30°F when a swimmer dumps water on it), and a penetrating chemical-resistant sealer designed for chlorine exposure.</p><p>Decorative options for pool decks: salt finish (textured pattern that grips wet feet), exposed aggregate (decorative pebble surface with natural slip resistance), stamped patterns with anti-slip additive in the sealer, integral color (mute earth tones reduce heat gain — black-colored deck around a pool is a sunburn hazard).</p>',
+    process: [
+      { stepTitle: 'Free On-Site Estimate', stepDescription: '<p>Designer evaluates the existing deck or coping, pool shell tie-in, drainage, sun exposure, and traffic patterns. Finish samples available — we lead with samples that prioritize wet-foot slip resistance. Written quote in 24 hours.</p>' },
+      { stepTitle: 'Demo, Subgrade & Drainage', stepDescription: '<p>Old deck demoed and hauled off. Subgrade compacted and base installed. Drainage critical — pool decks need positive slope away from the pool coping (1–2%) so water flows off the deck instead of pooling at the edge. Deck drains added where needed.</p>' },
+      { stepTitle: 'Form, Pour & Finish', stepDescription: '<p>Forms set to ADA-compliant slopes around the pool edge. Rebar grid laid. 4,500 psi air-entrained mix placed and finished — broom, salt, exposed aggregate, or stamped per spec. Expansion joints engineered for thermal movement.</p>' },
+      { stepTitle: 'Cure, Seal & Walkthrough', stepDescription: '<p>Control joints sawcut within 12 hours. Curing compound applied. Chemical-resistant penetrating sealer applied after full cure (28 days). Walkthrough covers re-sealing schedule (every 2–3 years given chlorine exposure) and warranty.</p>' },
+    ],
+    anxietyStack: {
+      drainageMoisture: '<p>Pool decks must slope away from the coping at 1–2% so splash and rinse water flows off the deck rather than back into the pool or pooling at the coping joint. Where the deck pulls double duty as a yard transition, we engineer secondary drainage to landscape beds or a perimeter drain. Pool water pooling on the deck is the #1 cause of premature surface failure.</p>',
+      structuralSafety: '<p>Slip resistance matters on every wet surface. Standard broom finish offers good grip. Salt finish (rock salt embedded during finishing, then washed out leaving texture) offers better grip. Anti-slip additives can be added to penetrating sealer for stamped or smooth-troweled decks. We do not recommend smooth-troweled finishes on pool decks for slip-and-fall reasons.</p>',
+      costAffordability: '<p>Pool deck pricing depends on size, finish, demolition scope, and proximity to the pool shell:</p><ul><li><strong>Standard broom or salt finish</strong>: <strong>$10–$15 per sq ft</strong> installed</li><li><strong>Exposed aggregate</strong>: <strong>$13–$18 per sq ft</strong></li><li><strong>Stamped pool deck</strong>: <strong>$15–$22 per sq ft</strong></li><li><strong>Typical 600 sq ft pool deck replacement</strong>: $6,500–$13,000+ depending on finish and demo scope</li></ul><p>Working around an existing pool shell adds cost vs. open-area pours — careful demo to protect the coping and tile is part of every quote.</p>',
+      aesthetics: '<p>Stay with light or earth-tone colors. Dark-colored concrete around a pool gets brutally hot in summer sun — a black-colored deck can hit 160°F+ in July, which is a real burn hazard for bare feet. Salt finish, exposed aggregate, and stamped patterns all work well. Wood-plank stamps are popular for tropical and contemporary looks.</p>',
+      timeline: '<p>Typical pool deck replacement: 3–5 working days on-site (demo → form → pour → finish → seal). The pool stays drained or covered during the project to protect the coping. Pool can be refilled and used 7–10 days after the pour. Full cure and sealing at 28 days.</p>',
+    },
+    faqs: [
+      { question: 'How much does a concrete pool deck cost in Utah?', answer: 'Standard broom or salt-finish pool decks run $10–$15 per sq ft installed. Exposed aggregate: $13–$18. Stamped: $15–$22. A typical 600 sq ft pool deck replacement runs $6,500–$13,000+ depending on finish and demo.' },
+      { question: 'What\'s the best finish for a pool deck?', answer: 'For maximum slip resistance: salt finish or exposed aggregate. For visual upgrade: stamped concrete with anti-slip sealer additive. For budget: broom finish (still slip-resistant when wet, just less decorative). We don\'t pour smooth-troweled or polished finishes around pools — too slippery.' },
+      { question: 'Will chlorine damage my concrete pool deck?', answer: 'Unsealed concrete will absorb chlorine and pool salts over time, leading to surface efflorescence and slow chemical attack. We seal pool decks with a chemical-resistant penetrating sealer that bonds into the slab — re-application every 2–3 years keeps the chemical defense strong. With proper sealing, pool decks last 20–30 years.' },
+      { question: 'How long after pouring can I use my pool?', answer: 'You can walk on the deck after 24 hours. The pool can be refilled and used 7–10 days after the pour to avoid the freshly-cured surface absorbing pool water and chemicals. Full cure and final sealing at 28 days.' },
+      { question: 'Can you pour around an existing pool?', answer: 'Yes — pool deck replacement around an existing pool shell is a regular project. We protect the coping, tile, and shell during demo and pour. The pool is drained or covered during the project.' },
+      { question: 'What color should I pick for a pool deck?', answer: 'Stay light — earth tones, sand, beige, light gray, terra cotta. Dark colors absorb heat and the deck becomes a burn hazard in summer sun. We can show you color-temperature samples on the estimate visit.' },
+      { question: 'Do you tear out the old deck?', answer: 'Yes. Demo and haul-off are itemized in the quote. We protect the pool coping, shell, and tile during demolition.' },
+    ],
+    projects: [],
+    reviews: [],
+    seo: {
+      metaTitle: 'Concrete Pool Decks — Wasatch Front Utah | BaseScape',
+      metaDescription: 'Residential concrete pool decks engineered for chlorine, sun, and Utah freeze-thaw. Slip-resistant finishes, chemical-resistant sealer, ADA-compliant slopes.',
+    },
+  }
+}
+---
+<ServiceLayout service={service} settings={settings} />

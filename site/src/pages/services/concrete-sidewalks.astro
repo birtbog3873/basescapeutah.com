@@ -1,0 +1,61 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro'
+import { fetchServices, fetchSiteSettings, resolveServiceImage } from '../../lib/payload'
+
+let service: any = null
+let settings: any = null
+
+try {
+  const [servicesRes, siteSettings] = await Promise.all([
+    fetchServices(),
+    fetchSiteSettings(),
+  ])
+  service = servicesRes.docs?.find((s: any) => s.slug === 'concrete-sidewalks')
+  if (service) service.heroImage = resolveServiceImage(service.slug, 'hero', service.heroImage)
+  settings = siteSettings
+} catch {}
+
+if (!service) {
+  service = {
+    title: 'Sidewalks & Walkways',
+    slug: 'concrete-sidewalks',
+    tagline: 'Front-walk replacement, side-yard paths, and approach sidewalks tied to the public right-of-way — permitted, ADA-compliant, and built to handle Utah\'s freeze-thaw without heaving.',
+    availabilityNote: 'Now booking April–October 2026 sidewalk and walkway pours along the Wasatch Front',
+    primaryValuePillar: 'transformation',
+    supportingPillars: ['safety'],
+    heroImage: { url: '/images/services/hero-concrete-sidewalks.webp', alt: 'Fresh broom-finish concrete walkway leading from the public sidewalk up to the covered front entry of a vinyl-sided Wasatch Front home in late afternoon light' },
+    inlineImage: { url: '/images/services/inline-concrete-sidewalks.webp', alt: 'Detail of a residential walkway meeting a driveway approach with a clean control joint between the two broom-finish surfaces', caption: 'Walkway tie-in to driveway approach — clean control joint, consistent broom finish across both pours.' },
+    heroCtaHeadline: 'Get a free walkway estimate',
+    overview: '<p>Sidewalks and walkways are the smallest concrete pours we do — and the most public. They\'re the first thing visitors walk on, the surface most likely to be photographed for a real estate listing, and the only piece of your concrete that\'s on the line for slip-and-fall liability when the postman or a delivery driver crosses it.</p><p>BaseScape pours residential walkways and approach sidewalks across the Wasatch Front. Standard scope: front entry walks, side-yard paths, walkout basement approaches, around-the-house perimeter walks, and city-right-of-way approach sidewalks (which require a permit and inspection in every Wasatch Front city we serve).</p><p>Spec: 4-inch slab on 4 inches of compacted gravel base, fiber or rebar reinforcement based on subgrade, air-entrained 4,000 psi mix, control joints sawcut at 4–6 ft intervals (closer than a driveway because the slab is thinner and narrower). ADA-compliant slopes and grade transitions where the walk meets a driveway, porch, or street.</p>',
+    process: [
+      { stepTitle: 'Free On-Site Estimate', stepDescription: '<p>Designer walks the route, takes measurements, identifies any tie-ins (existing driveway, porch, street), and verifies ADA slope requirements for your city. Written quote within 24 hours.</p>' },
+      { stepTitle: 'Permits, Demo & Subgrade', stepDescription: '<p>Permits pulled for any sidewalk tying into the public right-of-way. Existing walk demoed (if applicable) and hauled off. Subgrade excavated and compacted; 4 inches of road base installed.</p>' },
+      { stepTitle: 'Form, Reinforce & Pour', stepDescription: '<p>Forms set to grade with ADA-compliant slopes (running slope ≤5%, cross slope ≤2%). Fiber or rebar reinforcement. Air-entrained 4,000 psi mix placed, screeded, floated, broom-finished.</p>' },
+      { stepTitle: 'Cure & Walkthrough', stepDescription: '<p>Control joints sawcut within 12 hours at 4–6 ft intervals. Curing compound applied. Stay off 24 hours. Final walkthrough covers your warranty and inspection sign-off where applicable.</p>' },
+    ],
+    anxietyStack: {
+      structuralSafety: '<p>4-inch slab on 4 inches of compacted road base is the standard residential walk spec. Where the walk crosses tree roots or unstable soil, we add fiber or rebar reinforcement and dig deeper subgrade. Air-entrained mix is non-negotiable on every exterior walk — freeze-thaw spalling on walkways is one of the most common slip-and-fall hazards in Utah winters.</p>',
+      codeCompliance: '<p>Approach sidewalks tied to the public right-of-way require a permit and inspection in every Wasatch Front city we serve. ADA slope requirements (≤5% running, ≤2% cross) apply on most. BaseScape pulls every permit, books every inspection, and verifies your city\'s specific geometry before forming.</p>',
+      costAffordability: '<p>Typical sidewalk pricing:</p><ul><li><strong>Front entry walk</strong> (~40 sq ft): <strong>$500–$900</strong></li><li><strong>Side-yard or approach walk</strong> (~80–120 sq ft): <strong>$900–$1,800</strong></li><li><strong>Wrap-around / perimeter walk</strong> (~200+ sq ft): <strong>$1,800–$3,500+</strong></li><li><strong>City right-of-way approach</strong>: priced separately with permit and inspection fees included</li></ul><p>Sidewalk pours have higher per-sq-ft cost than driveways because the fixed costs (mobilization, finishing labor) spread over less area. Small standalone sidewalk projects under 30 sq ft are usually better bundled with a driveway or patio pour.</p>',
+      timeline: '<p>Sidewalk projects typically pour in a single day after 1 day of forming and prep. Stay off 24 hours. From signed estimate to walkthrough is typically 1–2 weeks during pour season.</p>',
+    },
+    faqs: [
+      { question: 'How much does a concrete sidewalk cost in Utah?', answer: 'Typical residential walkways run $10–$15 per sq ft installed — a 40-sq-ft front entry walk runs $500–$900; an 80–120 sq ft side-yard walk runs $900–$1,800. City right-of-way approach sidewalks include permit and inspection fees and are priced separately.' },
+      { question: 'Do I need a permit for a sidewalk?', answer: 'Yes if the sidewalk ties to a public right-of-way (city sidewalk or curb cut). Most internal-yard walkways don\'t require a permit, but the rules vary by Wasatch Front city. We verify and pull every required permit.' },
+      { question: 'How thick should a sidewalk be?', answer: '4 inches on a compacted gravel base is the residential standard. Where the walk crosses driveways or carries occasional vehicle traffic (turnaround walks, golf-cart paths), we step up to 5–6 inches with rebar.' },
+      { question: 'Will my new sidewalk heave in winter?', answer: 'Heaving comes from frost lifting expansive subgrade. We prevent it by excavating below the frost-susceptible layer where soils warrant, installing geotextile fabric in expansive clay, and pouring on a properly compacted gravel base. Air-entrained concrete handles surface freeze-thaw without spalling.' },
+      { question: 'Can you match the finish on my existing concrete?', answer: 'Yes for broom finish (we match stroke direction and texture). Exact color matches on aged concrete are difficult — new concrete is always lighter than weathered concrete for the first 1–2 years before it weathers to match. We\'ll show you the expected look on the estimate visit.' },
+      { question: 'How long until I can walk on a new sidewalk?', answer: '24 hours for foot traffic. We rope it off during the cure window.' },
+      { question: 'Do you tear out and replace cracked existing sidewalks?', answer: 'Yes. Most sidewalk replacement projects include demo and haul-off of the old walk, itemized in the quote. Tree-root-damaged walks may need root pruning or root barrier installation as part of the project.' },
+      { question: 'Where do you pour sidewalks?', answer: 'Across the Wasatch Front: Salt Lake County, Utah County, and Davis County. Small standalone sidewalk projects under 30 sq ft are usually better bundled with another concrete project to make the trip efficient.' },
+    ],
+    projects: [],
+    reviews: [],
+    seo: {
+      metaTitle: 'Concrete Sidewalks & Walkways — Wasatch Front Utah | BaseScape',
+      metaDescription: 'Residential concrete sidewalks and walkways across Salt Lake, Utah, and Davis counties. Permitted, ADA-compliant, air-entrained mix engineered for freeze-thaw.',
+    },
+  }
+}
+---
+<ServiceLayout service={service} settings={settings} />

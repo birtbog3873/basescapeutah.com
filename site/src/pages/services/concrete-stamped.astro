@@ -1,0 +1,63 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro'
+import { fetchServices, fetchSiteSettings, resolveServiceImage } from '../../lib/payload'
+
+let service: any = null
+let settings: any = null
+
+try {
+  const [servicesRes, siteSettings] = await Promise.all([
+    fetchServices(),
+    fetchSiteSettings(),
+  ])
+  service = servicesRes.docs?.find((s: any) => s.slug === 'concrete-stamped')
+  if (service) service.heroImage = resolveServiceImage(service.slug, 'hero', service.heroImage)
+  settings = siteSettings
+} catch {}
+
+if (!service) {
+  service = {
+    title: 'Stamped & Decorative Concrete',
+    slug: 'concrete-stamped',
+    tagline: 'Stamped patterns, integral color, exposed aggregate, and acid-stained finishes that turn driveways, patios, pool decks, and walkways into something worth looking at — without sacrificing freeze-thaw durability.',
+    availabilityNote: 'Now booking April–October 2026 stamped and decorative pours along the Wasatch Front',
+    primaryValuePillar: 'transformation',
+    supportingPillars: ['financial'],
+    heroImage: { url: '/images/services/hero-concrete-stamped.webp', alt: 'Stamped concrete patio with warm-stone running-bond pattern bordering a Wasatch Front home, outdoor furniture and string lights in late afternoon light' },
+    inlineImage: { url: '/images/services/inline-concrete-stamped.webp', alt: 'Detail close-up of a stamped concrete running-bond brick pattern showing visible seam lines, integral color, and secondary release-agent accent', caption: 'Stamped concrete done right — visible seam lines, integral color, accent release agent.' },
+    heroCtaHeadline: 'See finish samples on your free estimate',
+    overview: '<p>Stamped concrete is poured concrete with the durability of a structural slab and the look of flagstone, slate, brick, or wood plank. Done right, it costs a fraction of the natural material it imitates and outlasts asphalt and pavers in Utah\'s freeze-thaw cycles. Done wrong, the surface scales, the color fades to gray within five years, and the pattern looks like a kitchen floor instead of stonework.</p><p>BaseScape pours stamped concrete on the same spec as our structural flatwork — air-entrained 4,000+ psi mix, rebar reinforcement, control joints saw-cut at engineered spacing within 12 hours — then finishes with color hardener, release agent, and the pattern of your choice. We seal with a UV-resistant penetrating sealer designed for Utah sun and salt, not the cheap acrylic that yellows in two summers.</p><p>What we can do: stamped driveways, patios, pool decks, walkways, front entries, and exposed-aggregate finishes. Integral coloring, acid staining, salt finish. We bring physical sample boards to the estimate visit so you can see and feel the finish in your light before we pour.</p>',
+    process: [
+      { stepTitle: 'Free Estimate + Sample Walkthrough', stepDescription: '<p>A designer brings physical pattern, color, and finish samples to your home and walks the area in your light — stamped color reads differently in noon sun vs. golden hour. You pick the pattern, color, and finish on-site. Written quote within 24 hours.</p>' },
+      { stepTitle: 'Subgrade, Forms & Color Prep', stepDescription: '<p>Subgrade is excavated and compacted, forms set, rebar laid. Integral color is added to the mix at the batch plant. Release agent (the secondary accent color) is prepped on-site.</p>' },
+      { stepTitle: 'Pour, Stamp & Detail', stepDescription: '<p>Concrete is placed, screeded, floated, and stamped within the workable window. Color hardener is broadcast and worked in. Detail joints and accent lines are tooled in. Control joints sawcut within 12 hours.</p>' },
+      { stepTitle: 'Cure, Seal & Walkthrough', stepDescription: '<p>Slab cures 28 days under curing compound. A UV-resistant penetrating sealer is applied (re-application every 2–3 years recommended). Walkthrough covers the cure schedule, sealing frequency, and warranty.</p>' },
+    ],
+    anxietyStack: {
+      structuralSafety: '<p>Stamped concrete is structural concrete first, decorative second. We pour the same 4,000+ psi air-entrained mix and the same rebar reinforcement on a stamped driveway as on a plain broom-finish one — the stamping happens at finishing, not in the mix. The slab carries the same loads and lasts the same 30–40 years.</p>',
+      drainageMoisture: '<p>The seal coat is the key. Cheap acrylic sealers yellow and peel within 2–3 summers under Utah UV; salt accelerates that. We use a penetrating UV-resistant sealer that bonds into the slab instead of sitting on top. Re-application every 2–3 years keeps color and water repellency strong.</p>',
+      costAffordability: '<p>Stamped concrete typically runs <strong>$12–$20 per sq ft</strong> installed — roughly $4–$8 per sq ft more than broom-finish concrete. A stamped 2-car driveway (~600 sq ft) runs $7,500–$12,000. A stamped patio (~400 sq ft) runs $5,000–$8,000. Compared to natural flagstone or slate at $25–$40+ per sq ft installed, stamped delivers most of the look at half the cost — and unlike pavers, there are no joints for weeds.</p>',
+      aesthetics: '<p>Pattern menu: ashlar slate, random flagstone, running-bond brick, herringbone, cobblestone, wood plank, seamless texture (stone-like with no joint lines). Color options: 30+ integral colors plus secondary release-agent accents and acid-stain overlays. We don\'t stock every pattern — your designer brings the ones that match your home\'s era and palette.</p>',
+      timeline: '<p>Stamped pours run 1 working day more than plain concrete (the stamping and detailing happen during the same pour window). Cure schedule is identical: 24h foot traffic, 7d vehicle traffic, 28d full load. Sealing happens at 28 days minimum, sometimes at a later return visit.</p>',
+    },
+    differentiator: '<p><strong>Decorative without the decorative-contractor problems.</strong> Most "stamped concrete contractors" pour thinner slabs with weaker mix and rely on the surface treatment to sell the job — that\'s why so many stamped patios on the Wasatch Front have surface scaling and faded color by year 5. We pour stamped concrete on the same structural spec as a plain driveway, then apply a finish system designed for Utah\'s UV and freeze-thaw. The look you see in year 1 is the look you have in year 10.</p>',
+    faqs: [
+      { question: 'How much does stamped concrete cost in Utah?', answer: 'Stamped concrete typically runs $12–$20 per sq ft installed — roughly $4–$8 per sq ft more than broom-finish concrete. A stamped 2-car driveway (~600 sq ft) runs $7,500–$12,000. A stamped patio (~400 sq ft) runs $5,000–$8,000.' },
+      { question: 'How long does stamped concrete last?', answer: 'Stamped concrete is structural concrete underneath — the slab lasts 30–40+ years. The decorative finish (color and pattern depth) lasts indefinitely as long as the sealer is refreshed every 2–3 years. Skipping the resealing schedule is the most common cause of stamped concrete looking tired by year 5.' },
+      { question: 'Will stamped concrete fade in Utah sun?', answer: 'Quality stamped concrete uses integral color (mixed into the entire slab, not just the surface) plus a UV-resistant penetrating sealer. With re-sealing every 2–3 years, color stays vibrant for decades. Surface-only color stains do fade — we don\'t use those for exterior work.' },
+      { question: 'What patterns are available?', answer: 'Ashlar slate, random flagstone, running-bond brick, herringbone brick, cobblestone, wood plank, and seamless stone-like textures. Your designer brings physical samples of the patterns that fit your home — not a full catalog, just the right options.' },
+      { question: 'Can you stamp my existing concrete?', answer: 'Sometimes — through an overlay system rather than removal. If your existing slab is structurally sound (no major cracking, heaving, or sinking) we can apply a 1/4–1/2" polymer-modified overlay and stamp it. If the slab is failing, replacement is the right call — overlay on a broken slab just transfers the problem upward.' },
+      { question: 'How is stamped concrete different from pavers?', answer: 'Stamped concrete is one continuous slab with a pattern pressed into the surface — no joints for weeds, easier to plow snow off, lower per-sq-ft cost. Pavers are individual units laid on a sand base — easier to replace an individual unit if damaged, but with joints that need weed control. For driveways and large patios, stamped concrete usually wins on cost and snow handling. For walkways and small patios, pavers often win on look.' },
+      { question: 'Does stamped concrete crack?', answer: 'All concrete develops hairline cracks. With air-entrained mix, rebar, and properly spaced control joints, cracking is minimal and forms along the joint lines where it\'s essentially invisible in the pattern. Stamped concrete cracks no more than plain concrete — and the pattern actually hides hairlines better than a smooth surface.' },
+      { question: 'When can you start a stamped project?', answer: 'Stamped pours happen during the same April–October window as all our exterior concrete. We book design visits year-round and lock pour dates from the previous fall onward. Stamped projects tend to fill up earlier in the season — we recommend booking 4–6 weeks ahead during peak.' },
+    ],
+    projects: [],
+    reviews: [],
+    seo: {
+      metaTitle: 'Stamped & Decorative Concrete — Wasatch Front Utah | BaseScape',
+      metaDescription: 'Stamped concrete, integral color, exposed aggregate, and acid-stained finishes for driveways, patios, and pool decks across Utah\'s Wasatch Front. Free on-site sample walkthrough.',
+    },
+  }
+}
+---
+<ServiceLayout service={service} settings={settings} />
