@@ -1,0 +1,217 @@
+---
+import QuickCallback from '../forms/QuickCallback.tsx'
+
+interface Props {
+  service: any
+  pillar: { color: string; label: string }
+}
+
+const { service, pillar } = Astro.props
+const heroUrl = service.heroImage?.url
+const heroAlt = service.heroImage?.alt || ''
+---
+<section class="hero-form" style={heroUrl ? `--hero-image: url('${heroUrl}')` : ''}>
+  {heroUrl && (
+    <>
+      <div class="hero-form__bg" role="img" aria-label={heroAlt}></div>
+      <div class="hero-form__scrim" aria-hidden="true"></div>
+    </>
+  )}
+
+  <div class="hero-form__inner">
+    <div class="hero-form__grid">
+      <div class="hero-form__copy">
+        <span class="hero-form__overline">
+          {pillar.label}
+        </span>
+        <h1 class="hero-form__title">{service.title}</h1>
+        <p class="hero-form__tagline">{service.tagline}</p>
+        {service.availabilityNote && (
+          <p class="hero-form__availability">
+            <span class="hero-form__availability-dot" aria-hidden="true"></span>
+            {service.availabilityNote}
+          </p>
+        )}
+      </div>
+
+      <div class="hero-form__form">
+        <QuickCallback
+          client:visible
+          sourcePage={`/services/${service.slug}`}
+          serviceType={service.slug}
+          submitLabel="Get My Free Estimate"
+          variant="inline"
+          title="Get a Free Estimate"
+          description="Tell us how to reach you — we'll call back within the hour."
+        />
+        <a href="/contact" class="hero-form__alt-link">
+          or schedule a full appointment
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  {heroUrl && (
+    <link rel="preload" as="image" href={heroUrl} fetchpriority="high" slot="head" />
+  )}
+</section>
+
+<style>
+  .hero-form {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--color-navy800);
+  }
+
+  .hero-form__bg {
+    position: absolute;
+    inset: 0;
+    background-image: var(--hero-image);
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+  }
+
+  .hero-form__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      135deg,
+      rgba(10, 26, 40, 0.78) 0%,
+      rgba(10, 26, 40, 0.55) 45%,
+      rgba(10, 26, 40, 0.35) 100%
+    );
+  }
+
+  @media (max-width: 767px) {
+    .hero-form__scrim {
+      background: linear-gradient(
+        180deg,
+        rgba(10, 26, 40, 0.72) 0%,
+        rgba(10, 26, 40, 0.55) 100%
+      );
+    }
+  }
+
+  .hero-form__inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin-inline: auto;
+    padding: var(--size-7) var(--size-4);
+  }
+
+  @media (min-width: 768px) {
+    .hero-form__inner {
+      padding: var(--size-10) var(--size-6);
+    }
+  }
+
+  .hero-form__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-5);
+  }
+
+  @media (min-width: 768px) {
+    .hero-form__grid {
+      grid-template-columns: 1.05fr 1fr;
+      gap: var(--size-7);
+      align-items: center;
+    }
+  }
+
+  .hero-form__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    color: #fff;
+  }
+
+  .hero-form__overline {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-amber300, #FCBF49);
+  }
+
+  .hero-form__title {
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-variation-settings: "WONK" 1, "SOFT" 50;
+    font-size: clamp(2rem, 4vw + 0.5rem, 3rem);
+    line-height: 1.1;
+    color: #fff;
+    margin-top: var(--size-2);
+    margin-bottom: var(--size-3);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .hero-form__tagline {
+    font-family: var(--font-sans);
+    font-size: clamp(1.0625rem, 0.5vw + 0.875rem, 1.1875rem);
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.92);
+    margin-bottom: var(--size-4);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  .hero-form__availability {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--size-2);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: var(--size-2) var(--size-3);
+    border-radius: 999px;
+    align-self: flex-start;
+  }
+
+  .hero-form__availability-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--color-green400, #7DB94E);
+    box-shadow: 0 0 0 4px rgba(125, 185, 78, 0.25);
+    flex-shrink: 0;
+  }
+
+  .hero-form__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-3);
+  }
+
+  .hero-form__alt-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--size-1);
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #fff;
+    text-decoration: none;
+    padding: var(--size-2);
+    align-self: center;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .hero-form__alt-link:hover {
+    color: var(--color-amber200, #FDD889);
+    text-decoration: underline;
+  }
+</style>

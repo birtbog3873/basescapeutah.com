@@ -22,9 +22,20 @@ type ServiceType =
 interface Props {
   sourcePage?: string
   serviceType?: ServiceType
+  submitLabel?: string
+  variant?: 'card' | 'inline'
+  title?: string
+  description?: string
 }
 
-export default function QuickCallback({ sourcePage = '/', serviceType }: Props) {
+export default function QuickCallback({
+  sourcePage = '/',
+  serviceType,
+  submitLabel = 'Call Me Back',
+  variant = 'card',
+  title = 'Request a Callback',
+  description = "Leave your number and we'll call you back within the hour.",
+}: Props) {
   const [sessionId, setSessionId] = useState('')
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
@@ -77,9 +88,9 @@ export default function QuickCallback({ sourcePage = '/', serviceType }: Props) 
   }
 
   return (
-    <div className="callback-form">
-      <h3 className="callback-form__title">Request a Callback</h3>
-      <p className="callback-form__desc">Leave your number and we'll call you back within the hour.</p>
+    <div className={`callback-form callback-form--${variant}`}>
+      <h3 className="callback-form__title">{title}</h3>
+      <p className="callback-form__desc">{description}</p>
 
       {/* Honeypot */}
       <div style={{ position: 'absolute', left: '-9999px' }} aria-hidden="true">
@@ -126,9 +137,9 @@ export default function QuickCallback({ sourcePage = '/', serviceType }: Props) 
           type="button"
           onClick={handleSubmit}
           disabled={loading}
-          className="callback-form__submit"
+          className={`callback-form__submit ${variant === 'inline' ? 'callback-form__submit--primary' : ''}`}
         >
-          {loading ? 'Sending...' : 'Call Me Back'}
+          {loading ? 'Sending...' : submitLabel}
         </button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro'
 import CTABlock from '../components/content/CTABlock.astro'
+import HeroWithForm from '../components/content/HeroWithForm.astro'
 import ServiceCard from '../components/content/ServiceCard.astro'
 import TrustBadges from '../components/trust/TrustBadges.astro'
 import ReviewCard from '../components/trust/ReviewCard.astro'
@@ -78,32 +79,8 @@ const pillar = pillarAccents[service.primaryValuePillar] || pillarAccents.transf
 >
   <JsonLd slot="head" schema={[serviceSchema, ...(faqSchema ? [faqSchema] : [])]} />
 
-  <!-- Hero -->
-  <section class="service-hero">
-    <div class="service-hero__inner">
-      <span class="service-hero__overline" style={`color: ${pillar.color}`}>
-        {pillar.label}
-      </span>
-      <h1 class="service-hero__title">{service.title}</h1>
-      <p class="service-hero__tagline">{service.tagline}</p>
-      {service.availabilityNote && (
-        <p class="service-hero__availability">
-          <span class="service-hero__availability-dot" aria-hidden="true"></span>
-          {service.availabilityNote}
-        </p>
-      )}
-      <CTABlock
-        variant="hero"
-        phone={phone}
-        headline={service.heroCtaHeadline || `Get your ${service.title.toLowerCase()} estimate`}
-      />
-    </div>
-    {service.heroImage && (
-      <div class="service-hero__image">
-        <img src={service.heroImage.url} alt={service.heroImage.alt} width="1200" height="800" fetchpriority="high" decoding="async" />
-      </div>
-    )}
-  </section>
+  <!-- Hero with inline form -->
+  <HeroWithForm service={service} pillar={pillar} />
 
   <!-- Sub-Service Card Grid (parent-hub pages only) -->
   {service.subServiceLinks?.length > 0 && (
@@ -225,7 +202,7 @@ const pillar = pillarAccents[service.primaryValuePillar] || pillarAccents.transf
     <section class="service-section service-callback">
       <div class="service-section__inner service-section__inner--narrow">
         <p class="service-callback__intro">
-          Prefer a quick conversation before booking a full appointment? Drop your number — we call back within an hour during business hours, no high-pressure pitch.
+          Still have questions? Drop your number and we'll call back within the hour — no pressure, just answers.
         </p>
         <div class="service-callback__form">
           <QuickCallback client:visible sourcePage={`/services/${service.slug}`} serviceType={service.slug} />
@@ -324,86 +301,6 @@ const pillar = pillarAccents[service.primaryValuePillar] || pillarAccents.transf
 </BaseLayout>
 
 <style>
-  .service-hero {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--size-6);
-    max-width: 1200px;
-    margin-inline: auto;
-    padding: var(--size-8) var(--size-4);
-  }
-
-  @media (min-width: 768px) {
-    .service-hero {
-      grid-template-columns: 1fr 1fr;
-      align-items: center;
-      padding: var(--size-10) var(--size-6);
-    }
-  }
-
-  .service-hero__overline {
-    font-family: var(--font-sans);
-    font-weight: 500;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .service-hero__title {
-    font-family: var(--font-serif);
-    font-weight: 800;
-    font-variation-settings: "WONK" 1, "SOFT" 50;
-    font-size: clamp(2rem, 4vw + 0.5rem, 3rem);
-    line-height: 1.1;
-    color: var(--color-textPrimary);
-    margin-top: var(--size-2);
-    margin-bottom: var(--size-3);
-  }
-
-  .service-hero__tagline {
-    font-family: var(--font-sans);
-    font-size: clamp(1.0625rem, 0.5vw + 0.875rem, 1.1875rem);
-    line-height: 1.6;
-    color: var(--color-textBody);
-    margin-bottom: var(--size-5);
-  }
-
-  .service-hero__availability {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--size-2);
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
-    line-height: 1.4;
-    color: var(--color-textSecondary, var(--color-textBody));
-    background: var(--color-bgAlt);
-    border: 1px solid var(--color-borderSubtle, rgba(0, 0, 0, 0.08));
-    padding: var(--size-2) var(--size-3);
-    border-radius: 999px;
-    margin-bottom: var(--size-5);
-  }
-
-  .service-hero__availability-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 999px;
-    background: var(--color-green500, #16a34a);
-    box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.15);
-    flex-shrink: 0;
-  }
-
-  .service-hero__image {
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-  }
-
-  .service-hero__image img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 2;
-    object-fit: cover;
-  }
-
   .service-section {
     padding: var(--size-8) 0;
   }
