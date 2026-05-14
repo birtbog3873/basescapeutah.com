@@ -7,13 +7,30 @@ interface Props {
 }
 
 const { service, pillar } = Astro.props
-const heroUrl = service.heroImage?.url
+const heroUrl: string | undefined = service.heroImage?.url
 const heroAlt = service.heroImage?.alt || ''
+
+const isLocalHero = typeof heroUrl === 'string' && heroUrl.startsWith('/images/services/hero-')
+const heroBase = isLocalHero ? heroUrl!.replace(/\.webp$/, '') : null
+const srcset = heroBase
+  ? `${heroBase}-600w.webp 600w, ${heroBase}-900w.webp 900w, ${heroUrl} 1200w`
+  : undefined
+const sizes = '(min-width: 768px) 60vw, 100vw'
 ---
-<section class="hero-form" style={heroUrl ? `--hero-image: url('${heroUrl}')` : ''}>
+<section class="hero-form">
   {heroUrl && (
     <>
-      <div class="hero-form__bg" role="img" aria-label={heroAlt}></div>
+      <img
+        class="hero-form__bg"
+        src={heroUrl}
+        srcset={srcset}
+        sizes={sizes}
+        alt={heroAlt}
+        width="1200"
+        height="800"
+        fetchpriority="high"
+        decoding="async"
+      />
       <div class="hero-form__scrim" aria-hidden="true"></div>
     </>
   )}
@@ -54,9 +71,6 @@ const heroAlt = service.heroImage?.alt || ''
     </div>
   </div>
 
-  {heroUrl && (
-    <link rel="preload" as="image" href={heroUrl} fetchpriority="high" slot="head" />
-  )}
 </section>
 
 <style>
@@ -70,9 +84,10 @@ const heroAlt = service.heroImage?.alt || ''
   .hero-form__bg {
     position: absolute;
     inset: 0;
-    background-image: var(--hero-image);
-    background-size: cover;
-    background-position: center;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
     z-index: 0;
   }
 
