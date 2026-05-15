@@ -39,12 +39,21 @@ const sizes = '(min-width: 768px) 60vw, 100vw'
     <div class="hero-form__grid">
       <div class="hero-form__copy">
         <span class="hero-form__overline">
-          {pillar.label}
+          {service.heroOverline || pillar.label}
         </span>
-        <h1 class="hero-form__title">{service.title}</h1>
-        <p class="hero-form__tagline">{service.tagline}</p>
+        <h1 class="hero-form__title">{service.heroHeadline || service.title}</h1>
+        <p class="hero-form__tagline">
+          {service.heroTaglineMobile ? (
+            <>
+              <span class="hero-form__tagline-desktop">{service.tagline}</span>
+              <span class="hero-form__tagline-mobile">{service.heroTaglineMobile}</span>
+            </>
+          ) : (
+            service.tagline
+          )}
+        </p>
         {service.availabilityNote && (
-          <p class="hero-form__availability">
+          <p class="hero-form__availability hero-form__availability--desktop">
             <span class="hero-form__availability-dot" aria-hidden="true"></span>
             {service.availabilityNote}
           </p>
@@ -59,7 +68,7 @@ const sizes = '(min-width: 768px) 60vw, 100vw'
           submitLabel="Get My Free Estimate"
           variant="inline"
           title="Get a Free Estimate"
-          description="Tell us how to reach you — we'll call back within the hour."
+          description="Tell us how to reach you, we'll call back within the hour."
         />
         <a href="/contact" class="hero-form__alt-link">
           or schedule a full appointment
@@ -67,6 +76,12 @@ const sizes = '(min-width: 768px) 60vw, 100vw'
             <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
           </svg>
         </a>
+        {service.availabilityNote && (
+          <p class="hero-form__availability hero-form__availability--mobile">
+            <span class="hero-form__availability-dot" aria-hidden="true"></span>
+            {service.availabilityNote}
+          </p>
+        )}
       </div>
     </div>
   </div>
@@ -118,7 +133,7 @@ const sizes = '(min-width: 768px) 60vw, 100vw'
     z-index: 2;
     max-width: 1200px;
     margin-inline: auto;
-    padding: var(--size-7) var(--size-4);
+    padding: var(--size-5) var(--size-4);
   }
 
   @media (min-width: 768px) {
@@ -155,6 +170,30 @@ const sizes = '(min-width: 768px) 60vw, 100vw'
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-amber300, #FCBF49);
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .hero-form__overline {
+      display: inline;
+    }
+  }
+
+  .hero-form__tagline-desktop {
+    display: none;
+  }
+
+  .hero-form__tagline-mobile {
+    display: inline;
+  }
+
+  @media (min-width: 768px) {
+    .hero-form__tagline-desktop {
+      display: inline;
+    }
+    .hero-form__tagline-mobile {
+      display: none;
+    }
   }
 
   .hero-form__title {
@@ -193,6 +232,25 @@ const sizes = '(min-width: 768px) 60vw, 100vw'
     padding: var(--size-2) var(--size-3);
     border-radius: 999px;
     align-self: flex-start;
+  }
+
+  .hero-form__availability--desktop {
+    display: none;
+  }
+
+  .hero-form__availability--mobile {
+    display: inline-flex;
+    margin-top: var(--size-3);
+    align-self: center;
+  }
+
+  @media (min-width: 768px) {
+    .hero-form__availability--desktop {
+      display: inline-flex;
+    }
+    .hero-form__availability--mobile {
+      display: none;
+    }
   }
 
   .hero-form__availability-dot {

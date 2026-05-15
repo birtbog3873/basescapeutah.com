@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, type FormEvent } from 'react'
 import { actions } from 'astro:actions'
 import { getGaClientId, getGclid } from '../../lib/analytics'
 
@@ -48,7 +48,8 @@ export default function QuickCallback({
     setSessionId(crypto.randomUUID())
   }, [])
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e?: FormEvent) => {
+    if (e) e.preventDefault()
     setError('')
     if (!name.trim()) return setError('Please enter your name')
     if (!phone.trim()) return setError('Please enter your phone number')
@@ -77,7 +78,16 @@ export default function QuickCallback({
       if (actionError) {
         setError('Something went wrong. Please try again or call us directly.')
       } else {
-        ;(window as any).gtag?.('event', 'quick_callback_submit')
+        const w = window as any
+        w.gtag?.('event', 'quick_callback_submit')
+        w.dataLayer = w.dataLayer || []
+        w.dataLayer.push({
+          event: 'lead_submit',
+          form_id: 'quick_callback',
+          service: serviceType,
+          source_page: sourcePage,
+          variant,
+        })
         window.location.href = '/thank-you/callback'
         return
       }
@@ -88,7 +98,11 @@ export default function QuickCallback({
   }
 
   return (
-    <div className={`callback-form callback-form--${variant}`}>
+    <form
+      className={`callback-form callback-form--${variant}`}
+      onSubmit={handleSubmit}
+      noValidate
+    >
       <h3 className="callback-form__title">{title}</h3>
       <p className="callback-form__desc">{description}</p>
 
@@ -134,14 +148,13 @@ export default function QuickCallback({
           rows={2}
         />
         <button
-          type="button"
-          onClick={handleSubmit}
+          type="submit"
           disabled={loading}
           className={`callback-form__submit ${variant === 'inline' ? 'callback-form__submit--primary' : ''}`}
         >
           {loading ? 'Sending...' : submitLabel}
         </button>
       </div>
-    </div>
+    </form>
   )
 }

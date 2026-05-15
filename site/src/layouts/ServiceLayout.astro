@@ -265,10 +265,23 @@ const pillar = pillarAccents[service.primaryValuePillar] || pillarAccents.transf
   <!-- Trust + CTA -->
   <section class="service-section service-section--alt">
     <div class="service-section__inner service-section__inner--narrow">
+      <div class="founder-note">
+        <p class="founder-note__body">
+          BaseScape is a new Utah contracting venture pouring our first season along the Wasatch Front.
+          We're licensed (DOPL #{settings?.licenseNumber || '14082066-5501 B100'}), insured, and building
+          the company one finished project at a time.
+          <a class="founder-note__link" href="https://secure.utah.gov/llv/" target="_blank" rel="noopener noreferrer">
+            Verify our license on Utah DOPL
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+          </a>.
+        </p>
+      </div>
       <TrustBadges
         licenseNumber={settings?.licenseNumber}
         insuranceInfo={settings?.insuranceInfo}
-        riskReversals={settings?.riskReversals}
+        riskReversals={service.riskReversals?.length ? service.riskReversals : settings?.riskReversals}
       />
       <div style="margin-top: var(--size-6);">
         <CTABlock
@@ -311,6 +324,40 @@ const pillar = pillarAccents[service.primaryValuePillar] || pillarAccents.transf
 
   .service-callback {
     background: var(--color-bgAlt);
+  }
+
+  .founder-note {
+    background: var(--color-bgSurface);
+    border: 1px solid var(--color-navy200);
+    border-radius: var(--radius-md);
+    padding: var(--size-4) var(--size-5);
+    margin-bottom: var(--size-5);
+  }
+
+  .founder-note__body {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-textBody);
+    margin: 0;
+  }
+
+  .founder-note__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--color-link);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: 500;
+  }
+
+  .founder-note__link:hover {
+    color: var(--color-linkHover);
+  }
+
+  .founder-note__link svg {
+    flex-shrink: 0;
   }
 
   .service-inline-image {

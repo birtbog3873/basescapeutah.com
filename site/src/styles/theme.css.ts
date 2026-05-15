@@ -70,7 +70,7 @@ export const vars = createGlobalTheme(':root', {
     link: '#2A7B78',
     linkHover: '#216260',
     ctaPrimaryBg: '#E8920A',
-    ctaPrimaryText: '#FFFFFF',
+    ctaPrimaryText: '#1B3B5E',
     ctaPrimaryHover: '#C27708',
     ctaPrimaryActive: '#9A5D06',
     ctaSecondaryBg: '#1B3B5E',
