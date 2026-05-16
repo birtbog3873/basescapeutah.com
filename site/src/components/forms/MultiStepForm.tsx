@@ -216,7 +216,14 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(801) 919-822
       } else if (result.data && !result.data.success) {
         setErrors({ form: 'Something went wrong. Please try again.' })
       } else {
-        ;(window as any).dataLayer?.push({ event: 'form_complete', service: serviceType })
+        const w = window as any
+        w.dataLayer = w.dataLayer || []
+        w.dataLayer.push({
+          event: 'lead_submit',
+          form_id: 'multi_step_estimate',
+          service: serviceType,
+          source_page: sourcePage,
+        })
         window.location.href = '/thank-you/estimate'
         return
       }
