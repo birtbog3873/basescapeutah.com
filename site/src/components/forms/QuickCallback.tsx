@@ -79,7 +79,6 @@ export default function QuickCallback({
         setError('Something went wrong. Please try again or call us directly.')
       } else {
         const w = window as any
-        w.gtag?.('event', 'quick_callback_submit')
         w.dataLayer = w.dataLayer || []
         w.dataLayer.push({
           event: 'lead_submit',

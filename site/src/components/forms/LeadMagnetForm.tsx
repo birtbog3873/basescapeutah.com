@@ -61,7 +61,14 @@ export default function LeadMagnetForm({
       if (url && url !== '#') {
         sessionStorage.setItem('leadmagnet:downloadUrl', url)
       }
-      ;(window as any).gtag?.('event', 'lead_magnet_submit')
+      const w = window as any
+      w.dataLayer = w.dataLayer || []
+      w.dataLayer.push({
+        event: 'lead_submit',
+        form_id: 'lead_magnet',
+        lead_magnet_id: leadMagnetId,
+        source_page: window.location.pathname,
+      })
       window.location.href = '/thank-you/guide'
       return
     } catch {
