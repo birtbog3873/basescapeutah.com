@@ -36,7 +36,14 @@ async function withRetry<T>(fn: () => Promise<T>): Promise<T> {
 function fireLeadWebhook(lead: any, ctx: any) {
   const webhookUrl = import.meta.env.GOOGLE_SHEETS_WEBHOOK_URL
   const webhookSecret = import.meta.env.GOOGLE_SHEETS_WEBHOOK_SECRET
-  if (!webhookUrl || !webhookSecret) return
+  if (!webhookUrl || !webhookSecret) {
+    console.error(
+      '[LEADS] Webhook env vars missing — lead',
+      lead.id,
+      'will not reach Google Sheet',
+    )
+    return
+  }
 
   // Google Apps Script doPost(e) does NOT expose HTTP headers — the secret
   // must travel in the POST body and be checked against data.secret on the
@@ -68,7 +75,30 @@ function fireLeadWebhook(lead: any, ctx: any) {
       gclid: lead.source?.gclid,
     }),
   })
-    .then(() => console.log('[LEADS] Webhook sent for lead', lead.id))
+    .then(async (res) => {
+      // Apps Script POST returns 302 → script.googleusercontent.com, whose body
+      // can render as Drive's "Page Not Found" HTML even when the script ran
+      // successfully and appended the row. So only treat non-2xx or an explicit
+      // error JSON as failure — never assume an HTML body means failure.
+      if (!res.ok) {
+        const errBody = await res.text().catch(() => '')
+        console.error(
+          '[LEADS] Webhook HTTP error for lead',
+          lead.id,
+          'status=',
+          res.status,
+          'body=',
+          errBody.slice(0, 300),
+        )
+        return
+      }
+      const bodyText = await res.text().catch(() => '')
+      if (bodyText.includes('"status":"error"')) {
+        console.error('[LEADS] Webhook returned error for lead', lead.id, 'body=', bodyText)
+        return
+      }
+      console.log('[LEADS] Webhook sent for lead', lead.id)
+    })
     .catch((err: any) => console.error('[LEADS] Webhook failed:', err?.message))
 
   // ctx.waitUntil tells the Cloudflare Worker to keep running the promise
@@ -323,7 +353,9 @@ export const server = {
   submitLeadMagnet: defineAction({
     accept: 'json',
     input: leadMagnetSchema,
-    handler: async (input) => {
+    handler: async (input, context) => {
+      const ctx = (context.locals as any)?.runtime?.ctx
+
       // Honeypot check — silent fake success with realistic response
       if (input.honeypot) {
         return { success: true, leadId: crypto.randomUUID(), downloadUrl: '#' }
@@ -339,6 +371,13 @@ export const server = {
         formType: 'lead-magnet',
         source: input.source,
       }))
+
+      // Fire Google Sheets webhook + lead notification emails as background
+      // work — parity with saveFormStep / submitQuickCallback so lead-magnet
+      // submissions also land in the sheet and trigger team emails.
+      const leadForBackground = { ...result.doc, source: input.source }
+      fireLeadWebhook(leadForBackground, ctx)
+      fireLeadEmails(leadForBackground, ctx)
 
       // Fetch lead magnet file URL from Payload (query by slug)
       const PAYLOAD_URL = import.meta.env.PAYLOAD_URL || 'http://localhost:3000'

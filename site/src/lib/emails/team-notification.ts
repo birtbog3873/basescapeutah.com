@@ -9,13 +9,29 @@ function escapeHtml(text: string): string {
 
 const SERVICE_LABELS: Record<string, string> = {
   'walkout-basement': 'Walkout Basement',
+  'walkout-basements': 'Walkout Basement',
   'basement-remodeling': 'Basement Remodeling',
+  'concrete': 'Concrete',
   'concrete-flatwork': 'Concrete Flatwork',
+  'concrete-driveways': 'Concrete Driveway',
+  'concrete-patios': 'Concrete Patio',
+  'concrete-stamped': 'Stamped Concrete',
+  'concrete-garage-rv-pads': 'Garage Slab / RV Pad',
+  'concrete-sidewalks': 'Concrete Sidewalk',
+  'concrete-pool-decks': 'Pool Deck',
+  'concrete-footings': 'Footings & Structural Pour',
   'pavers-hardscapes': 'Pavers & Hardscapes',
   'retaining-walls': 'Retaining Walls',
   'artificial-turf': 'Artificial Turf',
   'egress-windows': 'Egress Windows',
   'not-sure': 'Not Sure',
+}
+
+function slugToTitle(slug: string): string {
+  return slug
+    .split('-')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ')
 }
 
 const FORM_TYPE_LABELS: Record<string, string> = {
@@ -54,7 +70,9 @@ interface TeamNotificationData {
 
 export function generateTeamNotification(data: TeamNotificationData) {
   const formLabel = FORM_TYPE_LABELS[data.formType] || data.formType
-  const serviceLabel = data.serviceType ? SERVICE_LABELS[data.serviceType] || data.serviceType : 'Not specified'
+  const serviceLabel = data.serviceType
+    ? SERVICE_LABELS[data.serviceType] || slugToTitle(data.serviceType)
+    : 'Not specified'
   const outOfAreaFlag = data.isOutOfServiceArea ? ' ⚠️ OUT OF SERVICE AREA' : ''
 
   return {

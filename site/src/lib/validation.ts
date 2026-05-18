@@ -2,6 +2,18 @@ import { z } from 'zod'
 
 const phoneRegex = /^[\+]?1?[-\s.]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4}$/
 
+// Service slug pattern: kebab-case, 2-80 chars. Validates format without
+// enumerating every page slug. Forms pass `service.slug` from the Astro page,
+// so this allows any current/future service page to submit without code edits.
+// (Previously a strict enum, which silently broke the concrete hub + 8 new
+// concrete sub-pages added in commit fc7333d, and walkout-basements which has
+// always been slugged as plural but enumerated as singular.)
+const serviceSlugSchema = z
+  .string()
+  .min(2, 'Service type required')
+  .max(80, 'Service type too long')
+  .regex(/^[a-z][a-z0-9-]*[a-z0-9]$/, 'Invalid service type')
+
 export const sourceSchema = z.object({
   page: z.string().max(2048, 'Page URL too long'),
   utmSource: z.string().max(500).optional(),
@@ -19,15 +31,7 @@ export const honeypotSchema = z.string().max(0, 'Invalid submission')
 export const leadStepOneSchema = z.object({
   step: z.literal(1),
   sessionId: z.string().uuid('Invalid session'),
-  serviceType: z.enum([
-    'walkout-basement',
-    'basement-remodeling',
-    'concrete-flatwork',
-    'pavers-hardscapes',
-    'retaining-walls',
-    'artificial-turf',
-    'egress-windows',
-  ]),
+  serviceType: serviceSlugSchema,
   zipCode: z.string().regex(/^\d{5}$/, 'Enter a valid 5-digit zip code'),
   honeypot: honeypotSchema,
   source: sourceSchema,
@@ -44,15 +48,7 @@ export const leadStepTwoSchema = z.object({
 export const leadStepThreeSchema = z.object({
   step: z.literal(3),
   sessionId: z.string().uuid('Invalid session'),
-  serviceType: z.enum([
-    'walkout-basement',
-    'basement-remodeling',
-    'concrete-flatwork',
-    'pavers-hardscapes',
-    'retaining-walls',
-    'artificial-turf',
-    'egress-windows',
-  ]),
+  serviceType: serviceSlugSchema,
   zipCode: z.string().regex(/^\d{5}$/, 'Enter a valid 5-digit zip code'),
   preferredDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format').optional(),
   timePreference: z.enum(['morning', 'afternoon', 'evening', 'not-sure']).optional(),
@@ -72,15 +68,7 @@ export const quickCallbackSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name too long'),
   phone: z.string().regex(phoneRegex, 'Enter a valid phone number'),
   notes: z.string().max(1000, 'Notes too long').optional(),
-  serviceType: z.enum([
-    'walkout-basement',
-    'basement-remodeling',
-    'concrete-flatwork',
-    'pavers-hardscapes',
-    'retaining-walls',
-    'artificial-turf',
-    'egress-windows',
-  ]).optional(),
+  serviceType: serviceSlugSchema.optional(),
   honeypot: honeypotSchema,
   source: sourceSchema,
 })

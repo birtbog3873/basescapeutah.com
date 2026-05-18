@@ -93,17 +93,11 @@ export const Leads: CollectionConfig = {
     },
     {
       name: 'serviceType',
-      type: 'select',
-      options: [
-        { label: 'Walkout Basement', value: 'walkout-basement' },
-        { label: 'Basement Remodeling', value: 'basement-remodeling' },
-        { label: 'Concrete Flatwork', value: 'concrete-flatwork' },
-        { label: 'Pavers & Hardscapes', value: 'pavers-hardscapes' },
-        { label: 'Retaining Walls', value: 'retaining-walls' },
-        { label: 'Artificial Turf', value: 'artificial-turf' },
-        { label: 'Egress Windows', value: 'egress-windows' },
-        { label: 'Not Sure', value: 'not-sure' },
-      ],
+      type: 'text',
+      maxLength: 80,
+      admin: {
+        description: 'Slug from the originating page (e.g. concrete-driveways, walkout-basements). Free text so new service pages don\'t require a schema change.',
+      },
     },
     { name: 'zipCode', type: 'text', maxLength: 5 },
     { name: 'preferredDate', type: 'text', admin: { description: 'ISO date string (YYYY-MM-DD)' } },
