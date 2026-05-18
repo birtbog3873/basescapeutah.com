@@ -39,9 +39,11 @@ describe('leadStepOneSchema', () => {
     }
   })
 
-  it('rejects invalid serviceType', () => {
-    const result = leadStepOneSchema.safeParse({ ...validData, serviceType: 'roofing' })
-    expect(result.success).toBe(false)
+  it('rejects malformed serviceType (uppercase / spaces / leading digit)', () => {
+    for (const bad of ['INVALID', 'has spaces', '1-leading-digit', '-leading-dash', 'trailing-dash-', '']) {
+      const result = leadStepOneSchema.safeParse({ ...validData, serviceType: bad })
+      expect(result.success).toBe(false)
+    }
   })
 
   it('rejects wrong step literal', () => {
