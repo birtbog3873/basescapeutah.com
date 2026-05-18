@@ -218,13 +218,23 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(801) 919-822
       } else {
         const w = window as any
         w.dataLayer = w.dataLayer || []
+        const eventId = crypto.randomUUID()
+        let navigated = false
+        const navigate = () => {
+          if (navigated) return
+          navigated = true
+          window.location.href = '/thank-you/estimate'
+        }
         w.dataLayer.push({
           event: 'lead_submit',
+          event_id: eventId,
           form_id: 'multi_step_estimate',
           service: serviceType,
           source_page: sourcePage,
+          eventCallback: navigate,
+          eventTimeout: 2000,
         })
-        window.location.href = '/thank-you/estimate'
+        setTimeout(navigate, 2500)
         return
       }
     } catch {

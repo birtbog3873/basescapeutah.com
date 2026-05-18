@@ -80,14 +80,24 @@ export default function QuickCallback({
       } else {
         const w = window as any
         w.dataLayer = w.dataLayer || []
+        const eventId = crypto.randomUUID()
+        let navigated = false
+        const navigate = () => {
+          if (navigated) return
+          navigated = true
+          window.location.href = '/thank-you/callback'
+        }
         w.dataLayer.push({
           event: 'lead_submit',
+          event_id: eventId,
           form_id: 'quick_callback',
           service: serviceType,
           source_page: sourcePage,
           variant,
+          eventCallback: navigate,
+          eventTimeout: 2000,
         })
-        window.location.href = '/thank-you/callback'
+        setTimeout(navigate, 2500)
         return
       }
     } catch {

@@ -63,13 +63,23 @@ export default function LeadMagnetForm({
       }
       const w = window as any
       w.dataLayer = w.dataLayer || []
+      const eventId = crypto.randomUUID()
+      let navigated = false
+      const navigate = () => {
+        if (navigated) return
+        navigated = true
+        window.location.href = '/thank-you/guide'
+      }
       w.dataLayer.push({
         event: 'lead_submit',
+        event_id: eventId,
         form_id: 'lead_magnet',
         lead_magnet_id: leadMagnetId,
         source_page: window.location.pathname,
+        eventCallback: navigate,
+        eventTimeout: 2000,
       })
-      window.location.href = '/thank-you/guide'
+      setTimeout(navigate, 2500)
       return
     } catch {
       setStatus('error')
