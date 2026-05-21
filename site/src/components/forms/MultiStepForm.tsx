@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { actions } from 'astro:actions'
-import { getGaClientId, getGclid } from '../../lib/analytics'
+import { getGaClientId, getGclid, getFbpCookie, getFbcCookie } from '../../lib/analytics'
 import './form-styles.css'
 
 const SERVICE_OPTIONS = [
@@ -185,6 +185,14 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(801) 919-822
     if (Object.keys(newErrors).length) return setErrors(newErrors)
 
     setLoading(true)
+    // Meta CAPI dedup pairing — fresh UUID per submission (not reused from
+    // sessionId; sessionId belongs to the multi-step form lifecycle, not the
+    // conversion event). Same eventId is passed to the Astro Action AND
+    // pushed to dataLayer so GTM's Meta Pixel - Lead tag fires with the same
+    // eventID, letting Meta dedup browser ↔ server events.
+    const eventId = crypto.randomUUID()
+    const fbp = getFbpCookie()
+    const fbc = getFbcCookie()
     try {
       const result = await actions.saveFormStep({
         step: 3 as const,
@@ -202,6 +210,9 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(801) 919-822
         smsConsent,
         honeypot,
         source: getSource(),
+        eventId,
+        fbp,
+        fbc,
       })
 
       if (result.error) {

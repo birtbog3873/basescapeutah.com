@@ -61,6 +61,12 @@ export const leadStepThreeSchema = z.object({
   smsConsent: z.boolean(),
   honeypot: honeypotSchema,
   source: sourceSchema,
+  // Meta CAPI dedup pairing — UUID generated client-side, also pushed to
+  // dataLayer so the GTM Meta Pixel tag fires the browser event with the
+  // same eventID. fbp/fbc forwarded from cookies for Event Match Quality.
+  eventId: z.string().uuid().optional(),
+  fbp: z.string().max(500).optional(),
+  fbc: z.string().max(500).optional(),
 })
 
 export const quickCallbackSchema = z.object({
@@ -71,6 +77,10 @@ export const quickCallbackSchema = z.object({
   serviceType: serviceSlugSchema.optional(),
   honeypot: honeypotSchema,
   source: sourceSchema,
+  // Meta CAPI dedup pairing — see leadStepThreeSchema for details.
+  eventId: z.string().uuid().optional(),
+  fbp: z.string().max(500).optional(),
+  fbc: z.string().max(500).optional(),
 })
 
 export const leadMagnetSchema = z.object({

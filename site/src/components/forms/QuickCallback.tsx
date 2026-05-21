@@ -1,6 +1,6 @@
 import { useState, useEffect, type FormEvent } from 'react'
 import { actions } from 'astro:actions'
-import { getGaClientId, getGclid } from '../../lib/analytics'
+import { getGaClientId, getGclid, getFbpCookie, getFbcCookie } from '../../lib/analytics'
 
 type ServiceType =
   | 'walkout-basement'
@@ -55,6 +55,10 @@ export default function QuickCallback({
     if (!phone.trim()) return setError('Please enter your phone number')
 
     setLoading(true)
+    // Meta CAPI dedup pairing — see MultiStepForm.handleStep3 for rationale.
+    const eventId = crypto.randomUUID()
+    const fbp = getFbpCookie()
+    const fbc = getFbcCookie()
     try {
       const params = new URLSearchParams(window.location.search)
       const { data, error: actionError } = await actions.submitQuickCallback({
@@ -73,6 +77,9 @@ export default function QuickCallback({
           gaClientId: getGaClientId(),
           gclid: getGclid(),
         },
+        eventId,
+        fbp,
+        fbc,
       })
 
       if (actionError) {

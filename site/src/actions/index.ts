@@ -10,6 +10,7 @@ import {
 import { createLead, updateLead, findLeadBySessionId } from '../lib/payload'
 import { generateConfirmationEmail } from '../lib/emails/lead-confirmation'
 import { generateTeamNotification } from '../lib/emails/team-notification'
+import { fireMetaCAPI } from '../lib/meta-capi'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -214,6 +215,76 @@ function fireLeadEmails(lead: any, ctx: any) {
   }
 }
 
+/**
+ * Fire the Meta Conversions API Lead event as background work. Pairs with the
+ * browser Pixel event (also keyed by event_id, set by GTM via dataLayer) so
+ * Meta deduplicates on event_name + event_id. Adds server-side fidelity that
+ * the browser Pixel alone can't reach (hashed PII pushes EMQ from ~5–6 to 8+).
+ *
+ * Fires only when lead.status === 'complete' — matches fireLeadEmails. No-ops
+ * silently if META_PIXEL_ID / META_CAPI_ACCESS_TOKEN env vars aren't set, so
+ * preview deploys without secrets configured still work.
+ *
+ * Plan: docs/meta-ads/conversions-api-implementation-plan.md
+ */
+function fireLeadCapi(
+  lead: any,
+  capiContext: {
+    eventId?: string
+    fbp?: string
+    fbc?: string
+    clientIp?: string
+    clientUserAgent?: string
+    eventSourceUrl?: string
+  },
+  ctx: any,
+) {
+  if (lead.status !== 'complete') return
+  if (!capiContext.eventId) {
+    // Without an event_id the server event can't dedup against the browser
+    // Pixel event — Meta would count two Leads per submission. Skip rather
+    // than double-count.
+    console.warn('[META-CAPI] Skipped — no event_id (will be sent once forms ship the field)')
+    return
+  }
+
+  // Lead.name is stored as a single string ("First Last"). Split for hashing —
+  // Meta scores fn/ln separately. If only one token is present, treat it as
+  // the first name.
+  const nameParts = (lead.name || '').trim().split(/\s+/).filter(Boolean)
+  const firstName = nameParts[0]
+  const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : undefined
+
+  const promise = fireMetaCAPI({
+    eventName: 'Lead',
+    eventId: capiContext.eventId,
+    eventSourceUrl: capiContext.eventSourceUrl || lead.source?.page || 'https://basescapeutah.com/',
+    userData: {
+      email: lead.email,
+      phone: lead.phone,
+      firstName,
+      lastName,
+      zip: lead.zipCode,
+      // City/state aren't stored on the Lead today — would come from a
+      // geocoded address. Skipped for v1.
+      fbp: capiContext.fbp,
+      fbc: capiContext.fbc,
+      clientIp: capiContext.clientIp,
+      clientUserAgent: capiContext.clientUserAgent,
+    },
+    customData: {
+      value: 100,
+      currency: 'USD',
+      contentName: lead.serviceType,
+      contentCategory: lead.formType,
+    },
+  })
+
+  if (ctx?.waitUntil) {
+    ctx.waitUntil(promise)
+  }
+}
+
 export const server = {
   saveFormStep: defineAction({
     accept: 'json',
@@ -300,13 +371,25 @@ export const server = {
             finalLead = result.doc
           }
 
-          // Fire Google Sheets webhook + lead notification emails as
-          // background work via ctx.waitUntil so the response flushes
-          // immediately. Apps Script + Resend both run after the user
-          // sees the thank-you page.
+          // Fire Google Sheets webhook + lead notification emails + Meta
+          // CAPI Lead event as background work via ctx.waitUntil so the
+          // response flushes immediately. Apps Script + Resend + CAPI all
+          // run after the user sees the thank-you page.
           const leadForBackground = { ...finalLead, source: input.source }
           fireLeadWebhook(leadForBackground, ctx)
           fireLeadEmails(leadForBackground, ctx)
+          fireLeadCapi(
+            leadForBackground,
+            {
+              eventId: input.eventId,
+              fbp: input.fbp,
+              fbc: input.fbc,
+              clientIp: context.request.headers.get('cf-connecting-ip') || undefined,
+              clientUserAgent: context.request.headers.get('user-agent') || undefined,
+              eventSourceUrl: input.source?.page,
+            },
+            ctx,
+          )
 
           return { success: true, leadId: finalLead?.id, step: 3 }
         } catch {
@@ -341,10 +424,23 @@ export const server = {
         source: input.source,
       }))
 
-      // Fire Google Sheets webhook + team notification email as background work
+      // Fire Google Sheets webhook + team notification email + Meta CAPI
+      // Lead event as background work.
       const leadForBackground = { ...result.doc, source: input.source }
       fireLeadWebhook(leadForBackground, ctx)
       fireLeadEmails(leadForBackground, ctx)
+      fireLeadCapi(
+        leadForBackground,
+        {
+          eventId: input.eventId,
+          fbp: input.fbp,
+          fbc: input.fbc,
+          clientIp: context.request.headers.get('cf-connecting-ip') || undefined,
+          clientUserAgent: context.request.headers.get('user-agent') || undefined,
+          eventSourceUrl: input.source?.page,
+        },
+        ctx,
+      )
 
       return { success: true, leadId: result.doc?.id }
     },
