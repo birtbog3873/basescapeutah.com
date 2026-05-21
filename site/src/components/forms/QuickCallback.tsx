@@ -85,9 +85,11 @@ export default function QuickCallback({
       if (actionError) {
         setError('Something went wrong. Please try again or call us directly.')
       } else {
+        // Reuse the outer eventId from line 59 — must match what was sent
+        // to the Astro Action so browser Pixel and server CAPI events
+        // dedup on Meta's side.
         const w = window as any
         w.dataLayer = w.dataLayer || []
-        const eventId = crypto.randomUUID()
         let navigated = false
         const navigate = () => {
           if (navigated) return

@@ -227,9 +227,12 @@ export default function MultiStepForm({ sourcePage = '/', phone = '(801) 919-822
       } else if (result.data && !result.data.success) {
         setErrors({ form: 'Something went wrong. Please try again.' })
       } else {
+        // Reuse the outer eventId from line 193 — must match what was sent
+        // to the Astro Action so the browser Pixel and server CAPI events
+        // dedup on Meta's side. Generating a fresh UUID here would break
+        // dedup and double-count Leads.
         const w = window as any
         w.dataLayer = w.dataLayer || []
-        const eventId = crypto.randomUUID()
         let navigated = false
         const navigate = () => {
           if (navigated) return
