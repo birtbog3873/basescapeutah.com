@@ -9,9 +9,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(__dirname, '..'),
   // Next traces only libsql's Node entries. On Workers, OpenNext resolves the
-  // `workerd`/`browser` exports (web.js etc.), so ship every @libsql package whole.
+  // `workerd`/`browser` exports (web.js etc.), so ship every @libsql package
+  // whole — including the root-hoisted copies (see /.npmrc).
   outputFileTracingIncludes: {
-    '/**': ['../node_modules/.pnpm/@libsql+*/node_modules/@libsql/**'],
+    '/**': ['../node_modules/.pnpm/@libsql+*/node_modules/**', '../node_modules/@libsql/**'],
   },
 }
 
