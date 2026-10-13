@@ -112,17 +112,22 @@ function fireLeadWebhook(lead: any, ctx: any) {
 
 /**
  * Send lead confirmation (to homeowner) + team notification emails via
- * Resend REST API as background work. Same pattern as fireLeadWebhook —
- * moved out of the Payload afterChange hook because Vercel's waitUntil
- * didn't flush the HTTP response when called from inside a Payload hook.
- * Runs in Cloudflare Worker runtime via ctx.waitUntil so the thank-you
- * page shows immediately and emails finish sending in the background.
+ * the Cloudflare Email Service REST API as background work. (Resend until
+ * 2026-10-13.) Same pattern as fireLeadWebhook — moved out of the Payload
+ * afterChange hook because Vercel's waitUntil didn't flush the HTTP response
+ * when called from inside a Payload hook. Runs in Cloudflare Worker runtime
+ * via ctx.waitUntil so the thank-you page shows immediately and emails finish
+ * sending in the background.
+ *
+ * REST rather than the send_email binding because this is a Pages project.
+ * CF_EMAIL_API_TOKEN is a token scoped to Email Sending only.
  *
  * Only fires when lead.status === 'complete' (matches the old hook's gate).
  */
 function fireLeadEmails(lead: any, ctx: any) {
-  const resendApiKey = import.meta.env.RESEND_API_KEY
-  if (!resendApiKey) return
+  const emailApiToken = import.meta.env.CF_EMAIL_API_TOKEN
+  const accountId = import.meta.env.CLOUDFLARE_ACCOUNT_ID
+  if (!emailApiToken || !accountId) return
   if (lead.status !== 'complete') return
 
   const teamEmail = import.meta.env.TEAM_NOTIFICATION_EMAIL || 'team@basescapeutah.com'
@@ -130,18 +135,18 @@ function fireLeadEmails(lead: any, ctx: any) {
   const businessPhone = '(801) 919-8224'
   const businessName = 'BaseScape'
 
-  const sendViaResend = (payload: {
-    from: string
+  const sendEmail = (payload: {
+    from: { address: string; name: string }
     to: string
     subject: string
     html: string
     reply_to?: string
   }) =>
-    fetch('https://api.resend.com/emails', {
+    fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/email/sending/send`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${resendApiKey}`,
+        Authorization: `Bearer ${emailApiToken}`,
       },
       body: JSON.stringify(payload),
     })
@@ -157,8 +162,8 @@ function fireLeadEmails(lead: any, ctx: any) {
       businessName,
     })
     promises.push(
-      sendViaResend({
-        from: `${businessName} <noreply@basescapeutah.com>`,
+      sendEmail({
+        from: { address: 'noreply@basescapeutah.com', name: businessName },
         to: lead.email,
         reply_to: 'hello@basescapeutah.com',
         subject: confirmation.subject,
@@ -193,8 +198,8 @@ function fireLeadEmails(lead: any, ctx: any) {
     payloadBaseUrl,
   })
   promises.push(
-    sendViaResend({
-      from: 'BaseScape Leads <leads@basescapeutah.com>',
+    sendEmail({
+      from: { address: 'leads@basescapeutah.com', name: 'BaseScape Leads' },
       to: teamEmail,
       reply_to: lead.email && EMAIL_RE.test(lead.email) ? lead.email : undefined,
       subject: notification.subject,
@@ -373,7 +378,7 @@ export const server = {
 
           // Fire Google Sheets webhook + lead notification emails + Meta
           // CAPI Lead event as background work via ctx.waitUntil so the
-          // response flushes immediately. Apps Script + Resend + CAPI all
+          // response flushes immediately. Apps Script + email + CAPI all
           // run after the user sees the thank-you page.
           const leadForBackground = { ...finalLead, source: input.source }
           fireLeadWebhook(leadForBackground, ctx)

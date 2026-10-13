@@ -35,7 +35,7 @@ GitHub: github.com/birtbog3873/basescapeutah.com (main branch)
 - **CMS content changes** trigger a site rebuild via `DEPLOY_HOOK_URL` (a Cloudflare Pages deploy hook) fired from `admin/src/hooks/deployHook.ts`, debounced 30 seconds.
 
 ### GitHub Actions secrets (site deploy)
-`CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, `PAYLOAD_URL`, `PAYLOAD_API_KEY`, `GOOGLE_SHEETS_WEBHOOK_URL`, `GOOGLE_SHEETS_WEBHOOK_SECRET`, `RESEND_API_KEY`, `TEAM_NOTIFICATION_EMAIL`
+`CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, `PAYLOAD_URL`, `PAYLOAD_API_KEY`, `GOOGLE_SHEETS_WEBHOOK_URL`, `GOOGLE_SHEETS_WEBHOOK_SECRET`, `CF_EMAIL_API_TOKEN`, `TEAM_NOTIFICATION_EMAIL`
 
 ### Vercel env vars (admin CMS)
 `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`, `PAYLOAD_SECRET`, `PAYLOAD_API_KEY`, `RESEND_API_KEY`, `TEAM_NOTIFICATION_EMAIL`, `R2_*`, `DEPLOY_HOOK_URL`, `GA4_MP_API_SECRET`, `PAYLOAD_BASE_URL`. `GOOGLE_SHEETS_WEBHOOK_*` are present but unused here — the webhook is fired from the site action, not the CMS.
@@ -194,7 +194,7 @@ Color palette: navy (primary), green (accent), amber (warm accent), teal (cool a
 - `PAYLOAD_API_KEY` — Bearer auth for form submission writes
 - `GOOGLE_SHEETS_WEBHOOK_URL` — Google Apps Script web app URL (lead logging)
 - `GOOGLE_SHEETS_WEBHOOK_SECRET` — shared secret, sent in POST body as `data.secret`
-- `RESEND_API_KEY` — Resend REST API key for lead notification emails
+- `CF_EMAIL_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` — Cloudflare Email Service (REST) for lead notification emails; token scoped to Email Sending only. Replaced Resend 2026-10-13.
 - `TEAM_NOTIFICATION_EMAIL` — Recipient of new-lead alerts (`hello@basescapeutah.com`)
 
 **Admin CMS** (`admin/.env` in dev; Vercel project settings in prod):

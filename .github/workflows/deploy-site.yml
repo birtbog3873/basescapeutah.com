@@ -24,7 +24,8 @@ jobs:
           echo "PAYLOAD_API_KEY=${{ secrets.PAYLOAD_API_KEY }}" >> site/.env
           echo "GOOGLE_SHEETS_WEBHOOK_URL=${{ secrets.GOOGLE_SHEETS_WEBHOOK_URL }}" >> site/.env
           echo "GOOGLE_SHEETS_WEBHOOK_SECRET=${{ secrets.GOOGLE_SHEETS_WEBHOOK_SECRET }}" >> site/.env
-          echo "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" >> site/.env
+          echo "CF_EMAIL_API_TOKEN=${{ secrets.CF_EMAIL_API_TOKEN }}" >> site/.env
+          echo "CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" >> site/.env
           echo "TEAM_NOTIFICATION_EMAIL=${{ secrets.TEAM_NOTIFICATION_EMAIL }}" >> site/.env
           echo "META_PIXEL_ID=${{ secrets.META_PIXEL_ID }}" >> site/.env
           echo "META_CAPI_ACCESS_TOKEN=${{ secrets.META_CAPI_ACCESS_TOKEN }}" >> site/.env
