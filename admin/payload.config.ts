@@ -1,7 +1,8 @@
 import { buildConfig } from 'payload'
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { s3Storage } from '@payloadcms/storage-s3'
-import { resendAdapter } from '@payloadcms/email-resend'
+import { FetchHttpHandler } from '@smithy/fetch-http-handler'
+import { cloudflareEmailAdapter } from './src/email/cloudflareAdapter'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 
 // Collections (copied from cms/src/collections/)
@@ -25,6 +26,7 @@ import { Navigation } from './src/globals/Navigation'
 import { deployHookCollection, deployHookGlobal } from './src/hooks/deployHook'
 
 export default buildConfig({
+  serverURL: process.env.SERVER_URL || '',
   cors: ['https://basescapeutah.com'],
   secret: process.env.PAYLOAD_SECRET ?? (() => { throw new Error('PAYLOAD_SECRET env var required') })(),
   editor: lexicalEditor(),
@@ -34,10 +36,9 @@ export default buildConfig({
       authToken: process.env.TURSO_AUTH_TOKEN,
     },
   }),
-  email: resendAdapter({
+  email: cloudflareEmailAdapter({
     defaultFromAddress: 'noreply@basescapeutah.com',
     defaultFromName: 'BaseScape',
-    apiKey: process.env.RESEND_API_KEY || '',
   }),
   plugins: [
     s3Storage({
@@ -53,6 +54,8 @@ export default buildConfig({
         region: 'auto',
         endpoint: process.env.R2_ENDPOINT || '',
         forcePathStyle: true,
+        // The SDK's default Node http handler fails on Cloudflare Workers.
+        requestHandler: new FetchHttpHandler(),
       },
     }),
   ],

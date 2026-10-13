@@ -1,0 +1,31 @@
+name: Deploy Admin
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'admin/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/deploy-admin.yml'
+  workflow_dispatch:
+
+# Payload admin → Cloudflare Worker `basescape-admin` (admin.basescapeutah.com).
+# Replaced Vercel's Git integration 2026-10-13. Runtime secrets live on the
+# Worker (wrangler secret), not here; the build only needs a placeholder.
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build and deploy
+        working-directory: admin
+        run: pnpm run deploy
+        env:
+          PAYLOAD_SECRET: build-only-placeholder
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

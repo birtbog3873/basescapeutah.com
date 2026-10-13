@@ -88,3 +88,6 @@ tasks.json
 
 # Claude config (local-only)
 .claude/
+
+# OpenNext build output
+.open-next/

@@ -1,7 +1,11 @@
 import type { CollectionAfterChangeHook, GlobalAfterChangeHook } from 'payload'
+import { getCloudflareContext } from '@opennextjs/cloudflare'
 
-let debounceTimer: ReturnType<typeof setTimeout> | null = null
-const DEBOUNCE_MS = 30_000
+// On Cloudflare Workers a bare setTimeout dies with the request, so the wait
+// runs inside ctx.waitUntil — which allows ~30s after the response, hence 20s.
+// Edits that land on the same isolate within the window share one deploy.
+const DEBOUNCE_MS = 20_000
+let pending = false
 
 async function triggerDeploy() {
   const token = process.env.GITHUB_DEPLOY_TOKEN
@@ -30,8 +34,18 @@ async function triggerDeploy() {
 }
 
 function debouncedDeploy() {
-  if (debounceTimer) clearTimeout(debounceTimer)
-  debounceTimer = setTimeout(triggerDeploy, DEBOUNCE_MS)
+  if (pending) return
+  pending = true
+  const run = new Promise<void>((resolve) => setTimeout(resolve, DEBOUNCE_MS))
+    .then(triggerDeploy)
+    .finally(() => {
+      pending = false
+    })
+  try {
+    getCloudflareContext().ctx.waitUntil(run)
+  } catch {
+    // Outside the Workers runtime (local `next dev`) the promise just runs.
+  }
 }
 
 export const deployHookCollection: CollectionAfterChangeHook = ({ doc }) => {

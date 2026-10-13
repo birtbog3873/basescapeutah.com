@@ -1,0 +1,26 @@
+{
+  // Payload admin (admin.basescapeutah.com). Moved from Vercel 2026-10-13.
+  // Build + deploy: pnpm --filter @basescape/admin run deploy
+  // Secrets (PAYLOAD_SECRET, TURSO_*, R2_*, PAYLOAD_API_KEY, GITHUB_DEPLOY_TOKEN,
+  // GA4_MP_API_SECRET) are Worker secrets — `wrangler secret put` / `secret bulk`.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "basescape-admin",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-08-15",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  // Outbound email (invites, password resets). Replaced Resend 2026-10-13.
+  "send_email": [{ "name": "EMAIL" }],
+  "routes": [{ "pattern": "admin.basescapeutah.com", "custom_domain": true }],
+  "vars": {
+    // Payload builds password-reset links from this.
+    "SERVER_URL": "https://admin.basescapeutah.com",
+    // Not secret — the R2 keys are. The bucket lives in this same account.
+    "R2_BUCKET_NAME": "basescape-media",
+    "R2_ENDPOINT": "https://5fb6312e5d59070b140c5324777cc652.r2.cloudflarestorage.com"
+  },
+  "observability": { "enabled": true }
+}
